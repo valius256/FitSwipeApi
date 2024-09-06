@@ -1,0 +1,49 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.11.35222.181
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FitSwipe.API", "FitSwipe.API\FitSwipe.API.csproj", "{FFB9A15E-B8EE-4C07-83B0-466E64BD605C}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FitSwipe.BusinessLogic", "FitSwipe.BusinessLogic\FitSwipe.BusinessLogic.csproj", "{587CEA5F-B632-46D8-8992-27784800ECFA}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FitSwipe.DataAccess", "FitSwipe.DataAccess\FitSwipe.DataAccess.csproj", "{F908C269-0DD4-45C6-98F6-AFD434722BFB}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FitSwipe.SchedulerJobs", "FitSwipe.SchedulerJobs\FitSwipe.SchedulerJobs.csproj", "{2F930617-2174-4CF9-8EAA-92AE410EB754}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FitSwipe.Shared", "FitSwipe.Shared\FitSwipe.Shared.csproj", "{6A54EA5A-40B8-4E75-BB5C-F2AAB0C75B8B}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{FFB9A15E-B8EE-4C07-83B0-466E64BD605C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FFB9A15E-B8EE-4C07-83B0-466E64BD605C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FFB9A15E-B8EE-4C07-83B0-466E64BD605C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FFB9A15E-B8EE-4C07-83B0-466E64BD605C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{587CEA5F-B632-46D8-8992-27784800ECFA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{587CEA5F-B632-46D8-8992-27784800ECFA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{587CEA5F-B632-46D8-8992-27784800ECFA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{587CEA5F-B632-46D8-8992-27784800ECFA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F908C269-0DD4-45C6-98F6-AFD434722BFB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F908C269-0DD4-45C6-98F6-AFD434722BFB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F908C269-0DD4-45C6-98F6-AFD434722BFB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F908C269-0DD4-45C6-98F6-AFD434722BFB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2F930617-2174-4CF9-8EAA-92AE410EB754}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2F930617-2174-4CF9-8EAA-92AE410EB754}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2F930617-2174-4CF9-8EAA-92AE410EB754}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2F930617-2174-4CF9-8EAA-92AE410EB754}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6A54EA5A-40B8-4E75-BB5C-F2AAB0C75B8B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6A54EA5A-40B8-4E75-BB5C-F2AAB0C75B8B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6A54EA5A-40B8-4E75-BB5C-F2AAB0C75B8B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6A54EA5A-40B8-4E75-BB5C-F2AAB0C75B8B}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {0597EF9F-6AE0-4CD4-9A4A-2DC071217711}
+	EndGlobalSection
+EndGlobal
