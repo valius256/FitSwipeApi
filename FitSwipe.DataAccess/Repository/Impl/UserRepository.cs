@@ -1,6 +1,6 @@
 ﻿using FitSwipe.DataAccess.Model;
+using FitSwipe.DataAccess.Model.Entity;
 using FitSwipe.DataAccess.Repository.Intefaces;
-using FitSwipe.Shared.Model.User;
 
 namespace FitSwipe.DataAccess.Repository.Impl
 {
