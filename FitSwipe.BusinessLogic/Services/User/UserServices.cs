@@ -15,7 +15,10 @@ namespace FitSwipe.BusinessLogic.Services.User
 
         public async Task<GetUserProfileResponse> RegisterUser(RegisterRequestModel registerDtos)
         {
-            var UserFirebaseId = await _firebaseAuthServices.RegisterUser(registerDtos);
+            var UserFirebaseId = await _firebaseAuthServices.RegisterUserWithFirebase(registerDtos);
+
+
+            //var userSaveInDb = 
 
             var userResponseModel = new GetUserProfileResponse()
             {

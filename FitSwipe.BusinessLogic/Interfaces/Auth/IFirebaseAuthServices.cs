@@ -4,7 +4,7 @@ namespace FitSwipe.BusinessLogic.Interfaces.Auth
 {
     public interface IFirebaseAuthServices
     {
-        Task<string> RegisterUser(RegisterRequestModel registerRequest);
+        Task<string> RegisterUserWithFirebase(RegisterRequestModel registerRequest);
         Task<string> ForgotPassword(string email);
         //Task<UserRecord?> GetUserAsync(string? uid, string? email, string? phone);
         Task<bool> DeleteUserAsync(string? email);

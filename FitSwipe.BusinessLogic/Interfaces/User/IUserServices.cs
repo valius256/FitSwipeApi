@@ -6,5 +6,6 @@ namespace FitSwipe.BusinessLogic.Interfaces.User
     public interface IUserServices
     {
         Task<GetUserProfileResponse> RegisterUser(RegisterRequestModel registerDtos);
+
     }
 }
