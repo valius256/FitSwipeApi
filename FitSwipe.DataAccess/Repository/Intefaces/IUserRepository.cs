@@ -1,4 +1,4 @@
-﻿using FitSwipe.Shared.Model.User;
+﻿using FitSwipe.DataAccess.Model.Entity;
 
 namespace FitSwipe.DataAccess.Repository.Intefaces
 {

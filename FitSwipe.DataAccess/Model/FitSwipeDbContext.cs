@@ -1,6 +1,6 @@
 ﻿using FitSwipe.DataAccess.EntityTypeCofiguration;
+using FitSwipe.DataAccess.Model.Entity;
 using FitSwipe.DataAccess.SeedData;
-using FitSwipe.Shared.Model.User;
 using Microsoft.EntityFrameworkCore;
 
 namespace FitSwipe.DataAccess.Model

@@ -55,17 +55,17 @@ namespace FitSwipe.DataAccess.Repository
             return dbSet.MinAsync(selector, cancellationToken);
         }
 
-        public virtual TEntity Find(params object[] keyValues)
+        public virtual TEntity? Find(params object[] keyValues)
         {
             return dbSet.Find(keyValues);
         }
 
-        public virtual ValueTask<TEntity> FindAsync(object[] keyValues, CancellationToken cancellationToken = default)
+        public virtual ValueTask<TEntity?> FindAsync(object[] keyValues, CancellationToken cancellationToken = default)
         {
             return dbSet.FindAsync(keyValues, cancellationToken);
         }
 
-        public virtual ValueTask<TEntity> FindAsync(params object[] keyValues)
+        public virtual ValueTask<TEntity?> FindAsync(params object[] keyValues)
         {
             return dbSet.FindAsync(keyValues);
         }
@@ -80,17 +80,17 @@ namespace FitSwipe.DataAccess.Repository
             return dbSet.Where(predicate).ToListAsync();
         }
 
-        public virtual TEntity FirstOrDefault(Expression<Func<TEntity, bool>> predicate)
+        public virtual TEntity? FirstOrDefault(Expression<Func<TEntity, bool>> predicate)
         {
             return dbSet.FirstOrDefault(predicate);
         }
 
-        public virtual TEntity FirstOrDefault()
+        public virtual TEntity? FirstOrDefault()
         {
             return dbSet.FirstOrDefault();
         }
 
-        public virtual Task<TEntity> FirstOrDefaultAsync(Expression<Func<TEntity, bool>> predicate,
+        public virtual Task<TEntity?> FirstOrDefaultAsync(Expression<Func<TEntity, bool>> predicate,
             CancellationToken cancellationToken = default)
         {
             return dbSet.FirstOrDefaultAsync(predicate, cancellationToken);
