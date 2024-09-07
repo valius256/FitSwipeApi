@@ -2,7 +2,7 @@
 
 namespace FitSwipe.DataAccess.Model.Entity
 {
-    public class Tag : BaseEntity
+    public class Tag : BaseEntity //Các tag thể hiện sở thích, thói quen, mục đích tập luyện để phục vụ cho tính năng matching
     {
         public string Name { get; set; }
         public TagType TagType { get; set; }

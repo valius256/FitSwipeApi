@@ -40,5 +40,13 @@ namespace FitSwipe.DataAccess.Model.Entity
         //Navigator
         public virtual ICollection<UserTag> UserTags { get; set; } = new List<UserTag>();
         public virtual ICollection<Tag> TagsCreated { get; set; } = new List<Tag>();
+        public virtual ICollection<UserMedia> UserMedias { get; set; } = new List<UserMedia>();
+        public virtual ICollection<Report> ReportsCreated { get; set; } = new List<Report>();
+        public virtual ICollection<Report> ReportsReceived { get; set; } = new List<Report>();
+        public virtual ICollection<Training> TrainingsInstructing { get; set; } = new List<Training>();
+        public virtual ICollection<Training> TrainingsAttending { get; set; } = new List<Training>();
+        public virtual ICollection<Transaction> Transactions { get; set; } = new List<Transaction>();
+        public virtual ICollection<Slot> SlotsCreated { get; set; } = new List<Slot>();
+
     }
 }
