@@ -5,7 +5,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace FitSwipe.Shared.Model.User
 {
-    public class User : IBaseEntity
+    public class User : BaseEntity
     {
         [Required]
         public string? FireBaseId { get; set; }

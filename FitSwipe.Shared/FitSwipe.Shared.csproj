@@ -17,4 +17,8 @@
 		<Folder Include="Converters\" />
 	</ItemGroup>
 
+	<ItemGroup>
+	  <PackageReference Include="Microsoft.EntityFrameworkCore" Version="8.0.8" />
+	</ItemGroup>
+
 </Project>

@@ -8,12 +8,14 @@ namespace FitSwipe.BusinessLogic.Services.Auth
 {
     public class FirebaseAuthServices : IFirebaseAuthServices
     {
-        public async Task<string> RegisterUser(RegisterRequestModel registerRequestModel)
+        public async Task<string> RegisterUserWithFirebase(RegisterRequestModel registerRequestModel)
         {
             var userForFireBaseAuth = new UserRecordArgs
             {
                 Email = registerRequestModel.Email,
-                Password = registerRequestModel.Password
+                Password = registerRequestModel.Password,
+                DisplayName = registerRequestModel.Email,
+                PhoneNumber = registerRequestModel.PhoneNumber,
             };
 
             var userRecord = await FirebaseAuth.DefaultInstance.CreateUserAsync(userForFireBaseAuth);
@@ -30,8 +32,6 @@ namespace FitSwipe.BusinessLogic.Services.Auth
         {
             await FirebaseAuth.DefaultInstance.SetCustomUserClaimsAsync(userId, claims);
         }
-
-
 
         public async Task<bool> DeleteUserAsync(string? email)
         {

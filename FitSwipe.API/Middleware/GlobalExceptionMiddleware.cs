@@ -1,12 +1,11 @@
 ﻿using FirebaseAdmin.Auth;
-using FitSwipe.API.Middleware;
 using FitSwipe.Shared.Exceptions;
 using FitSwipe.Shared.Utils;
 using Hangfire;
 using System.Net;
 using System.Security.Authentication;
 
-namespace OnDemandTutor.API.Middlesware;
+namespace FitSwipe.API.Middleware;
 
 public class ExceptionHandlingMiddleware
 {
