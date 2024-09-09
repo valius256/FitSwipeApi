@@ -1,4 +1,4 @@
-﻿namespace FitSwipe.DataAccess.Model.Enum
+﻿namespace FitSwipe.Shared.Enum
 {
     public enum Sport
     {
