@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace FitSwipe.DataAccess.Migrations
 {
     /// <inheritdoc />
-    public partial class Init : Migration
+    public partial class LOL : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -53,7 +53,7 @@ namespace FitSwipe.DataAccess.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Report",
+                name: "Reports",
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
@@ -68,15 +68,15 @@ namespace FitSwipe.DataAccess.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Report", x => x.Id);
+                    table.PrimaryKey("PK_Reports", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Report_Users_ReporterId",
+                        name: "FK_Reports_Users_ReporterId",
                         column: x => x.ReporterId,
                         principalTable: "Users",
                         principalColumn: "FireBaseId",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_Report_Users_TargetId",
+                        name: "FK_Reports_Users_TargetId",
                         column: x => x.TargetId,
                         principalTable: "Users",
                         principalColumn: "FireBaseId",
@@ -84,7 +84,7 @@ namespace FitSwipe.DataAccess.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Tag",
+                name: "Tags",
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
@@ -98,9 +98,9 @@ namespace FitSwipe.DataAccess.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Tag", x => x.Id);
+                    table.PrimaryKey("PK_Tags", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Tag_Users_CreateById",
+                        name: "FK_Tags_Users_CreateById",
                         column: x => x.CreateById,
                         principalTable: "Users",
                         principalColumn: "FireBaseId",
@@ -108,7 +108,7 @@ namespace FitSwipe.DataAccess.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Training",
+                name: "Trainings",
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
@@ -124,15 +124,15 @@ namespace FitSwipe.DataAccess.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Training", x => x.Id);
+                    table.PrimaryKey("PK_Trainings", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Training_Users_PTId",
+                        name: "FK_Trainings_Users_PTId",
                         column: x => x.PTId,
                         principalTable: "Users",
                         principalColumn: "FireBaseId",
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
-                        name: "FK_Training_Users_TraineeId",
+                        name: "FK_Trainings_Users_TraineeId",
                         column: x => x.TraineeId,
                         principalTable: "Users",
                         principalColumn: "FireBaseId",
@@ -140,7 +140,7 @@ namespace FitSwipe.DataAccess.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Transaction",
+                name: "Transactions",
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
@@ -157,9 +157,9 @@ namespace FitSwipe.DataAccess.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Transaction", x => x.Id);
+                    table.PrimaryKey("PK_Transactions", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Transaction_Users_UserFireBaseId",
+                        name: "FK_Transactions_Users_UserFireBaseId",
                         column: x => x.UserFireBaseId,
                         principalTable: "Users",
                         principalColumn: "FireBaseId",
@@ -167,7 +167,7 @@ namespace FitSwipe.DataAccess.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "UserMedia",
+                name: "UserMedias",
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
@@ -182,9 +182,9 @@ namespace FitSwipe.DataAccess.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_UserMedia", x => x.Id);
+                    table.PrimaryKey("PK_UserMedias", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_UserMedia_Users_UserId",
+                        name: "FK_UserMedias_Users_UserId",
                         column: x => x.UserId,
                         principalTable: "Users",
                         principalColumn: "FireBaseId",
@@ -192,7 +192,7 @@ namespace FitSwipe.DataAccess.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "ReportImage",
+                name: "ReportImages",
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
@@ -205,17 +205,17 @@ namespace FitSwipe.DataAccess.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_ReportImage", x => x.Id);
+                    table.PrimaryKey("PK_ReportImages", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_ReportImage_Report_ReportId",
+                        name: "FK_ReportImages_Reports_ReportId",
                         column: x => x.ReportId,
-                        principalTable: "Report",
+                        principalTable: "Reports",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
-                name: "UserTag",
+                name: "UserTags",
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
@@ -228,15 +228,15 @@ namespace FitSwipe.DataAccess.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_UserTag", x => x.Id);
+                    table.PrimaryKey("PK_UserTags", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_UserTag_Tag_TagId",
+                        name: "FK_UserTags_Tags_TagId",
                         column: x => x.TagId,
-                        principalTable: "Tag",
+                        principalTable: "Tags",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_UserTag_Users_UserId",
+                        name: "FK_UserTags_Users_UserId",
                         column: x => x.UserId,
                         principalTable: "Users",
                         principalColumn: "FireBaseId",
@@ -244,7 +244,7 @@ namespace FitSwipe.DataAccess.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "FeedbackImage",
+                name: "FeedbackImages",
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
@@ -257,17 +257,17 @@ namespace FitSwipe.DataAccess.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_FeedbackImage", x => x.Id);
+                    table.PrimaryKey("PK_FeedbackImages", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_FeedbackImage_Training_TrainingId",
+                        name: "FK_FeedbackImages_Trainings_TrainingId",
                         column: x => x.TrainingId,
-                        principalTable: "Training",
+                        principalTable: "Trainings",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
-                name: "Slot",
+                name: "Slots",
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
@@ -287,14 +287,14 @@ namespace FitSwipe.DataAccess.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Slot", x => x.Id);
+                    table.PrimaryKey("PK_Slots", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Slot_Training_TrainingId",
+                        name: "FK_Slots_Trainings_TrainingId",
                         column: x => x.TrainingId,
-                        principalTable: "Training",
+                        principalTable: "Trainings",
                         principalColumn: "Id");
                     table.ForeignKey(
-                        name: "FK_Slot_Users_CreateById",
+                        name: "FK_Slots_Users_CreateById",
                         column: x => x.CreateById,
                         principalTable: "Users",
                         principalColumn: "FireBaseId",
@@ -306,79 +306,91 @@ namespace FitSwipe.DataAccess.Migrations
                 columns: new[] { "FireBaseId", "AvatarUrl", "Balance", "Bio", "City", "CreatedDate", "DateOfBirth", "DeletedDate", "District", "Email", "Gender", "Height", "Id", "Job", "PTExperienceYear", "PTStatus", "Password", "Phone", "RecordStatus", "Role", "Status", "Street", "SubscriptionLevel", "SubscriptionPaymentStatus", "SubscriptionPurchasedDate", "UpdatedDate", "UserName", "Ward", "Weight" },
                 values: new object[,]
                 {
-                    { "123abc", "https://example.com/avatar1.jpg", 1000, "Fitness enthusiast and certified personal trainer.", "New York", new DateTime(2024, 9, 8, 0, 10, 37, 354, DateTimeKind.Local).AddTicks(5829), new DateTime(1990, 5, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, "Manhattan", "john.doe@example.com", 0, 180.30000000000001, new Guid("00000000-0000-0000-0000-000000000000"), "Student", null, null, "hashedpassword1", "1234567890", 0, 0, 0, "5th Avenue", null, null, null, null, "john doe", "Ward 5", 75.5 },
-                    { "456def", "https://example.com/avatar2.jpg", 1500, "Yoga instructor with a passion for holistic health.", "Los Angeles", new DateTime(2024, 9, 8, 0, 10, 37, 354, DateTimeKind.Local).AddTicks(5853), new DateTime(1985, 8, 20, 0, 0, 0, 0, DateTimeKind.Unspecified), null, "Beverly Hills", "jane.smith@example.com", 1, 170.19999999999999, new Guid("00000000-0000-0000-0000-000000000000"), "Yoga Instructor", 3.5, 1, "hashedpassword2", "0987654321", 0, 1, 0, "Rodeo Drive", 1, 0, new DateTime(2023, 2, 10, 0, 0, 0, 0, DateTimeKind.Unspecified), null, "jane smith", "Ward 3", 65.0 },
-                    { "789ghi", "https://example.com/avatar3.jpg", 2000, "Aspiring bodybuilder and nutrition expert.", "Chicago", new DateTime(2024, 9, 8, 0, 10, 37, 354, DateTimeKind.Local).AddTicks(5863), new DateTime(1992, 3, 10, 0, 0, 0, 0, DateTimeKind.Unspecified), null, "Lincoln Park", "alex.jones@example.com", 0, 185.40000000000001, new Guid("00000000-0000-0000-0000-000000000000"), "Nutritionist", 2.0, 0, "hashedpassword3", "5551234567", 0, 1, 0, "Clark Street", null, null, null, null, "alex jones", "Ward 7", 85.0 }
+                    { "123abc", "https://example.com/avatar1.jpg", 1000, "Fitness enthusiast and certified personal trainer.", "New York", new DateTime(2024, 9, 11, 23, 26, 48, 976, DateTimeKind.Local).AddTicks(477), new DateTime(1990, 5, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, "Manhattan", "john.doe@example.com", 0, 180.30000000000001, new Guid("00000000-0000-0000-0000-000000000000"), "Student", null, null, "hashedpassword1", "1234567890", 0, 0, 0, "5th Avenue", null, null, null, null, "john doe", "Ward 5", 75.5 },
+                    { "456def", "https://example.com/avatar2.jpg", 1500, "Yoga instructor with a passion for holistic health.", "Los Angeles", new DateTime(2024, 9, 11, 23, 26, 48, 976, DateTimeKind.Local).AddTicks(513), new DateTime(1985, 8, 20, 0, 0, 0, 0, DateTimeKind.Unspecified), null, "Beverly Hills", "jane.smith@example.com", 1, 170.19999999999999, new Guid("00000000-0000-0000-0000-000000000000"), "Yoga Instructor", 3.5, 1, "hashedpassword2", "0987654321", 0, 1, 0, "Rodeo Drive", 1, 0, new DateTime(2023, 2, 10, 0, 0, 0, 0, DateTimeKind.Unspecified), null, "jane smith", "Ward 3", 65.0 },
+                    { "789ghi", "https://example.com/avatar3.jpg", 2000, "Aspiring bodybuilder and nutrition expert.", "Chicago", new DateTime(2024, 9, 11, 23, 26, 48, 976, DateTimeKind.Local).AddTicks(531), new DateTime(1992, 3, 10, 0, 0, 0, 0, DateTimeKind.Unspecified), null, "Lincoln Park", "alex.jones@example.com", 0, 185.40000000000001, new Guid("00000000-0000-0000-0000-000000000000"), "Nutritionist", 2.0, 0, "hashedpassword3", "5551234567", 0, 1, 0, "Clark Street", null, null, null, null, "alex jones", "Ward 7", 85.0 }
                 });
 
             migrationBuilder.InsertData(
-                table: "Tag",
+                table: "Tags",
                 columns: new[] { "Id", "CreateById", "CreatedDate", "DeletedDate", "Name", "RecordStatus", "TagType", "UpdatedDate" },
-                values: new object[] { new Guid("db9009b9-ab23-405a-aca5-847ed7e29938"), "123abc", new DateTime(2024, 9, 8, 0, 10, 37, 354, DateTimeKind.Local).AddTicks(5977), null, "Bóng đá", 0, 0, null });
+                values: new object[,]
+                {
+                    { new Guid("24000c43-82a4-4ad0-956a-14f3ef8c2021"), "123abc", new DateTime(2024, 9, 11, 23, 26, 48, 976, DateTimeKind.Local).AddTicks(891), null, "Kiên trì", 0, 4, null },
+                    { new Guid("3aac1b76-d956-48d7-9679-1635df2a060c"), "123abc", new DateTime(2024, 9, 11, 23, 26, 48, 976, DateTimeKind.Local).AddTicks(861), null, "Yoga", 0, 2, null },
+                    { new Guid("3fd4b020-17b2-4cbd-8d4b-ca5ac800ac75"), "123abc", new DateTime(2024, 9, 11, 23, 26, 48, 976, DateTimeKind.Local).AddTicks(888), null, "Giá rẻ", 0, 3, null },
+                    { new Guid("6d8860c6-81ff-41d8-a33f-f01befbefc8c"), "123abc", new DateTime(2024, 9, 11, 23, 26, 48, 976, DateTimeKind.Local).AddTicks(852), null, "Video game", 0, 0, null },
+                    { new Guid("6f831dad-1ff3-4171-96a2-70c050fbbdc0"), "123abc", new DateTime(2024, 9, 11, 23, 26, 48, 976, DateTimeKind.Local).AddTicks(856), null, "Giảm cân", 0, 1, null },
+                    { new Guid("936deede-2a98-4570-980c-79d90d198540"), "123abc", new DateTime(2024, 9, 11, 23, 26, 48, 976, DateTimeKind.Local).AddTicks(805), null, "Bóng đá", 0, 0, null },
+                    { new Guid("95842055-67f6-4111-b52e-c3f02c9b220a"), "123abc", new DateTime(2024, 9, 11, 23, 26, 48, 976, DateTimeKind.Local).AddTicks(859), null, "Phát triển cơ bắp", 0, 1, null },
+                    { new Guid("986462a9-d7d7-4a73-9ed1-ce336f1cf47d"), "123abc", new DateTime(2024, 9, 11, 23, 26, 48, 976, DateTimeKind.Local).AddTicks(885), null, "Ngoại hình đẹp", 0, 3, null },
+                    { new Guid("9b5fe34b-6775-414e-80d7-a2c44fe11970"), "123abc", new DateTime(2024, 9, 11, 23, 26, 48, 976, DateTimeKind.Local).AddTicks(894), null, "Siêng năng", 0, 4, null },
+                    { new Guid("f28f8ad1-ddee-4ccb-984c-db61bd3fa3d2"), "123abc", new DateTime(2024, 9, 11, 23, 26, 48, 976, DateTimeKind.Local).AddTicks(864), null, "Cardino", 0, 2, null }
+                });
 
             migrationBuilder.CreateIndex(
-                name: "IX_FeedbackImage_TrainingId",
-                table: "FeedbackImage",
+                name: "IX_FeedbackImages_TrainingId",
+                table: "FeedbackImages",
                 column: "TrainingId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Report_ReporterId",
-                table: "Report",
-                column: "ReporterId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Report_TargetId",
-                table: "Report",
-                column: "TargetId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_ReportImage_ReportId",
-                table: "ReportImage",
+                name: "IX_ReportImages_ReportId",
+                table: "ReportImages",
                 column: "ReportId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Slot_CreateById",
-                table: "Slot",
+                name: "IX_Reports_ReporterId",
+                table: "Reports",
+                column: "ReporterId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Reports_TargetId",
+                table: "Reports",
+                column: "TargetId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Slots_CreateById",
+                table: "Slots",
                 column: "CreateById");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Slot_TrainingId",
-                table: "Slot",
+                name: "IX_Slots_TrainingId",
+                table: "Slots",
                 column: "TrainingId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Tag_CreateById",
-                table: "Tag",
+                name: "IX_Tags_CreateById",
+                table: "Tags",
                 column: "CreateById");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Training_PTId",
-                table: "Training",
+                name: "IX_Trainings_PTId",
+                table: "Trainings",
                 column: "PTId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Training_TraineeId",
-                table: "Training",
+                name: "IX_Trainings_TraineeId",
+                table: "Trainings",
                 column: "TraineeId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Transaction_UserFireBaseId",
-                table: "Transaction",
+                name: "IX_Transactions_UserFireBaseId",
+                table: "Transactions",
                 column: "UserFireBaseId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_UserMedia_UserId",
-                table: "UserMedia",
+                name: "IX_UserMedias_UserId",
+                table: "UserMedias",
                 column: "UserId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_UserTag_TagId",
-                table: "UserTag",
+                name: "IX_UserTags_TagId",
+                table: "UserTags",
                 column: "TagId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_UserTag_UserId",
-                table: "UserTag",
+                name: "IX_UserTags_UserId",
+                table: "UserTags",
                 column: "UserId");
         }
 
@@ -386,31 +398,31 @@ namespace FitSwipe.DataAccess.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "FeedbackImage");
+                name: "FeedbackImages");
 
             migrationBuilder.DropTable(
-                name: "ReportImage");
+                name: "ReportImages");
 
             migrationBuilder.DropTable(
-                name: "Slot");
+                name: "Slots");
 
             migrationBuilder.DropTable(
-                name: "Transaction");
+                name: "Transactions");
 
             migrationBuilder.DropTable(
-                name: "UserMedia");
+                name: "UserMedias");
 
             migrationBuilder.DropTable(
-                name: "UserTag");
+                name: "UserTags");
 
             migrationBuilder.DropTable(
-                name: "Report");
+                name: "Reports");
 
             migrationBuilder.DropTable(
-                name: "Training");
+                name: "Trainings");
 
             migrationBuilder.DropTable(
-                name: "Tag");
+                name: "Tags");
 
             migrationBuilder.DropTable(
                 name: "Users");

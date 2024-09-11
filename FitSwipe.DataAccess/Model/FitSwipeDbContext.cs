@@ -16,6 +16,15 @@ namespace FitSwipe.DataAccess.Model
         }
 
         public DbSet<User> Users { get; set; }
+        public DbSet<UserTag> UserTags { get; set; }
+        public DbSet<Tag> Tags { get; set; }
+        public DbSet<Training> Trainings { get; set; }
+        public DbSet<Slot> Slots { get; set; }
+        public DbSet<Report> Reports { get; set; }
+        public DbSet<ReportImage> ReportImages { get; set; }
+        public DbSet<Transaction> Transactions { get; set; }
+        public DbSet<UserMedia> UserMedias { get; set; }
+        public DbSet<FeedbackImage> FeedbackImages { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

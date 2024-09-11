@@ -19,7 +19,7 @@ namespace FitSwipe.DataAccess.Repository
             _context = context;
         }
 
-        public async Task<TEntity?> GetByIdAsync(int id)
+        public async Task<TEntity?> GetByIdAsync(Guid id)
         {
             return await _context.Set<TEntity>().FindAsync(id);
         }
@@ -79,7 +79,7 @@ namespace FitSwipe.DataAccess.Repository
             await _context.SaveChangesAsync();
         }
 
-        public async Task DeleteAsync(int id)
+        public async Task DeleteAsync(Guid id)
         {
             var entity = await GetByIdAsync(id);
             if (entity != null)
@@ -89,7 +89,7 @@ namespace FitSwipe.DataAccess.Repository
             }
         }
 
-        public async Task<bool> Exists(int id)
+        public async Task<bool> Exists(Guid id)
         {
             var entity = await GetByIdAsync(id);
             return entity != null;

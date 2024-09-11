@@ -1,4 +1,4 @@
-﻿using FitSwipe.BusinessLogic.Interfaces.User;
+﻿using FitSwipe.BusinessLogic.Interfaces.Users;
 using FitSwipe.Shared.Model.Auth;
 using Microsoft.AspNetCore.Mvc;
 

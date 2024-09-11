@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace FitSwipe.DataAccess.Migrations
 {
     [DbContext(typeof(FitSwipeDbContext))]
-    [Migration("20240907171037_Init")]
-    partial class Init
+    [Migration("20240911162649_LOL")]
+    partial class LOL
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -54,7 +54,7 @@ namespace FitSwipe.DataAccess.Migrations
 
                     b.HasIndex("TrainingId");
 
-                    b.ToTable("FeedbackImage");
+                    b.ToTable("FeedbackImages");
                 });
 
             modelBuilder.Entity("FitSwipe.DataAccess.Model.Entity.Report", b =>
@@ -96,7 +96,7 @@ namespace FitSwipe.DataAccess.Migrations
 
                     b.HasIndex("TargetId");
 
-                    b.ToTable("Report");
+                    b.ToTable("Reports");
                 });
 
             modelBuilder.Entity("FitSwipe.DataAccess.Model.Entity.ReportImage", b =>
@@ -128,7 +128,7 @@ namespace FitSwipe.DataAccess.Migrations
 
                     b.HasIndex("ReportId");
 
-                    b.ToTable("ReportImage");
+                    b.ToTable("ReportImages");
                 });
 
             modelBuilder.Entity("FitSwipe.DataAccess.Model.Entity.Slot", b =>
@@ -183,7 +183,7 @@ namespace FitSwipe.DataAccess.Migrations
 
                     b.HasIndex("TrainingId");
 
-                    b.ToTable("Slot");
+                    b.ToTable("Slots");
                 });
 
             modelBuilder.Entity("FitSwipe.DataAccess.Model.Entity.Tag", b =>
@@ -219,17 +219,98 @@ namespace FitSwipe.DataAccess.Migrations
 
                     b.HasIndex("CreateById");
 
-                    b.ToTable("Tag");
+                    b.ToTable("Tags");
 
                     b.HasData(
                         new
                         {
-                            Id = new Guid("db9009b9-ab23-405a-aca5-847ed7e29938"),
+                            Id = new Guid("936deede-2a98-4570-980c-79d90d198540"),
                             CreateById = "123abc",
-                            CreatedDate = new DateTime(2024, 9, 8, 0, 10, 37, 354, DateTimeKind.Local).AddTicks(5977),
+                            CreatedDate = new DateTime(2024, 9, 11, 23, 26, 48, 976, DateTimeKind.Local).AddTicks(805),
                             Name = "Bóng đá",
                             RecordStatus = 0,
                             TagType = 0
+                        },
+                        new
+                        {
+                            Id = new Guid("6d8860c6-81ff-41d8-a33f-f01befbefc8c"),
+                            CreateById = "123abc",
+                            CreatedDate = new DateTime(2024, 9, 11, 23, 26, 48, 976, DateTimeKind.Local).AddTicks(852),
+                            Name = "Video game",
+                            RecordStatus = 0,
+                            TagType = 0
+                        },
+                        new
+                        {
+                            Id = new Guid("6f831dad-1ff3-4171-96a2-70c050fbbdc0"),
+                            CreateById = "123abc",
+                            CreatedDate = new DateTime(2024, 9, 11, 23, 26, 48, 976, DateTimeKind.Local).AddTicks(856),
+                            Name = "Giảm cân",
+                            RecordStatus = 0,
+                            TagType = 1
+                        },
+                        new
+                        {
+                            Id = new Guid("95842055-67f6-4111-b52e-c3f02c9b220a"),
+                            CreateById = "123abc",
+                            CreatedDate = new DateTime(2024, 9, 11, 23, 26, 48, 976, DateTimeKind.Local).AddTicks(859),
+                            Name = "Phát triển cơ bắp",
+                            RecordStatus = 0,
+                            TagType = 1
+                        },
+                        new
+                        {
+                            Id = new Guid("3aac1b76-d956-48d7-9679-1635df2a060c"),
+                            CreateById = "123abc",
+                            CreatedDate = new DateTime(2024, 9, 11, 23, 26, 48, 976, DateTimeKind.Local).AddTicks(861),
+                            Name = "Yoga",
+                            RecordStatus = 0,
+                            TagType = 2
+                        },
+                        new
+                        {
+                            Id = new Guid("f28f8ad1-ddee-4ccb-984c-db61bd3fa3d2"),
+                            CreateById = "123abc",
+                            CreatedDate = new DateTime(2024, 9, 11, 23, 26, 48, 976, DateTimeKind.Local).AddTicks(864),
+                            Name = "Cardino",
+                            RecordStatus = 0,
+                            TagType = 2
+                        },
+                        new
+                        {
+                            Id = new Guid("986462a9-d7d7-4a73-9ed1-ce336f1cf47d"),
+                            CreateById = "123abc",
+                            CreatedDate = new DateTime(2024, 9, 11, 23, 26, 48, 976, DateTimeKind.Local).AddTicks(885),
+                            Name = "Ngoại hình đẹp",
+                            RecordStatus = 0,
+                            TagType = 3
+                        },
+                        new
+                        {
+                            Id = new Guid("3fd4b020-17b2-4cbd-8d4b-ca5ac800ac75"),
+                            CreateById = "123abc",
+                            CreatedDate = new DateTime(2024, 9, 11, 23, 26, 48, 976, DateTimeKind.Local).AddTicks(888),
+                            Name = "Giá rẻ",
+                            RecordStatus = 0,
+                            TagType = 3
+                        },
+                        new
+                        {
+                            Id = new Guid("24000c43-82a4-4ad0-956a-14f3ef8c2021"),
+                            CreateById = "123abc",
+                            CreatedDate = new DateTime(2024, 9, 11, 23, 26, 48, 976, DateTimeKind.Local).AddTicks(891),
+                            Name = "Kiên trì",
+                            RecordStatus = 0,
+                            TagType = 4
+                        },
+                        new
+                        {
+                            Id = new Guid("9b5fe34b-6775-414e-80d7-a2c44fe11970"),
+                            CreateById = "123abc",
+                            CreatedDate = new DateTime(2024, 9, 11, 23, 26, 48, 976, DateTimeKind.Local).AddTicks(894),
+                            Name = "Siêng năng",
+                            RecordStatus = 0,
+                            TagType = 4
                         });
                 });
 
@@ -274,7 +355,7 @@ namespace FitSwipe.DataAccess.Migrations
 
                     b.HasIndex("TraineeId");
 
-                    b.ToTable("Training");
+                    b.ToTable("Trainings");
                 });
 
             modelBuilder.Entity("FitSwipe.DataAccess.Model.Entity.Transaction", b =>
@@ -319,7 +400,7 @@ namespace FitSwipe.DataAccess.Migrations
 
                     b.HasIndex("UserFireBaseId");
 
-                    b.ToTable("Transaction");
+                    b.ToTable("Transactions");
                 });
 
             modelBuilder.Entity("FitSwipe.DataAccess.Model.Entity.User", b =>
@@ -433,7 +514,7 @@ namespace FitSwipe.DataAccess.Migrations
                             Balance = 1000,
                             Bio = "Fitness enthusiast and certified personal trainer.",
                             City = "New York",
-                            CreatedDate = new DateTime(2024, 9, 8, 0, 10, 37, 354, DateTimeKind.Local).AddTicks(5829),
+                            CreatedDate = new DateTime(2024, 9, 11, 23, 26, 48, 976, DateTimeKind.Local).AddTicks(477),
                             DateOfBirth = new DateTime(1990, 5, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             District = "Manhattan",
                             Email = "john.doe@example.com",
@@ -458,7 +539,7 @@ namespace FitSwipe.DataAccess.Migrations
                             Balance = 1500,
                             Bio = "Yoga instructor with a passion for holistic health.",
                             City = "Los Angeles",
-                            CreatedDate = new DateTime(2024, 9, 8, 0, 10, 37, 354, DateTimeKind.Local).AddTicks(5853),
+                            CreatedDate = new DateTime(2024, 9, 11, 23, 26, 48, 976, DateTimeKind.Local).AddTicks(513),
                             DateOfBirth = new DateTime(1985, 8, 20, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             District = "Beverly Hills",
                             Email = "jane.smith@example.com",
@@ -488,7 +569,7 @@ namespace FitSwipe.DataAccess.Migrations
                             Balance = 2000,
                             Bio = "Aspiring bodybuilder and nutrition expert.",
                             City = "Chicago",
-                            CreatedDate = new DateTime(2024, 9, 8, 0, 10, 37, 354, DateTimeKind.Local).AddTicks(5863),
+                            CreatedDate = new DateTime(2024, 9, 11, 23, 26, 48, 976, DateTimeKind.Local).AddTicks(531),
                             DateOfBirth = new DateTime(1992, 3, 10, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             District = "Lincoln Park",
                             Email = "alex.jones@example.com",
@@ -547,7 +628,7 @@ namespace FitSwipe.DataAccess.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("UserMedia");
+                    b.ToTable("UserMedias");
                 });
 
             modelBuilder.Entity("FitSwipe.DataAccess.Model.Entity.UserTag", b =>
@@ -581,7 +662,7 @@ namespace FitSwipe.DataAccess.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("UserTag");
+                    b.ToTable("UserTags");
                 });
 
             modelBuilder.Entity("FitSwipe.DataAccess.Model.Entity.FeedbackImage", b =>

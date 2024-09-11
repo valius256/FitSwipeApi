@@ -1,7 +1,4 @@
-﻿
-using FitSwipe.Shared.Model.User;
-
-namespace FitSwipe.DataAccess.Model.Entity
+﻿namespace FitSwipe.DataAccess.Model.Entity
 {
     public class UserTag : BaseEntity
     {
