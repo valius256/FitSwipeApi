@@ -8,13 +8,13 @@ namespace FitSwipe.DataAccess.Repository
 
     public interface IGenericRepository<TEntity> where TEntity : class, IBaseEntity
     {
-        Task<TEntity?> GetByIdAsync(int id);
+        Task<TEntity?> GetByIdAsync(Guid id);
         Task<IEnumerable<TEntity>> GetAllAsync();
         Task<TEntity?> FindOneAsync(Expression<Func<TEntity, bool>> expression);
         Task<IEnumerable<TEntity>> FindAsync(Expression<Func<TEntity, bool>> expression);
         Task<TEntity> AddAsync(TEntity entity);
         Task UpdateAsync(TEntity entity);
-        Task DeleteAsync(int id);
+        Task DeleteAsync(Guid id);
         Task<IEnumerable<TEntity>> AddRangeAsync(IEnumerable<TEntity> entities);
         Task UpdateRangeAsync(IEnumerable<TEntity> entities);
         Task DeleteRangeAsync(IEnumerable<TEntity> entities);

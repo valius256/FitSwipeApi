@@ -1,8 +1,10 @@
 ﻿using FirebaseAdmin;
 using FitSwipe.BusinessLogic.Interfaces.Auth;
-using FitSwipe.BusinessLogic.Interfaces.User;
+using FitSwipe.BusinessLogic.Interfaces.Tags;
+using FitSwipe.BusinessLogic.Interfaces.Users;
 using FitSwipe.BusinessLogic.Services.Auth;
-using FitSwipe.BusinessLogic.Services.User;
+using FitSwipe.BusinessLogic.Services.Tags;
+using FitSwipe.BusinessLogic.Services.Users;
 using FitSwipe.DataAccess.Model;
 using FitSwipe.DataAccess.Repository;
 using FitSwipe.DataAccess.Repository.Impl;
@@ -17,7 +19,8 @@ namespace FitSwipe.API.Extensions
         {
             services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
             services.AddScoped(typeof(IUserRepository), typeof(UserRepository));
-
+            services.AddScoped<ITagRepository, TagRepository>();
+            services.AddScoped<IUserTagRepository, UserTagRepository>();
             services.AddProblemDetails();
             services.AddLogging();
 
@@ -27,7 +30,8 @@ namespace FitSwipe.API.Extensions
         public static IServiceCollection AddGeneralServices(this IServiceCollection services)
         {
             services.AddScoped<IUserServices, UserServices>();
-
+            services.AddScoped<IUserTagService, UserTagService>();
+            services.AddScoped<ITagService, TagService>();
             services.AddScoped<IFirebaseAuthServices, FirebaseAuthServices>();
 
 
@@ -47,7 +51,7 @@ namespace FitSwipe.API.Extensions
                 FirebaseApp.Create(new AppOptions
                 {
                     Credential = GoogleCredential.FromFile(firebaseJsonPath),
-                    ProjectId = firebaseSettings.ProjectId
+                    ProjectId = firebaseSettings?.ProjectId
                 });
             }
             return services;

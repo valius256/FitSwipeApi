@@ -23,9 +23,19 @@ namespace FitSwipe.BusinessLogic.Services.Tags
             return (await _tagRepository.GetAllAsync()).Adapt<List<GetTagDto>>();
         }
 
-        public async Task<GetTagDto> GetTagById(Guid id)
+        public async Task<GetTagDto?> GetTagById(Guid id)
         {
-            return (await _tagRepository.FindOneAsync(t => t.Id == id)).Adapt<GetTagDto>();
+            return (await _tagRepository.FindOneAsync(t => t.Id == id)).Adapt<GetTagDto?>();
+        }
+
+        public async Task<GetTagDto> GetTagByIdRequired(Guid id)
+        {
+            var tag = (await _tagRepository.FindOneAsync(t => t.Id == id));
+            if (tag == null)
+            {
+                throw new DataNotFoundException("Tag not found");
+            }
+            return tag.Adapt<GetTagDto>();
         }
 
         public async Task<GetTagDto> CreateTag(CreateTagDto createTagDto)
@@ -44,6 +54,16 @@ namespace FitSwipe.BusinessLogic.Services.Tags
             }
             exisitedTag.Adapt(updateTagDto);
             await _tagRepository.UpdateAsync(exisitedTag);
+        }
+
+        public async Task DeleteTag(Guid tagId)
+        {
+            var exisitedTag = await _tagRepository.FindOneAsync(t => t.Id == tagId);
+            if (exisitedTag == null)
+            {
+                throw new DataNotFoundException("Tag not found");
+            }
+            await _tagRepository.DeleteAsync(tagId);
         }
     }
 }

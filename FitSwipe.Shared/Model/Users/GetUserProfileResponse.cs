@@ -1,7 +1,7 @@
 ﻿using FitSwipe.Shared.Enum;
 using System.ComponentModel.DataAnnotations;
 
-namespace FitSwipe.Shared.Model.User
+namespace FitSwipe.Shared.Model.Users
 {
     public class GetUserProfileResponse
     {

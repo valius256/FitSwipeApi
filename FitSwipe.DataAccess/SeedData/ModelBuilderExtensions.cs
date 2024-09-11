@@ -97,6 +97,69 @@ namespace FitSwipe.DataAccess.SeedData
                    Name = "Bóng đá",
                    TagType = TagType.Hobby,
                    CreateById = "123abc",
+               },
+               new Tag
+               {
+                   Id = Guid.NewGuid(),
+                   Name = "Video game",
+                   TagType = TagType.Hobby,
+                   CreateById = "123abc",
+               },
+               new Tag
+               {
+                   Id = Guid.NewGuid(),
+                   Name = "Giảm cân",
+                   TagType = TagType.Target,
+                   CreateById = "123abc",
+               },
+               new Tag
+               {
+                   Id = Guid.NewGuid(),
+                   Name = "Phát triển cơ bắp",
+                   TagType = TagType.Target,
+                   CreateById = "123abc",
+               },
+               new Tag
+               {
+                   Id = Guid.NewGuid(),
+                   Name = "Yoga",
+                   TagType = TagType.TrainingType,
+                   CreateById = "123abc",
+               },
+               new Tag
+               {
+                   Id = Guid.NewGuid(),
+                   Name = "Cardino",
+                   TagType = TagType.TrainingType,
+                   CreateById = "123abc",
+               },
+               new Tag
+               {
+                   Id = Guid.NewGuid(),
+                   Name = "Ngoại hình đẹp",
+                   TagType = TagType.PTTaste,
+                   CreateById = "123abc",
+               },
+               new Tag
+               {
+                   Id = Guid.NewGuid(),
+                   Name = "Giá rẻ",
+                   TagType = TagType.PTTaste,
+                   CreateById = "123abc",
+               },
+               new Tag
+               {
+                   Id = Guid.NewGuid(),
+                   Name = "Kiên trì",
+                   TagType = TagType.SelfDescription,
+                   CreateById = "123abc",
+               },
+               new Tag
+               {
+                   Id = Guid.NewGuid(),
+                   Name = "Siêng năng",
+                   TagType = TagType.SelfDescription,
+                   CreateById = "123abc",
                }
             );
             #endregion
