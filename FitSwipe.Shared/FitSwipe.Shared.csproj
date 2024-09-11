@@ -8,11 +8,8 @@
 
 	<ItemGroup>
 		<Compile Remove="Converters\**" />
-		<Compile Remove="NewFolder\**" />
 		<EmbeddedResource Remove="Converters\**" />
-		<EmbeddedResource Remove="NewFolder\**" />
 		<None Remove="Converters\**" />
-		<None Remove="NewFolder\**" />
 	</ItemGroup>
 
 	<ItemGroup>
