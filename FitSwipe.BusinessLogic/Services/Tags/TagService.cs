@@ -28,14 +28,14 @@ namespace FitSwipe.BusinessLogic.Services.Tags
             return (await _tagRepository.FindOneAsync(t => t.Id == id)).Adapt<GetTagDto?>();
         }
 
-        public async Task<GetTagDto> GetTagByIdRequired(Guid id)
+        public async Task<Tag> GetTagByIdRequired(Guid id)
         {
             var tag = (await _tagRepository.FindOneAsync(t => t.Id == id));
             if (tag == null)
             {
                 throw new DataNotFoundException("Tag not found");
             }
-            return tag.Adapt<GetTagDto>();
+            return tag;
         }
 
         public async Task<GetTagDto> CreateTag(CreateTagDto createTagDto)

@@ -19,7 +19,11 @@ namespace FitSwipe.API.Controllers
         {
             return await _userTagService.GetsTagByUserId(userId);
         }
-
+        [HttpGet("get-tags-in-common")]
+        public async Task<List<GetTagDto>> GetTagsInCommon([FromQuery] GetCommonUserTagDto getCommonUserTagDto)
+        {
+            return await _userTagService.GetCommonTags(getCommonUserTagDto.FirstUserId, getCommonUserTagDto.SecondUserId);
+        }
         [HttpPut("upsert-user-tags")]
         public async Task<IActionResult> UpsertUserTags([FromBody] UpsertUserTagDto upsertUserTagDto)
         {

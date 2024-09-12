@@ -7,5 +7,6 @@ namespace FitSwipe.BusinessLogic.Interfaces.Tags
     {
         Task<List<GetTagDto>> GetsTagByUserId(string userId);
         Task UpsertUserTags(string userId, UpsertUserTagDto upsertUserTagDto);
+        Task<List<GetTagDto>> GetCommonTags(string firstUserId, string secondUserId);
     }
 }
