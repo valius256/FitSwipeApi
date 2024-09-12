@@ -12,7 +12,7 @@ namespace FitSwipe.DataAccess.Repository
 {
     public class GenericRepository<TEntity> : IGenericRepository<TEntity> where TEntity : class, IBaseEntity
     {
-        protected readonly FitSwipeDbContext _context;
+        private readonly FitSwipeDbContext _context;
 
         public GenericRepository(FitSwipeDbContext context)
         {

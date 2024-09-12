@@ -65,7 +65,21 @@ namespace FitSwipe.BusinessLogic.Services.Tags
                 throw new DataNotFoundException("User tag not found");
             }
             await _userTagRepository.DeleteAsync(existedUserTag.Id);
-            
         }
+
+        public async Task<List<GetTagDto>> GetCommonTags(string firstUserId, string secondUserId)
+        {
+            var firstUserTags = await GetsTagByUserId(firstUserId);
+            var secondUserTags = await GetsTagByUserId(secondUserId);
+            return firstUserTags.Where(ft => secondUserTags.FirstOrDefault(st => st.Id == ft.Id) != null).ToList();
+        }
+
+        //public async Task<List<GetTagDto>> GetRecommendedPTListByTags(string userId)
+        //{
+        //    var userTags = await GetsTagByUserId(userId);
+            
+        //    //var secondUserTags = await GetsTagByUserId(secondUserId);
+        //    //return firstUserTags.Where(ft => secondUserTags.FirstOrDefault(st => st.Id == ft.Id) != null).ToList();
+        //}
     }
 }
