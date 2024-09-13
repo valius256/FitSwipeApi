@@ -9,10 +9,7 @@ namespace FitSwipe.Shared.Model.Users
         public string? Email { get; set; }
         [Required]
         public string? Password { get; set; }
-        public Gender Gender { get; set; }
-        public DateTime DateOfBirth { get; set; }
-        public double Weight { get; set; }
-        public double Height { get; set; }
-
+        public Role Role { get; set; }
+        public DateTime CreateDate { get; set; }
     }
 }

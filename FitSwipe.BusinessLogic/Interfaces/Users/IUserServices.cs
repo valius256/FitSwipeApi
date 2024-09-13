@@ -9,6 +9,7 @@ namespace FitSwipe.BusinessLogic.Interfaces.Users
     public interface IUserServices
     {
         Task<GetUserProfileResponse> RegisterUser(RegisterRequestModel registerDtos);
+        Task<bool> ForgotPassword(string email);
         Task<User> GetUserByIdRequired(string id);
         Task<PagedResult<GetUserDto>> GetUserPaged(PagingModel<QueryUserDto> pagingModel);
         Task<PagedResult<GetUserWithTagDto>> GetUserPagedWithTags(PagingModel<QueryUserDto> pagingModel);

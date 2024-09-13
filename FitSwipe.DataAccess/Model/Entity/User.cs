@@ -2,6 +2,7 @@
 using FitSwipe.DataAccess.Model.Entity;
 using FitSwipe.Shared.Enum;
 using System.ComponentModel.DataAnnotations;
+using System.Diagnostics.CodeAnalysis;
 
 namespace FitSwipe.DataAccess.Model.Entity
 {
@@ -17,20 +18,23 @@ namespace FitSwipe.DataAccess.Model.Entity
         public string? Email { get; set; }
         [Required]
         public string? Password { get; set; }
-        public string AvatarUrl { get; set; }
+        [AllowNull]
+        public string? AvatarUrl { get; set; }
         public string Phone { get; set; }
         public DateTime DateOfBirth { get; set; }
-        public double Weight { get; set; }
-        public double Height { get; set; }
+        public double? Weight { get; set; }
+        public double? Height { get; set; }
         public string? Bio { get; set; }
-        public string City { get; set; }
-        public string District { get; set; }
-        public string Ward { get; set; }
-        public string Street { get; set; }
+        public string? City { get; set; }
+        public string? District { get; set; }
+        public string? Ward { get; set; }
+        public string? Street { get; set; }
         public Role Role { get; set; }
-        public string Job { get; set; }
+
+        public string? Job { get; set; }
         public UserStatus Status { get; set; }
-        public int Balance { get; set; }
+       
+        public int? Balance { get; set; } 
         //PT Exclusive
         public PTStatus? PTStatus { get; set; }
         public double? PTExperienceYear { get; set; }
