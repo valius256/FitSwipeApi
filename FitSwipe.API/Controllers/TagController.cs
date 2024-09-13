@@ -9,10 +9,17 @@ namespace FitSwipe.API.Controllers
     public class TagController : ControllerBase
     {
         private readonly IUserTagService _userTagService;
+        private readonly ITagService _tagService;
 
-        public TagController(IUserTagService userTagService)
+        public TagController(IUserTagService userTagService, ITagService tagService)
         {
             _userTagService = userTagService;
+            _tagService = tagService;
+        }
+        [HttpGet]
+        public async Task<List<GetTagDto>> GetTagsQueried([FromQuery] QueryTagDto queryTagDto)
+        {
+            return await _tagService.GetTagsQueried(queryTagDto);
         }
         [HttpGet("{userId}/get-tags")]
         public async Task<List<GetTagDto>> GetsTagByUserId([FromRoute] string userId)

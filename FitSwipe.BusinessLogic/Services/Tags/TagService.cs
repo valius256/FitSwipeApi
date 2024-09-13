@@ -2,6 +2,7 @@
 
 using FitSwipe.BusinessLogic.Interfaces.Tags;
 using FitSwipe.DataAccess.Model.Entity;
+using FitSwipe.DataAccess.Model.Paging;
 using FitSwipe.DataAccess.Repository.Intefaces;
 using FitSwipe.Shared.Dtos.Tags;
 using FitSwipe.Shared.Exceptions;
@@ -21,6 +22,10 @@ namespace FitSwipe.BusinessLogic.Services.Tags
         public async Task<List<GetTagDto>> GetAllTags()
         {
             return (await _tagRepository.GetAllAsync()).Adapt<List<GetTagDto>>();
+        }
+        public async Task<List<GetTagDto>> GetTagsQueried(QueryTagDto queryTagDto)
+        {
+            return (await _tagRepository.GetPagedTags(queryTagDto)).Adapt<List<GetTagDto>>();
         }
 
         public async Task<GetTagDto?> GetTagById(Guid id)

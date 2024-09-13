@@ -2,8 +2,10 @@
 using FitSwipe.BusinessLogic.Interfaces.Tags;
 using FitSwipe.BusinessLogic.Interfaces.Users;
 using FitSwipe.DataAccess.Model.Entity;
+using FitSwipe.DataAccess.Model.Paging;
 using FitSwipe.DataAccess.Repository.Intefaces;
 using FitSwipe.Shared.Dtos.Tags;
+using FitSwipe.Shared.Dtos.Users;
 using FitSwipe.Shared.Exceptions;
 using Mapster;
 using Org.BouncyCastle.Crypto;
@@ -74,12 +76,12 @@ namespace FitSwipe.BusinessLogic.Services.Tags
             return firstUserTags.Where(ft => secondUserTags.FirstOrDefault(st => st.Id == ft.Id) != null).ToList();
         }
 
-        //public async Task<List<GetTagDto>> GetRecommendedPTListByTags(string userId)
-        //{
-        //    var userTags = await GetsTagByUserId(userId);
-            
-        //    //var secondUserTags = await GetsTagByUserId(secondUserId);
-        //    //return firstUserTags.Where(ft => secondUserTags.FirstOrDefault(st => st.Id == ft.Id) != null).ToList();
-        //}
+        public async Task<PagedResult<GetUserWithTagDto>> GetRecommendedPTListByTags(string userId, int page, int limit)
+        {
+            await _userServices.GetUserByIdRequired(userId);
+            var userTags = await GetsTagByUserId(userId);
+            var result = await _userServices.GetMatchedUserPagedWithTagsOrdered(userTags.Select(ut => ut.Id).ToList(), page, limit);
+            return result;
+        }
     }
 }

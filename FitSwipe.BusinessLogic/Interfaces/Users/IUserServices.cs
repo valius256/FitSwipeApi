@@ -12,5 +12,6 @@ namespace FitSwipe.BusinessLogic.Interfaces.Users
         Task<User> GetUserByIdRequired(string id);
         Task<PagedResult<GetUserDto>> GetUserPaged(PagingModel<QueryUserDto> pagingModel);
         Task<PagedResult<GetUserWithTagDto>> GetUserPagedWithTags(PagingModel<QueryUserDto> pagingModel);
+        Task<PagedResult<GetUserWithTagDto>> GetMatchedUserPagedWithTagsOrdered(List<Guid> tagIds, int page, int limit);
     }
 }
