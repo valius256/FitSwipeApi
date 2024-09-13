@@ -25,7 +25,7 @@ namespace FitSwipe.DataAccess.Model
         public DbSet<Transaction> Transactions { get; set; }
         public DbSet<UserMedia> UserMedias { get; set; }
         public DbSet<FeedbackImage> FeedbackImages { get; set; }
-
+        public DbSet<EmailTemplate> EmailTemplates { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.ApplyConfiguration(new UserEntityTypeConfiguration());

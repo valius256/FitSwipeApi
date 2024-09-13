@@ -1,6 +1,8 @@
 using FitSwipe.API.Extensions;
 using FitSwipe.API.Middleware;
 using FitSwipe.DataAccess.Model;
+using Hangfire;
+using Hangfire.Dashboard;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 
@@ -13,6 +15,8 @@ builder.Services.AddLogging();
 
 builder.Services.Configure<Appsettings>(builder.Configuration.GetSection("Appsettings"));
 
+builder.Services.Configure<SmtpAppSetting>(builder.Configuration.GetSection("SmtpSettings"));
+builder.Services.Configure<VnPay>(builder.Configuration.GetSection("VnPay"));
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
@@ -27,6 +31,7 @@ builder.Services.AddDbContext<FitSwipeDbContext>(options =>
 });
 
 
+
 // ADD CORS
 builder.Services.AddCors(options => options.AddDefaultPolicy(policyBuilder =>
     policyBuilder.WithOrigins("http://localhost:5173") // replace with your domain when mobile done
@@ -38,7 +43,7 @@ builder.Services.AddCors(options => options.AddDefaultPolicy(policyBuilder =>
 builder.Services.AddRepositories()
     .AddGeneralServices()
     .AddFireBaseServices(builder.Configuration)
-    
+    .AddHangFireConfigurations(builder.Configuration)
     ;
 
 
@@ -55,9 +60,24 @@ app.UseHttpsRedirection();
 
 app.UseAuthorization();
 
+// Configure Hangfire
+app.UseHangfireDashboard("/hangfire", new DashboardOptions
+{
+    DashboardTitle = "Fit Swipe Dashboard",
+    DarkModeEnabled = true,
+    IsReadOnlyFunc = (DashboardContext context) => false,
+    TimeZoneResolver = new DefaultTimeZoneResolver()
+});
 
 app.UseMiddleware<ExceptionHandlingMiddleware>();
 
-app.MapControllers();
+app.UseRouting();
 
+app.UseEndpoints(endpoints =>
+{
+   
+    endpoints.MapControllers();
+    endpoints.MapHangfireDashboard();
+});
+    
 app.Run();

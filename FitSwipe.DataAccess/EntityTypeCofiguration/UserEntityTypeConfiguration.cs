@@ -9,6 +9,12 @@ namespace FitSwipe.DataAccess.EntityTypeCofiguration
         public void Configure(EntityTypeBuilder<User> builder)
         {
             builder.HasKey(x => x.FireBaseId);
+            
+            builder.Property(u => u.Phone)
+                .IsRequired()   // Phone number is required
+                .HasMaxLength(10) // The length of a Vietnamese phone number is 10 digits
+                .HasColumnType("varchar(10)"); // Store it as a varchar(10) in the database
+            
 
             builder.HasMany(x => x.TrainingsInstructing)
                 .WithOne(x => x.PT)

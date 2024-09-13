@@ -163,6 +163,36 @@ namespace FitSwipe.DataAccess.SeedData
                }
             );
             #endregion
+            
+            #region EmailTemplateModel
+
+            modelBuilder.Entity<EmailTemplate>().HasData(
+                new EmailTemplate
+                {
+                    Id = Guid.NewGuid(),
+                    Name = "Register_Mail",
+                    Status = true,
+                    Body = "Chào mừng bạn đến với FitWipe! Kính gửi [Name], vui lòng xác nhận địa chỉ email của bạn bằng cách nhấn vào đường link sau: <a href=\"[VerificationLink]\">Xác nhận Email</a>.<br><br>Cảm ơn bạn đã tham gia cùng chúng tôi!<br><br>Đội ngũ FitWipe",
+                    Params = "[Name], [VerificationLink]",
+                    Subject = "Chào mừng đến với FitWipe! Vui lòng xác nhận email của bạn",
+                    Description = "Email này được gửi để xác nhận đăng ký tài khoản FitWipe."
+                }
+            );
+            
+            modelBuilder.Entity<EmailTemplate>().HasData(
+                new EmailTemplate
+                {
+                    Id = Guid.NewGuid(),
+                    Name = "Forgot_Password",
+                    Status = true,
+                    Body = "Chúng tôi đã nhận được yêu cầu đặt lại mật khẩu cho tài khoản của bạn tại FitWipe. Kính gửi [Name], vui lòng đặt lại mật khẩu của bạn bằng cách nhấn vào đường link sau: <a href=\"[ResetPasswordLink]\">Đặt lại mật khẩu</a>.<br><br>Nếu bạn không yêu cầu việc này, vui lòng bỏ qua email này.<br><br>Đội ngũ FitWipe",
+                    Params = "[Name], [ResetPasswordLink]",
+                    Subject = "Yêu cầu đặt lại mật khẩu FitWipe",
+                    Description = "Email này được gửi khi người dùng yêu cầu đặt lại mật khẩu cho tài khoản FitWipe."
+                }
+            );
+
+            #endregion
         }
     }
 }

@@ -11,6 +11,10 @@ using FitSwipe.Shared.Model.Users;
 using LinqKit;
 using Mapster;
 using System.Dynamic;
+using System.Xml.Schema;
+using FitSwipe.BusinessLogic.Interfaces.Sender;
+using FitSwipe.DataAccess.Model.Enum;
+using FitSwipe.Shared.Enum;
 
 namespace FitSwipe.BusinessLogic.Services.Users
 {
@@ -18,11 +22,15 @@ namespace FitSwipe.BusinessLogic.Services.Users
     {
         private readonly IFirebaseAuthServices _firebaseAuthServices;
         private readonly IUserRepository _userRepository;
-        public UserServices(IFirebaseAuthServices firebaseAuthServices, IUserRepository userRepository)
+        private readonly IEmailServices _emailServices;
+
+        public UserServices(IFirebaseAuthServices firebaseAuthServices, IUserRepository userRepository, IEmailServices emailServices)
         {
             _firebaseAuthServices = firebaseAuthServices;
             _userRepository = userRepository;
+            _emailServices = emailServices;
         }
+
         public async Task<PagedResult<GetUserDto>> GetUserPaged(PagingModel<QueryUserDto> pagingModel)
         {
             return (await _userRepository.GetUsersPaged(pagingModel)).Adapt<PagedResult<GetUserDto>>();
@@ -41,6 +49,28 @@ namespace FitSwipe.BusinessLogic.Services.Users
             }
             return mappedResult;
         }
+
+        public async Task<bool> ForgotPassword(string email)
+        {
+            
+            var resetPasswordLink = await _firebaseAuthServices.ForgotPasswordAsync(email);
+            if (resetPasswordLink == null)
+            {
+                return false;
+            }
+
+            var emailParams = new Dictionary<string, string>()
+            {
+                { "Name", $"{email}" },
+                {"ResetPasswordLink", $"{resetPasswordLink}"}
+            };
+            var toAddress = new List<string>() { email };
+            await _emailServices.SendAsync(EmailType.Forgot_Password , toAddress , new List<string>(), emailParams,
+                false);
+            
+            return true;
+        }
+
         public async Task<PagedResult<GetUserWithTagDto>> GetMatchedUserPagedWithTagsOrdered(List<Guid> tagIds, int page, int limit)
         {
             var result = await _userRepository.GetMatchedPTOrdered(tagIds, page, limit);
@@ -66,19 +96,38 @@ namespace FitSwipe.BusinessLogic.Services.Users
         }
         public async Task<GetUserProfileResponse> RegisterUser(RegisterRequestModel registerDtos)
         {
-            var UserFirebaseId = await _firebaseAuthServices.RegisterUserWithFirebase(registerDtos);
+            var registerAuthModel = await _firebaseAuthServices.RegisterUserWithFirebaseAsync(registerDtos);
 
+            // Map Register DTO to User entity
+            var userEntity = registerDtos.Adapt<User>();
 
-            //var userSaveInDb = 
+            // Populate additional fields for the User entity
+            userEntity.FireBaseId = registerAuthModel.UserFirebaseId;
+            userEntity.Role = registerDtos.Role;
+            userEntity.UserName = registerDtos.Email;
+            userEntity.Status = UserStatus.Active;
+            
+            // Add the User entity to the database
+            await _userRepository.AddAsync(userEntity);
 
+            
+            var toAddress = new List<string> { registerDtos.Email };
+            var emailParams = new Dictionary<string, string>()
+            {
+                { "Name", $"{registerDtos.Email}" },
+                {"VerificationLink", $"{registerAuthModel.RegisterLink}"}
+            };
+            
+            await _emailServices.SendAsync(EmailType.Register_Mail, toAddress, new List<string>(), emailParams,
+                false);
+
+            
             var userResponseModel = new GetUserProfileResponse()
             {
-                DateOfBirth = registerDtos.DateOfBirth,
                 Email = registerDtos.Email,
-                Gender = registerDtos.Gender,
-                Height = registerDtos.Height,
                 Password = registerDtos.Password,
-                Weight = registerDtos.Weight
+                Role = registerDtos.Role,
+                CreateDate = userEntity.CreatedDate
             };
 
             return userResponseModel;
