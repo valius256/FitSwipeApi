@@ -41,6 +41,20 @@ namespace FitSwipe.BusinessLogic.Services.Users
             }
             return mappedResult;
         }
+        public async Task<PagedResult<GetUserWithTagDto>> GetMatchedUserPagedWithTagsOrdered(List<Guid> tagIds, int page, int limit)
+        {
+            var result = await _userRepository.GetMatchedPTOrdered(tagIds, page, limit);
+            var mappedResult = result.Adapt<PagedResult<GetUserWithTagDto>>();
+            foreach (var item in mappedResult.Items)
+            {
+                var itemData = result.Items.FirstOrDefault(u => u.FireBaseId == item.FireBaseId);
+                if (itemData != null)
+                {
+                    item.Tags = itemData.UserTags.Select(u => u.Tag.Adapt<GetTagDto>()).ToList();
+                }
+            }
+            return mappedResult;
+        }
         public async Task<User> GetUserByIdRequired(string id)
         {
             var user = await _userRepository.FindOneAsync(u => u.FireBaseId == id);

@@ -45,6 +45,21 @@ namespace FitSwipe.DataAccess.Repository.Impl
             int page = pagingModel.Page > 0 ? pagingModel.Page : 1;
             return await query.ToNewPagingAsync(page, limit);
         }
+
+        public async Task<PagedResult<User>> GetMatchedPTOrdered(List<Guid> tagIds, int page, int limit)
+        {
+            var query = _context.Users
+                .Include(u => u.UserTags)
+                    .ThenInclude(ut => ut.Tag)
+                .OrderByDescending(u => 
+                    u.UserTags.Where(ut => tagIds.Contains(ut.TagId)).ToList().Count)
+                .AsQueryable();
+
+            limit = limit > 0 ? limit : 10;
+            page = page > 0 ? page : 1;
+            return await query.ToNewPagingAsync(page, limit);
+        }
+
         private IQueryable<User> GetFilterUserQuery(IQueryable<User> query, QueryUserDto queryUserDto)
         {
             #region filter
