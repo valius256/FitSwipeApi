@@ -1,4 +1,5 @@
-﻿using FitSwipe.DataAccess.Model.Entity;
+﻿using FirebaseAdmin.Auth;
+using FitSwipe.DataAccess.Model.Entity;
 using FitSwipe.DataAccess.Model.Paging;
 using FitSwipe.Shared.Dtos.Users;
 using FitSwipe.Shared.Model.Auth;
@@ -10,6 +11,8 @@ namespace FitSwipe.BusinessLogic.Interfaces.Users
     {
         Task<GetUserProfileResponse> RegisterUser(RegisterRequestModel registerDtos);
         Task<bool> ForgotPassword(string email);
+        Task<List<User>> GetAllUserAsync();
+        Task<User?> GetUserByEmail(string email);
         Task<User> GetUserByIdRequired(string id);
         Task<PagedResult<GetUserDto>> GetUserPaged(PagingModel<QueryUserDto> pagingModel);
         Task<PagedResult<GetUserWithTagDto>> GetUserPagedWithTags(PagingModel<QueryUserDto> pagingModel);

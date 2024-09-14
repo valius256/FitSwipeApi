@@ -34,14 +34,24 @@ namespace FitSwipe.API.Controllers
             return Ok(response);
         }
         
-
-        [HttpGet("verify-token")]
-        public async Task<IActionResult> VerifyToken()
+        [HttpGet("get-test")]
+        public async Task<IActionResult> GetListUser()
         {
-            // Extract Firebase token from the request
-            var authHeader = Request.Headers["Authorization"].ToString();
-            var token = authHeader.Replace("Bearer ", "");
-            
+            var response = await _userServices.GetAllUserAsync();
+            return Ok(response);
+        }
+
+        
+        [HttpPost("verify-token")]
+        public async Task<IActionResult> VerifyToken([FromBody] TokenVerificationRequest request)
+        {
+            if (request == null || string.IsNullOrEmpty(request.Token))
+            {
+                return BadRequest("Invalid request: Token is required.");
+            }
+
+            var token = request.Token;
+
             // Verify the token using Firebase Admin SDK
             FirebaseToken decodedToken;
             try
@@ -52,12 +62,12 @@ namespace FitSwipe.API.Controllers
             {
                 return Unauthorized("Invalid Firebase token.");
             }
-            
+
             // Get the user's Firebase UID from the token
             var uid = decodedToken.Uid;
 
             var userEntity = await _userServices.GetUserByIdRequired(uid);
-            
+
             // Add role claim to the identity
             var claimsIdentity = new ClaimsIdentity(new[]
             {
@@ -68,11 +78,10 @@ namespace FitSwipe.API.Controllers
             // Attach the identity to the current user
             var userPrincipal = new ClaimsPrincipal(claimsIdentity);
             HttpContext.User = userPrincipal;
-                
-            return Ok(new { Role = userEntity.Role.ToString() });
 
+            return Ok(new { Role = userEntity.Role.ToString() });
         }
-        
+
 
     }
 }

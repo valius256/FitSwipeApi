@@ -13,6 +13,7 @@ namespace FitSwipe.DataAccess.SeedData
             modelBuilder.Entity<User>().HasData(
                 new User
                 {
+                    Id = Guid.NewGuid(),
                     FireBaseId = "123abc",
                     UserName = "john doe",
                     Gender = Gender.Male,
@@ -35,6 +36,7 @@ namespace FitSwipe.DataAccess.SeedData
                 },
                 new User
                 {
+                    Id = Guid.NewGuid(),
                     FireBaseId = "456def",
                     UserName = "jane smith",
                     Gender = Gender.Female,
@@ -62,6 +64,7 @@ namespace FitSwipe.DataAccess.SeedData
                 },
                 new User
                 {
+                    Id = Guid.NewGuid(),
                     FireBaseId = "789ghi",
                     UserName = "alex jones",
                     Gender = Gender.Male,

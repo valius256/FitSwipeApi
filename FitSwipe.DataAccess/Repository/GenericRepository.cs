@@ -106,7 +106,10 @@ namespace FitSwipe.DataAccess.Repository
             return await _context.Set<TEntity>().AnyAsync(expression);
         }
 
-
+        public IQueryable<TEntity> Where(Expression<Func<TEntity, bool>> predicate)
+        {
+            return _context.Set<TEntity>().Where(predicate);
+        }
 
         public virtual Task<PagedResult<TEntity>> PagingAsync<T>(PagingModel<T> request)
         {

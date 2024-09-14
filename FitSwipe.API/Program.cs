@@ -79,5 +79,5 @@ app.UseEndpoints(endpoints =>
     endpoints.MapControllers();
     endpoints.MapHangfireDashboard();
 });
-    
+app.UseDeveloperExceptionPage();
 app.Run();

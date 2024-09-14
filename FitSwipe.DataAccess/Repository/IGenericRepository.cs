@@ -22,7 +22,7 @@ namespace FitSwipe.DataAccess.Repository
         Task<TEntity?> FindOneWithNoTrackingAsync(Expression<Func<TEntity, bool>> expression);
 
         Task<bool> AnyAsync(Expression<Func<TEntity, bool>> expression);
-
+        IQueryable<TEntity> Where(Expression<Func<TEntity, bool>> predicate);
 
         Task<PagedResult<TEntity>> PagingAsync<T>(PagingModel<T> request);
 
