@@ -14,7 +14,8 @@ namespace FitSwipe.DataAccess.EntityTypeCofiguration
                 .IsRequired()   // Phone number is required
                 .HasMaxLength(10) // The length of a Vietnamese phone number is 10 digits
                 .HasColumnType("varchar(10)"); // Store it as a varchar(10) in the database
-            
+
+            builder.Property(u => u.Id).ValueGeneratedOnAdd();
 
             builder.HasMany(x => x.TrainingsInstructing)
                 .WithOne(x => x.PT)

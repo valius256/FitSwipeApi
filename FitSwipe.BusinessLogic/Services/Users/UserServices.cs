@@ -12,6 +12,7 @@ using LinqKit;
 using Mapster;
 using System.Dynamic;
 using System.Xml.Schema;
+using FirebaseAdmin.Auth;
 using FitSwipe.BusinessLogic.Interfaces.Sender;
 using FitSwipe.DataAccess.Model.Enum;
 using FitSwipe.Shared.Enum;
@@ -68,7 +69,25 @@ namespace FitSwipe.BusinessLogic.Services.Users
             await _emailServices.SendAsync(EmailType.Forgot_Password , toAddress , new List<string>(), emailParams,
                 false);
             
+            // update new password on db
+            // var userEntity = await GetUserByEmail(email);
+            // if (userEntity != null)
+            // {
+            //     userEntity.Password == 
+            // }
+            
             return true;
+        }
+
+        public async Task<List<User>> GetAllUserAsync()
+        {
+            var userListModal =  await _userRepository.GetAllAsync();
+            return userListModal.Adapt<List<User>>();
+        }
+
+        public async Task<User?> GetUserByEmail(string email)
+        {
+           return await _userRepository.FindOneAsync(l => l.Email == email);
         }
 
         public async Task<PagedResult<GetUserWithTagDto>> GetMatchedUserPagedWithTagsOrdered(List<Guid> tagIds, int page, int limit)
@@ -88,12 +107,34 @@ namespace FitSwipe.BusinessLogic.Services.Users
         public async Task<User> GetUserByIdRequired(string id)
         {
             var user = await _userRepository.FindOneAsync(u => u.FireBaseId == id);
-            if (user == null)
+            var recordToFetch = await FirebaseAuth.DefaultInstance.GetUserAsync(id);
+            if (user == null && recordToFetch == null)
             {
                 throw new DataNotFoundException("User not found");
             }
+            else if(recordToFetch != null && user == null)
+            {
+                var userEntitty = FetchUserRecordToUserEntity(recordToFetch); 
+                await  _userRepository.AddAsync(userEntitty);
+            }
+            
             return user;
         }
+        
+        private User FetchUserRecordToUserEntity(UserRecord recordToFetch)
+        {
+            var userEntitty = recordToFetch.Adapt<User>();
+            userEntitty.Id = Guid.NewGuid();
+            userEntitty.Password = "defaultPassword";
+            userEntitty.Phone = recordToFetch.PhoneNumber != null ? recordToFetch.PhoneNumber : "0935333333";
+            userEntitty.FireBaseId = recordToFetch.Uid;
+            userEntitty.UserName = 
+                recordToFetch.DisplayName != null ? recordToFetch.DisplayName : recordToFetch.Email;
+
+            return userEntitty;
+        }
+            
+            
         public async Task<GetUserProfileResponse> RegisterUser(RegisterRequestModel registerDtos)
         {
             var registerAuthModel = await _firebaseAuthServices.RegisterUserWithFirebaseAsync(registerDtos);
