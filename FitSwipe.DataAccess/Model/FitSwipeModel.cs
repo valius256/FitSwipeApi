@@ -30,11 +30,17 @@ public partial class Appsettings
 
 public partial class SmtpAppSetting
 {
+    [JsonPropertyName("SmtpHost")]
     public string SmtpHost { get; set; }
+    [JsonPropertyName("SmtpPort")]
     public int SmtpPort { get; set; }
+    [JsonPropertyName("SmtpUserName")]
     public string SmtpUserName { get; set; }
+    [JsonPropertyName("SmtpPassword")]
     public string SmtpPassword { get; set; }
+    [JsonPropertyName("EnableSsl")]
     public bool EnableSsl { get; set; }
+    [JsonPropertyName("AppVerify")]
     public string AppVerify { get; set; }
 }
 
