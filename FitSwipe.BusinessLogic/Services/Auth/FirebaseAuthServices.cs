@@ -20,22 +20,22 @@ namespace FitSwipe.BusinessLogic.Services.Auth
 
         public async Task<bool> GenerateVerificationEmailAsync(string email)
         {
-            
-            
+
+
             var link = await FirebaseAuth.DefaultInstance.GenerateEmailVerificationLinkAsync(email);
-            
+
             var toAddress = new List<string> { email };
             var emailParams = new Dictionary<string, string>()
             {
                 { "UserName", $"{email}" },
                 {"VerificationLink", $"{link}"}
             };
-            
+
             await _emailServices.SendAsync(EmailType.Register_Mail, toAddress, new List<string>(), emailParams,
                 false);
             return true;
         }
-        
+
 
         public async Task<RegisterAuthModel> RegisterUserWithFirebaseAsync(RegisterRequestModel registerRequestModel)
         {
@@ -48,7 +48,7 @@ namespace FitSwipe.BusinessLogic.Services.Auth
 
             var userRecord = await FirebaseAuth.DefaultInstance.CreateUserAsync(userForFireBaseAuth);
             var link = await FirebaseAuth.DefaultInstance.GenerateEmailVerificationLinkAsync(userRecord.Email);
-            
+
             return new RegisterAuthModel()
             {
                 RegisterLink = link,
@@ -62,7 +62,7 @@ namespace FitSwipe.BusinessLogic.Services.Auth
             {
                 return null;
             }
-            
+
             return await FirebaseAuth.DefaultInstance.GeneratePasswordResetLinkAsync(email);
         }
 

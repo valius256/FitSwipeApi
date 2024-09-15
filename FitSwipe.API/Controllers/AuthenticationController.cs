@@ -1,9 +1,9 @@
-﻿using System.Security.Claims;
-using FirebaseAdmin.Auth;
+﻿using FirebaseAdmin.Auth;
 using FitSwipe.BusinessLogic.Interfaces.Auth;
 using FitSwipe.BusinessLogic.Interfaces.Users;
 using FitSwipe.Shared.Model.Auth;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 
 namespace FitSwipe.API.Controllers
 {
@@ -26,14 +26,14 @@ namespace FitSwipe.API.Controllers
             var response = await _userServices.RegisterUser(registerRequestModel);
             return Ok(response);
         }
-        
+
         [HttpPost("forgot-password")]
         public async Task<IActionResult> ForgotPassword([FromBody] string email)
         {
             var response = await _authServices.ForgotPasswordAsync(email);
             return Ok(response);
         }
-        
+
         [HttpGet("get-test")]
         public async Task<IActionResult> GetListUser()
         {
@@ -41,7 +41,7 @@ namespace FitSwipe.API.Controllers
             return Ok(response);
         }
 
-        
+
         [HttpPost("verify-token")]
         public async Task<IActionResult> VerifyToken([FromBody] TokenVerificationRequest request)
         {

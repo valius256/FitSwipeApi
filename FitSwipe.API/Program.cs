@@ -4,7 +4,6 @@ using FitSwipe.DataAccess.Model;
 using Hangfire;
 using Hangfire.Dashboard;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Options;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -44,6 +43,8 @@ builder.Services.AddRepositories()
     .AddGeneralServices()
     .AddFireBaseServices(builder.Configuration)
     .AddHangFireConfigurations(builder.Configuration)
+    .AddFirebaseAuthentication(builder.Configuration)
+
     ;
 
 
@@ -58,7 +59,7 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
-app.UseAuthorization();
+
 
 // Configure Hangfire
 app.UseHangfireDashboard("/hangfire", new DashboardOptions
@@ -72,12 +73,15 @@ app.UseHangfireDashboard("/hangfire", new DashboardOptions
 app.UseMiddleware<ExceptionHandlingMiddleware>();
 
 app.UseRouting();
+app.UseAuthorization();
+app.UseAuthentication();
 
 app.UseEndpoints(endpoints =>
 {
-   
+
     endpoints.MapControllers();
     endpoints.MapHangfireDashboard();
 });
-app.UseDeveloperExceptionPage();
-app.Run();
+
+
+app.Run("http://0.0.0.0:5250");

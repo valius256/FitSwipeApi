@@ -1,5 +1,4 @@
-﻿using System.IdentityModel.Tokens.Jwt;
-using FirebaseAdmin;
+﻿using FirebaseAdmin;
 using FirebaseAdmin.Auth;
 using FitSwipe.BusinessLogic.Interfaces.Auth;
 using FitSwipe.BusinessLogic.Interfaces.Sender;
@@ -9,7 +8,6 @@ using FitSwipe.BusinessLogic.Services.Auth;
 using FitSwipe.BusinessLogic.Services.Sender;
 using FitSwipe.BusinessLogic.Services.Tags;
 using FitSwipe.BusinessLogic.Services.Users;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
 using FitSwipe.DataAccess.Model;
 using FitSwipe.DataAccess.Repository;
 using FitSwipe.DataAccess.Repository.Impl;
@@ -18,7 +16,9 @@ using FitSwipe.SchedulerJobs;
 using Google.Apis.Auth.OAuth2;
 using Hangfire;
 using Hangfire.SqlServer;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
+using System.IdentityModel.Tokens.Jwt;
 
 namespace FitSwipe.API.Extensions
 {
@@ -66,7 +66,7 @@ namespace FitSwipe.API.Extensions
             }
             return services;
         }
-        
+
         public static IServiceCollection AddHangFireConfigurations(this IServiceCollection services, IConfiguration configuration)
         {
             // Register Hangfire and configure it
@@ -98,52 +98,52 @@ namespace FitSwipe.API.Extensions
         public static IServiceCollection AddFirebaseAuthentication(this IServiceCollection services, IConfiguration configuration)
         {
             var firebaseSettings = configuration.GetSection(nameof(Appsettings.FireBase)).Get<FireBase>();
-              // Add Authentication with JWT Bearer
-        services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-            .AddJwtBearer(options =>
-            {
-                options.TokenValidationParameters = new TokenValidationParameters
+            // Add Authentication with JWT Bearer
+            services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+                .AddJwtBearer(options =>
                 {
-                    ValidateIssuer = true,
-                    ValidIssuer = $"https://securetoken.google.com/{firebaseSettings.ProjectId}",
-                    ValidateAudience = true,
-                    ValidAudience = firebaseSettings.ProjectId,
-                    ValidateLifetime = true
-                };
+                    options.TokenValidationParameters = new TokenValidationParameters
+                    {
+                        ValidateIssuer = true,
+                        ValidIssuer = $"https://securetoken.google.com/{firebaseSettings.ProjectId}",
+                        ValidateAudience = true,
+                        ValidAudience = firebaseSettings.ProjectId,
+                        ValidateLifetime = true
+                    };
 
-                options.Events = new JwtBearerEvents
-                {
-                    OnMessageReceived = context =>
+                    options.Events = new JwtBearerEvents
                     {
-                        var token = context.Request.Headers["Authorization"].ToString().Replace("Bearer ", "");
-                        context.Token = token;
-                        return Task.CompletedTask;
-                    },
-                    OnTokenValidated = async context =>
-                    {
-                        var token = context.SecurityToken as JwtSecurityToken;
-                        if (token != null)
+                        OnMessageReceived = context =>
                         {
-                            var firebaseToken = await FirebaseAuth.DefaultInstance.VerifyIdTokenAsync(token.RawData);
-                            var uid = firebaseToken.Uid; // Firebase user ID
-
-                            // You can add custom claims here if necessary
-                            context.HttpContext.User.AddIdentity(new System.Security.Claims.ClaimsIdentity(new[]
+                            var token = context.Request.Headers["Authorization"].ToString().Replace("Bearer ", "");
+                            context.Token = token;
+                            return Task.CompletedTask;
+                        },
+                        OnTokenValidated = async context =>
+                        {
+                            var token = context.SecurityToken as JwtSecurityToken;
+                            if (token != null)
                             {
+                                var firebaseToken = await FirebaseAuth.DefaultInstance.VerifyIdTokenAsync(token.RawData);
+                                var uid = firebaseToken.Uid; // Firebase user ID
+
+                                // You can add custom claims here if necessary
+                                context.HttpContext.User.AddIdentity(new System.Security.Claims.ClaimsIdentity(new[]
+                                {
                                 new System.Security.Claims.Claim("uid", uid),
-                            }));
+                                }));
+                            }
                         }
-                    }
-                };
+                    };
+                });
+
+            // Add Authorization Policy (optional, if you want to define roles)
+            services.AddAuthorization(options =>
+            {
+                options.AddPolicy("AdminOnly", policy => policy.RequireClaim("role", "admin"));
             });
 
-        // Add Authorization Policy (optional, if you want to define roles)
-        services.AddAuthorization(options =>
-        {
-            options.AddPolicy("AdminOnly", policy => policy.RequireClaim("role", "admin"));
-        });
-
-        return services;
+            return services;
         }
 
     }
