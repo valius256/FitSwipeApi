@@ -1,5 +1,4 @@
 ﻿using FirebaseAdmin;
-using FirebaseAdmin.Auth;
 using FitSwipe.BusinessLogic.Interfaces.Auth;
 using FitSwipe.BusinessLogic.Interfaces.Sender;
 using FitSwipe.BusinessLogic.Interfaces.Tags;
@@ -13,12 +12,12 @@ using FitSwipe.DataAccess.Repository;
 using FitSwipe.DataAccess.Repository.Impl;
 using FitSwipe.DataAccess.Repository.Intefaces;
 using FitSwipe.SchedulerJobs;
+using FitSwipe.Shared.Enum;
 using Google.Apis.Auth.OAuth2;
 using Hangfire;
 using Hangfire.SqlServer;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
-using System.IdentityModel.Tokens.Jwt;
 
 namespace FitSwipe.API.Extensions
 {
@@ -43,10 +42,10 @@ namespace FitSwipe.API.Extensions
             services.AddScoped<IUserTagService, UserTagService>();
             services.AddScoped<ITagService, TagService>();
             services.AddScoped<IFirebaseAuthServices, FirebaseAuthServices>();
-
+            ;
 
             services.AddTransient<IEmailServices, EmailServices>();
-            //services.AddTransient<IJwtProviderServices, JwtProviderServices>();
+            services.AddScoped<IJwtProviderServices, JwtProviderServices>();
             services.AddProblemDetails();
             services.AddLogging();
             return services;
@@ -55,15 +54,12 @@ namespace FitSwipe.API.Extensions
         public static IServiceCollection AddFireBaseServices(this IServiceCollection services, IConfiguration configuration)
         {
             var firebaseSettings = configuration.GetSection(nameof(Appsettings.FireBase)).Get<FireBase>();
-            var firebaseJsonPath = Path.Combine(Directory.GetCurrentDirectory(), "fit-swipe-firebase-config.json");
-            if (FirebaseApp.DefaultInstance == null)
+            var firebaseJsonPath = Path.Combine(Directory.GetCurrentDirectory(), "fit-swipe-161d7-firebase-adminsdk-l0tth-9884dc9fa1.json");
+            FirebaseApp.Create(new AppOptions
             {
-                FirebaseApp.Create(new AppOptions
-                {
-                    Credential = GoogleCredential.FromFile(firebaseJsonPath),
-                    ProjectId = firebaseSettings?.ProjectId
-                });
-            }
+                Credential = GoogleCredential.FromFile(firebaseJsonPath),
+                ProjectId = firebaseSettings?.ProjectId
+            });
             return services;
         }
 
@@ -98,53 +94,35 @@ namespace FitSwipe.API.Extensions
         public static IServiceCollection AddFirebaseAuthentication(this IServiceCollection services, IConfiguration configuration)
         {
             var firebaseSettings = configuration.GetSection(nameof(Appsettings.FireBase)).Get<FireBase>();
-            // Add Authentication with JWT Bearer
+
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                 .AddJwtBearer(options =>
                 {
+                    options.Authority = $"https://session.firebase.google.com/{firebaseSettings.ProjectId}";
+
                     options.TokenValidationParameters = new TokenValidationParameters
                     {
                         ValidateIssuer = true,
-                        ValidIssuer = $"https://securetoken.google.com/{firebaseSettings.ProjectId}",
+                        ValidIssuer = $"https://session.firebase.google.com/{firebaseSettings.ProjectId}",
                         ValidateAudience = true,
                         ValidAudience = firebaseSettings.ProjectId,
-                        ValidateLifetime = true
+                        ValidateLifetime = true,
+
                     };
 
-                    options.Events = new JwtBearerEvents
-                    {
-                        OnMessageReceived = context =>
-                        {
-                            var token = context.Request.Headers["Authorization"].ToString().Replace("Bearer ", "");
-                            context.Token = token;
-                            return Task.CompletedTask;
-                        },
-                        OnTokenValidated = async context =>
-                        {
-                            var token = context.SecurityToken as JwtSecurityToken;
-                            if (token != null)
-                            {
-                                var firebaseToken = await FirebaseAuth.DefaultInstance.VerifyIdTokenAsync(token.RawData);
-                                var uid = firebaseToken.Uid; // Firebase user ID
 
-                                // You can add custom claims here if necessary
-                                context.HttpContext.User.AddIdentity(new System.Security.Claims.ClaimsIdentity(new[]
-                                {
-                                new System.Security.Claims.Claim("uid", uid),
-                                }));
-                            }
-                        }
-                    };
                 });
 
-            // Add Authorization Policy (optional, if you want to define roles)
             services.AddAuthorization(options =>
             {
-                options.AddPolicy("AdminOnly", policy => policy.RequireClaim("role", "admin"));
+                options.AddPolicy("RequireTraineeRole", policy => policy.RequireRole(Role.Trainee.ToString()));
+                options.AddPolicy("RequirePTRole", policy => policy.RequireRole(Role.PT.ToString()));
+                options.AddPolicy("RequireOperatorRole", policy => policy.RequireRole(Role.Operator.ToString()));
             });
 
             return services;
         }
+
 
     }
 }
