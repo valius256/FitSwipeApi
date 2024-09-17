@@ -2,10 +2,12 @@
 using FitSwipe.BusinessLogic.Interfaces.Auth;
 using FitSwipe.BusinessLogic.Interfaces.Sender;
 using FitSwipe.BusinessLogic.Interfaces.Tags;
+using FitSwipe.BusinessLogic.Interfaces.UploadDowload;
 using FitSwipe.BusinessLogic.Interfaces.Users;
 using FitSwipe.BusinessLogic.Services.Auth;
 using FitSwipe.BusinessLogic.Services.Sender;
 using FitSwipe.BusinessLogic.Services.Tags;
+using FitSwipe.BusinessLogic.Services.UploadDowload;
 using FitSwipe.BusinessLogic.Services.Users;
 using FitSwipe.DataAccess.Model;
 using FitSwipe.DataAccess.Repository;
@@ -18,6 +20,8 @@ using Hangfire;
 using Hangfire.SqlServer;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
+using Microsoft.OpenApi.Models;
+using Swashbuckle.AspNetCore.Filters;
 
 namespace FitSwipe.API.Extensions
 {
@@ -42,6 +46,7 @@ namespace FitSwipe.API.Extensions
             services.AddScoped<IUserTagService, UserTagService>();
             services.AddScoped<ITagService, TagService>();
             services.AddScoped<IFirebaseAuthServices, FirebaseAuthServices>();
+            services.AddScoped<IFirebaseUploadDowloadServices, FirebaseUploadDowloadServices>()
             ;
 
             services.AddTransient<IEmailServices, EmailServices>();
@@ -58,7 +63,7 @@ namespace FitSwipe.API.Extensions
             FirebaseApp.Create(new AppOptions
             {
                 Credential = GoogleCredential.FromFile(firebaseJsonPath),
-                ProjectId = firebaseSettings?.ProjectId
+                ProjectId = firebaseSettings?.ProjectId,
             });
             return services;
         }
@@ -91,6 +96,28 @@ namespace FitSwipe.API.Extensions
             return services;
         }
 
+        public static IServiceCollection AddSwaggerWithConfigurations(this IServiceCollection services)
+        {
+            services.AddEndpointsApiExplorer();
+            services.AddSwaggerGen(options =>
+            {
+                options.SwaggerDoc("v1", new OpenApiInfo { Title = "On Demand Tutor API V1", Version = "V1.0" });
+
+                options.AddSecurityDefinition("oauth2", new OpenApiSecurityScheme
+                {
+                    Description =
+                        @"JWT Authorization header using the Bearer scheme. Enter 'Bearer' [space] and then your token in the text input below. Example: 'Bearer 12345example'",
+                    Name = "Authorization",
+                    In = ParameterLocation.Header,
+                    Type = SecuritySchemeType.ApiKey,
+                    Scheme = "Bearer",
+                    BearerFormat = "JWT",
+                });
+                options.OperationFilter<SecurityRequirementsOperationFilter>(); // Handles the authorization button
+            });
+            return services;
+        }
+
         public static IServiceCollection AddFirebaseAuthentication(this IServiceCollection services, IConfiguration configuration)
         {
             var firebaseSettings = configuration.GetSection(nameof(Appsettings.FireBase)).Get<FireBase>();
@@ -109,6 +136,7 @@ namespace FitSwipe.API.Extensions
                         ValidateLifetime = true,
 
                     };
+
 
 
                 });
