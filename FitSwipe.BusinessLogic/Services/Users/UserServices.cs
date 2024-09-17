@@ -115,6 +115,8 @@ namespace FitSwipe.BusinessLogic.Services.Users
             return user;
         }
 
+
+
         private User FetchUserRecordToUserEntity(UserRecord recordToFetch)
         {
             var userEntitty = recordToFetch.Adapt<User>();
@@ -166,6 +168,12 @@ namespace FitSwipe.BusinessLogic.Services.Users
             };
 
             return userResponseModel;
+        }
+
+        public async Task<GetProfileUserDto> GetProfileUser(string userFirebaseId)
+        {
+            var userEntity = await _userRepository.FindOneAsync(u => u.FireBaseId == userFirebaseId);
+            return (userEntity.Adapt<GetProfileUserDto>());
         }
     }
 }

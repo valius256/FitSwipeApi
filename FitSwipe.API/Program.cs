@@ -47,6 +47,7 @@ builder.Services.AddRepositories()
     .AddGeneralServices()
     .AddFireBaseServices(builder.Configuration)
     .AddHangFireConfigurations(builder.Configuration)
+    .AddSwaggerWithConfigurations()
     .AddFirebaseAuthentication(builder.Configuration);
 
 
