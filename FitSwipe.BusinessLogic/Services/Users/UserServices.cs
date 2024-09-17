@@ -1,21 +1,18 @@
-﻿using FitSwipe.BusinessLogic.Interfaces.Auth;
+﻿using FirebaseAdmin.Auth;
+using FitSwipe.BusinessLogic.Interfaces.Auth;
+using FitSwipe.BusinessLogic.Interfaces.Sender;
 using FitSwipe.BusinessLogic.Interfaces.Users;
 using FitSwipe.DataAccess.Model.Entity;
+using FitSwipe.DataAccess.Model.Enum;
 using FitSwipe.DataAccess.Model.Paging;
 using FitSwipe.DataAccess.Repository.Intefaces;
 using FitSwipe.Shared.Dtos.Tags;
 using FitSwipe.Shared.Dtos.Users;
+using FitSwipe.Shared.Enum;
 using FitSwipe.Shared.Exceptions;
 using FitSwipe.Shared.Model.Auth;
 using FitSwipe.Shared.Model.Users;
-using LinqKit;
 using Mapster;
-using System.Dynamic;
-using System.Xml.Schema;
-using FirebaseAdmin.Auth;
-using FitSwipe.BusinessLogic.Interfaces.Sender;
-using FitSwipe.DataAccess.Model.Enum;
-using FitSwipe.Shared.Enum;
 
 namespace FitSwipe.BusinessLogic.Services.Users
 {
@@ -43,7 +40,7 @@ namespace FitSwipe.BusinessLogic.Services.Users
             foreach (var item in mappedResult.Items)
             {
                 var itemData = result.Items.FirstOrDefault(u => u.FireBaseId == item.FireBaseId);
-                if (itemData != null) 
+                if (itemData != null)
                 {
                     item.Tags = itemData.UserTags.Select(u => u.Tag.Adapt<GetTagDto>()).ToList();
                 }
@@ -53,7 +50,7 @@ namespace FitSwipe.BusinessLogic.Services.Users
 
         public async Task<bool> ForgotPassword(string email)
         {
-            
+
             var resetPasswordLink = await _firebaseAuthServices.ForgotPasswordAsync(email);
             if (resetPasswordLink == null)
             {
@@ -66,28 +63,23 @@ namespace FitSwipe.BusinessLogic.Services.Users
                 {"ResetPasswordLink", $"{resetPasswordLink}"}
             };
             var toAddress = new List<string>() { email };
-            await _emailServices.SendAsync(EmailType.Forgot_Password , toAddress , new List<string>(), emailParams,
+            await _emailServices.SendAsync(EmailType.Forgot_Password, toAddress, new List<string>(), emailParams,
                 false);
-            
-            // update new password on db
-            // var userEntity = await GetUserByEmail(email);
-            // if (userEntity != null)
-            // {
-            //     userEntity.Password == 
-            // }
-            
+
+
+
             return true;
         }
 
         public async Task<List<User>> GetAllUserAsync()
         {
-            var userListModal =  await _userRepository.GetAllAsync();
+            var userListModal = await _userRepository.GetAllAsync();
             return userListModal.Adapt<List<User>>();
         }
 
         public async Task<User?> GetUserByEmail(string email)
         {
-           return await _userRepository.FindOneAsync(l => l.Email == email);
+            return await _userRepository.FindOneAsync(l => l.Email == email);
         }
 
         public async Task<PagedResult<GetUserWithTagDto>> GetMatchedUserPagedWithTagsOrdered(List<Guid> tagIds, int page, int limit)
@@ -112,15 +104,15 @@ namespace FitSwipe.BusinessLogic.Services.Users
             {
                 throw new DataNotFoundException("User not found");
             }
-            else if(recordToFetch != null && user == null)
+            else if (recordToFetch != null && user == null)
             {
-                var userEntitty = FetchUserRecordToUserEntity(recordToFetch); 
-                await  _userRepository.AddAsync(userEntitty);
+                var userEntitty = FetchUserRecordToUserEntity(recordToFetch);
+                await _userRepository.AddAsync(userEntitty);
             }
-            
+
             return user;
         }
-        
+
         private User FetchUserRecordToUserEntity(UserRecord recordToFetch)
         {
             var userEntitty = recordToFetch.Adapt<User>();
@@ -128,13 +120,13 @@ namespace FitSwipe.BusinessLogic.Services.Users
             userEntitty.Password = "defaultPassword";
             userEntitty.Phone = recordToFetch.PhoneNumber != null ? recordToFetch.PhoneNumber : "0935333333";
             userEntitty.FireBaseId = recordToFetch.Uid;
-            userEntitty.UserName = 
+            userEntitty.UserName =
                 recordToFetch.DisplayName != null ? recordToFetch.DisplayName : recordToFetch.Email;
 
             return userEntitty;
         }
-            
-            
+
+
         public async Task<GetUserProfileResponse> RegisterUser(RegisterRequestModel registerDtos)
         {
             var registerAuthModel = await _firebaseAuthServices.RegisterUserWithFirebaseAsync(registerDtos);
@@ -147,22 +139,22 @@ namespace FitSwipe.BusinessLogic.Services.Users
             userEntity.Role = registerDtos.Role;
             userEntity.UserName = registerDtos.Email;
             userEntity.Status = UserStatus.Active;
-            
+
             // Add the User entity to the database
             await _userRepository.AddAsync(userEntity);
 
-            
+
             var toAddress = new List<string> { registerDtos.Email };
             var emailParams = new Dictionary<string, string>()
             {
                 { "Name", $"{registerDtos.Email}" },
                 {"VerificationLink", $"{registerAuthModel.RegisterLink}"}
             };
-            
+
             await _emailServices.SendAsync(EmailType.Register_Mail, toAddress, new List<string>(), emailParams,
                 false);
 
-            
+
             var userResponseModel = new GetUserProfileResponse()
             {
                 Email = registerDtos.Email,
