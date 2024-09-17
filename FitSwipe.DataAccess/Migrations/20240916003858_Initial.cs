@@ -8,11 +8,32 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace FitSwipe.DataAccess.Migrations
 {
     /// <inheritdoc />
-    public partial class LOL : Migration
+    public partial class Initial : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.CreateTable(
+                name: "EmailTemplates",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Status = table.Column<bool>(type: "bit", nullable: false),
+                    Body = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Params = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Subject = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Description = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    CreatedDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    UpdatedDate = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    DeletedDate = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    RecordStatus = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_EmailTemplates", x => x.Id);
+                });
+
             migrationBuilder.CreateTable(
                 name: "Users",
                 columns: table => new
@@ -22,20 +43,20 @@ namespace FitSwipe.DataAccess.Migrations
                     Gender = table.Column<int>(type: "int", nullable: false),
                     Email = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Password = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    AvatarUrl = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Phone = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    AvatarUrl = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Phone = table.Column<string>(type: "varchar(10)", maxLength: 10, nullable: false),
                     DateOfBirth = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    Weight = table.Column<double>(type: "float", nullable: false),
-                    Height = table.Column<double>(type: "float", nullable: false),
+                    Weight = table.Column<double>(type: "float", nullable: true),
+                    Height = table.Column<double>(type: "float", nullable: true),
                     Bio = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    City = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    District = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Ward = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Street = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    City = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    District = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Ward = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Street = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Role = table.Column<int>(type: "int", nullable: false),
-                    Job = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Job = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Status = table.Column<int>(type: "int", nullable: false),
-                    Balance = table.Column<int>(type: "int", nullable: false),
+                    Balance = table.Column<int>(type: "int", nullable: true),
                     PTStatus = table.Column<int>(type: "int", nullable: true),
                     PTExperienceYear = table.Column<double>(type: "float", nullable: true),
                     SubscriptionPurchasedDate = table.Column<DateTime>(type: "datetime2", nullable: true),
@@ -302,13 +323,22 @@ namespace FitSwipe.DataAccess.Migrations
                 });
 
             migrationBuilder.InsertData(
+                table: "EmailTemplates",
+                columns: new[] { "Id", "Body", "CreatedDate", "DeletedDate", "Description", "Name", "Params", "RecordStatus", "Status", "Subject", "UpdatedDate" },
+                values: new object[,]
+                {
+                    { new Guid("3fec9dc1-4bc7-43a1-b814-4f33d9b169a5"), "Chào mừng bạn đến với FitWipe! Kính gửi [Name], vui lòng xác nhận địa chỉ email của bạn bằng cách nhấn vào đường link sau: <a href=\"[VerificationLink]\">Xác nhận Email</a>.<br><br>Cảm ơn bạn đã tham gia cùng chúng tôi!<br><br>Đội ngũ FitWipe", new DateTime(2024, 9, 16, 7, 38, 57, 882, DateTimeKind.Local).AddTicks(9058), null, "Email này được gửi để xác nhận đăng ký tài khoản FitWipe.", "Register_Mail", "[Name], [VerificationLink]", 0, true, "Chào mừng đến với FitWipe! Vui lòng xác nhận email của bạn", null },
+                    { new Guid("98d25a97-19b2-4c0d-97f7-524506028882"), "Chúng tôi đã nhận được yêu cầu đặt lại mật khẩu cho tài khoản của bạn tại FitWipe. Kính gửi [Name], vui lòng đặt lại mật khẩu của bạn bằng cách nhấn vào đường link sau: <a href=\"[ResetPasswordLink]\">Đặt lại mật khẩu</a>.<br><br>Nếu bạn không yêu cầu việc này, vui lòng bỏ qua email này.<br><br>Đội ngũ FitWipe", new DateTime(2024, 9, 16, 7, 38, 57, 882, DateTimeKind.Local).AddTicks(9095), null, "Email này được gửi khi người dùng yêu cầu đặt lại mật khẩu cho tài khoản FitWipe.", "Forgot_Password", "[Name], [ResetPasswordLink]", 0, true, "Yêu cầu đặt lại mật khẩu FitWipe", null }
+                });
+
+            migrationBuilder.InsertData(
                 table: "Users",
                 columns: new[] { "FireBaseId", "AvatarUrl", "Balance", "Bio", "City", "CreatedDate", "DateOfBirth", "DeletedDate", "District", "Email", "Gender", "Height", "Id", "Job", "PTExperienceYear", "PTStatus", "Password", "Phone", "RecordStatus", "Role", "Status", "Street", "SubscriptionLevel", "SubscriptionPaymentStatus", "SubscriptionPurchasedDate", "UpdatedDate", "UserName", "Ward", "Weight" },
                 values: new object[,]
                 {
-                    { "123abc", "https://example.com/avatar1.jpg", 1000, "Fitness enthusiast and certified personal trainer.", "New York", new DateTime(2024, 9, 11, 23, 26, 48, 976, DateTimeKind.Local).AddTicks(477), new DateTime(1990, 5, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, "Manhattan", "john.doe@example.com", 0, 180.30000000000001, new Guid("00000000-0000-0000-0000-000000000000"), "Student", null, null, "hashedpassword1", "1234567890", 0, 0, 0, "5th Avenue", null, null, null, null, "john doe", "Ward 5", 75.5 },
-                    { "456def", "https://example.com/avatar2.jpg", 1500, "Yoga instructor with a passion for holistic health.", "Los Angeles", new DateTime(2024, 9, 11, 23, 26, 48, 976, DateTimeKind.Local).AddTicks(513), new DateTime(1985, 8, 20, 0, 0, 0, 0, DateTimeKind.Unspecified), null, "Beverly Hills", "jane.smith@example.com", 1, 170.19999999999999, new Guid("00000000-0000-0000-0000-000000000000"), "Yoga Instructor", 3.5, 1, "hashedpassword2", "0987654321", 0, 1, 0, "Rodeo Drive", 1, 0, new DateTime(2023, 2, 10, 0, 0, 0, 0, DateTimeKind.Unspecified), null, "jane smith", "Ward 3", 65.0 },
-                    { "789ghi", "https://example.com/avatar3.jpg", 2000, "Aspiring bodybuilder and nutrition expert.", "Chicago", new DateTime(2024, 9, 11, 23, 26, 48, 976, DateTimeKind.Local).AddTicks(531), new DateTime(1992, 3, 10, 0, 0, 0, 0, DateTimeKind.Unspecified), null, "Lincoln Park", "alex.jones@example.com", 0, 185.40000000000001, new Guid("00000000-0000-0000-0000-000000000000"), "Nutritionist", 2.0, 0, "hashedpassword3", "5551234567", 0, 1, 0, "Clark Street", null, null, null, null, "alex jones", "Ward 7", 85.0 }
+                    { "123abc", "https://example.com/avatar1.jpg", 1000, "Fitness enthusiast and certified personal trainer.", "New York", new DateTime(2024, 9, 16, 7, 38, 57, 882, DateTimeKind.Local).AddTicks(8448), new DateTime(1990, 5, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, "Manhattan", "john.doe@example.com", 0, 180.30000000000001, new Guid("469e46e9-c1ef-4eaa-990c-37f06c82ffe5"), "Student", null, null, "hashedpassword1", "1234567890", 0, 0, 0, "5th Avenue", null, null, null, null, "john doe", "Ward 5", 75.5 },
+                    { "456def", "https://example.com/avatar2.jpg", 1500, "Yoga instructor with a passion for holistic health.", "Los Angeles", new DateTime(2024, 9, 16, 7, 38, 57, 882, DateTimeKind.Local).AddTicks(8550), new DateTime(1985, 8, 20, 0, 0, 0, 0, DateTimeKind.Unspecified), null, "Beverly Hills", "jane.smith@example.com", 1, 170.19999999999999, new Guid("500537b3-4be9-46df-9700-4392b752c611"), "Yoga Instructor", 3.5, 1, "hashedpassword2", "0987654321", 0, 1, 0, "Rodeo Drive", 1, 0, new DateTime(2023, 2, 10, 0, 0, 0, 0, DateTimeKind.Unspecified), null, "jane smith", "Ward 3", 65.0 },
+                    { "789ghi", "https://example.com/avatar3.jpg", 2000, "Aspiring bodybuilder and nutrition expert.", "Chicago", new DateTime(2024, 9, 16, 7, 38, 57, 882, DateTimeKind.Local).AddTicks(8569), new DateTime(1992, 3, 10, 0, 0, 0, 0, DateTimeKind.Unspecified), null, "Lincoln Park", "alex.jones@example.com", 0, 185.40000000000001, new Guid("f733cf80-efd2-491b-872f-21d1fe65ca88"), "Nutritionist", 2.0, 0, "hashedpassword3", "5551234567", 0, 1, 0, "Clark Street", null, null, null, null, "alex jones", "Ward 7", 85.0 }
                 });
 
             migrationBuilder.InsertData(
@@ -316,16 +346,16 @@ namespace FitSwipe.DataAccess.Migrations
                 columns: new[] { "Id", "CreateById", "CreatedDate", "DeletedDate", "Name", "RecordStatus", "TagType", "UpdatedDate" },
                 values: new object[,]
                 {
-                    { new Guid("24000c43-82a4-4ad0-956a-14f3ef8c2021"), "123abc", new DateTime(2024, 9, 11, 23, 26, 48, 976, DateTimeKind.Local).AddTicks(891), null, "Kiên trì", 0, 4, null },
-                    { new Guid("3aac1b76-d956-48d7-9679-1635df2a060c"), "123abc", new DateTime(2024, 9, 11, 23, 26, 48, 976, DateTimeKind.Local).AddTicks(861), null, "Yoga", 0, 2, null },
-                    { new Guid("3fd4b020-17b2-4cbd-8d4b-ca5ac800ac75"), "123abc", new DateTime(2024, 9, 11, 23, 26, 48, 976, DateTimeKind.Local).AddTicks(888), null, "Giá rẻ", 0, 3, null },
-                    { new Guid("6d8860c6-81ff-41d8-a33f-f01befbefc8c"), "123abc", new DateTime(2024, 9, 11, 23, 26, 48, 976, DateTimeKind.Local).AddTicks(852), null, "Video game", 0, 0, null },
-                    { new Guid("6f831dad-1ff3-4171-96a2-70c050fbbdc0"), "123abc", new DateTime(2024, 9, 11, 23, 26, 48, 976, DateTimeKind.Local).AddTicks(856), null, "Giảm cân", 0, 1, null },
-                    { new Guid("936deede-2a98-4570-980c-79d90d198540"), "123abc", new DateTime(2024, 9, 11, 23, 26, 48, 976, DateTimeKind.Local).AddTicks(805), null, "Bóng đá", 0, 0, null },
-                    { new Guid("95842055-67f6-4111-b52e-c3f02c9b220a"), "123abc", new DateTime(2024, 9, 11, 23, 26, 48, 976, DateTimeKind.Local).AddTicks(859), null, "Phát triển cơ bắp", 0, 1, null },
-                    { new Guid("986462a9-d7d7-4a73-9ed1-ce336f1cf47d"), "123abc", new DateTime(2024, 9, 11, 23, 26, 48, 976, DateTimeKind.Local).AddTicks(885), null, "Ngoại hình đẹp", 0, 3, null },
-                    { new Guid("9b5fe34b-6775-414e-80d7-a2c44fe11970"), "123abc", new DateTime(2024, 9, 11, 23, 26, 48, 976, DateTimeKind.Local).AddTicks(894), null, "Siêng năng", 0, 4, null },
-                    { new Guid("f28f8ad1-ddee-4ccb-984c-db61bd3fa3d2"), "123abc", new DateTime(2024, 9, 11, 23, 26, 48, 976, DateTimeKind.Local).AddTicks(864), null, "Cardino", 0, 2, null }
+                    { new Guid("07d31b84-4fbf-4eda-8f12-6a6e99512da7"), "123abc", new DateTime(2024, 9, 16, 7, 38, 57, 882, DateTimeKind.Local).AddTicks(8999), null, "Giá rẻ", 0, 3, null },
+                    { new Guid("1039f57a-e5b6-4b61-b05f-9c0e1c474837"), "123abc", new DateTime(2024, 9, 16, 7, 38, 57, 882, DateTimeKind.Local).AddTicks(8952), null, "Bóng đá", 0, 0, null },
+                    { new Guid("2c45a5ea-0674-4623-8e5e-8848fbada623"), "123abc", new DateTime(2024, 9, 16, 7, 38, 57, 882, DateTimeKind.Local).AddTicks(8958), null, "Video game", 0, 0, null },
+                    { new Guid("336d75f4-5e78-4266-a63c-fe28b7ba7ab0"), "123abc", new DateTime(2024, 9, 16, 7, 38, 57, 882, DateTimeKind.Local).AddTicks(8995), null, "Ngoại hình đẹp", 0, 3, null },
+                    { new Guid("69c3f245-6775-46c2-8c96-0f6fd2fcf22e"), "123abc", new DateTime(2024, 9, 16, 7, 38, 57, 882, DateTimeKind.Local).AddTicks(8989), null, "Yoga", 0, 2, null },
+                    { new Guid("a03a8253-126c-4a8c-a587-32e34fca94c3"), "123abc", new DateTime(2024, 9, 16, 7, 38, 57, 882, DateTimeKind.Local).AddTicks(8962), null, "Giảm cân", 0, 1, null },
+                    { new Guid("a0e6107f-6a87-4dcc-b36a-264ac30e7bcb"), "123abc", new DateTime(2024, 9, 16, 7, 38, 57, 882, DateTimeKind.Local).AddTicks(9005), null, "Siêng năng", 0, 4, null },
+                    { new Guid("d474e7c0-c880-4122-a2d6-87b86229945c"), "123abc", new DateTime(2024, 9, 16, 7, 38, 57, 882, DateTimeKind.Local).AddTicks(8992), null, "Cardino", 0, 2, null },
+                    { new Guid("e94ea900-0c86-40e6-afaa-58048b233b2e"), "123abc", new DateTime(2024, 9, 16, 7, 38, 57, 882, DateTimeKind.Local).AddTicks(9002), null, "Kiên trì", 0, 4, null },
+                    { new Guid("f54f052e-a8e8-4136-8989-2ef67010e956"), "123abc", new DateTime(2024, 9, 16, 7, 38, 57, 882, DateTimeKind.Local).AddTicks(8985), null, "Phát triển cơ bắp", 0, 1, null }
                 });
 
             migrationBuilder.CreateIndex(
@@ -397,6 +427,9 @@ namespace FitSwipe.DataAccess.Migrations
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.DropTable(
+                name: "EmailTemplates");
+
             migrationBuilder.DropTable(
                 name: "FeedbackImages");
 

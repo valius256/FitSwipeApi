@@ -58,7 +58,7 @@ namespace FitSwipe.API.Controllers
             {
                 decodedToken = await FirebaseAuth.DefaultInstance.VerifyIdTokenAsync(token);
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 return Unauthorized("Invalid Firebase token.");
             }
