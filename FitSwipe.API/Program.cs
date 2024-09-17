@@ -30,22 +30,26 @@ builder.Services.AddDbContext<FitSwipeDbContext>(options =>
 });
 
 
+builder.Services.AddCors(options =>
+{
+    options.AddDefaultPolicy(policy =>
+    {
+        policy.WithOrigins("http://localhost:5173") // Replace with your actual origin(s)
+              .AllowAnyMethod()
+              .AllowAnyHeader()
+              .AllowCredentials();
+    });
+});
 
-// ADD CORS
-builder.Services.AddCors(options => options.AddDefaultPolicy(policyBuilder =>
-    policyBuilder.WithOrigins("http://localhost:5173") // replace with your domain when mobile done
-        .AllowAnyMethod()
-        .AllowAnyHeader()
-        .AllowCredentials()));
 
 // ADD Serviuces 
 builder.Services.AddRepositories()
     .AddGeneralServices()
     .AddFireBaseServices(builder.Configuration)
     .AddHangFireConfigurations(builder.Configuration)
-    .AddFirebaseAuthentication(builder.Configuration)
+    .AddFirebaseAuthentication(builder.Configuration);
 
-    ;
+
 
 
 var app = builder.Build();
@@ -60,7 +64,6 @@ if (app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 
 
-
 // Configure Hangfire
 app.UseHangfireDashboard("/hangfire", new DashboardOptions
 {
@@ -73,8 +76,11 @@ app.UseHangfireDashboard("/hangfire", new DashboardOptions
 app.UseMiddleware<ExceptionHandlingMiddleware>();
 
 app.UseRouting();
-app.UseAuthorization();
+
 app.UseAuthentication();
+app.UseAuthorization();
+
+app.UseCors();
 
 app.UseEndpoints(endpoints =>
 {

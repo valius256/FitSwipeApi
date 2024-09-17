@@ -1,7 +1,11 @@
 ﻿using FirebaseAdmin.Auth;
 using FitSwipe.BusinessLogic.Interfaces.Auth;
 using FitSwipe.BusinessLogic.Interfaces.Users;
+using FitSwipe.Shared.Dtos.Users;
 using FitSwipe.Shared.Model.Auth;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
 
@@ -34,6 +38,7 @@ namespace FitSwipe.API.Controllers
             return Ok(response);
         }
 
+        [Authorize(Policy = "RequireTraineeRole")]
         [HttpGet("get-test")]
         public async Task<IActionResult> GetListUser()
         {
@@ -42,45 +47,56 @@ namespace FitSwipe.API.Controllers
         }
 
 
+        [HttpPost("login-firebase")]
+        public async Task<AuthenResponseDto> LoginFireBase([FromBody] LoginRequest body)
+        {
+            var response = await _authServices.LoginWithFireBase(body);
+            return response;
+        }
+
+
         [HttpPost("verify-token")]
         public async Task<IActionResult> VerifyToken([FromBody] TokenVerificationRequest request)
         {
-            if (request == null || string.IsNullOrEmpty(request.Token))
-            {
-                return BadRequest("Invalid request: Token is required.");
-            }
-
-            var token = request.Token;
-
-            // Verify the token using Firebase Admin SDK
-            FirebaseToken decodedToken;
             try
             {
-                decodedToken = await FirebaseAuth.DefaultInstance.VerifyIdTokenAsync(token);
+                // Verify the Firebase ID token
+                var decodedToken = await FirebaseAuth.DefaultInstance.VerifyIdTokenAsync(request.Token);
+                var uid = decodedToken.Uid;
+
+                var user = await _userServices.GetUserByIdRequired(uid);
+
+                // Extract claims from the Firebase token
+                var claims = new List<Claim>
+                {
+                    new Claim(ClaimTypes.NameIdentifier, uid),
+
+                    new Claim(ClaimTypes.Email, decodedToken.Claims["email"]?.ToString() ?? "")
+                };
+
+                // If you have custom claims or roles, add them here
+                if (decodedToken.Claims.TryGetValue("role", out object role))
+                {
+                    claims.Add(new Claim(ClaimTypes.Role, user.Role.ToString()));
+                }
+
+                // Create identity and principal
+                var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
+                var principal = new ClaimsPrincipal(identity);
+
+                // Sign in the user with the created principal
+                await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, principal);
+
+                return Ok(new { UserId = uid });
             }
-            catch (Exception ex)
+            catch (FirebaseAuthException)
             {
-                return Unauthorized("Invalid Firebase token.");
+                // Token verification failed
+                return Unauthorized("Invalid token");
             }
-
-            // Get the user's Firebase UID from the token
-            var uid = decodedToken.Uid;
-
-            var userEntity = await _userServices.GetUserByIdRequired(uid);
-
-            // Add role claim to the identity
-            var claimsIdentity = new ClaimsIdentity(new[]
-            {
-                new Claim("uid", uid),
-                new Claim(ClaimTypes.Role, userEntity.Role.ToString()) // Add the role claim
-            });
-
-            // Attach the identity to the current user
-            var userPrincipal = new ClaimsPrincipal(claimsIdentity);
-            HttpContext.User = userPrincipal;
-
-            return Ok(new { Role = userEntity.Role.ToString() });
         }
+
+
 
 
     }
