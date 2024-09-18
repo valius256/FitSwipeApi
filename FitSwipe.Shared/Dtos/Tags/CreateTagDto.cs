@@ -9,5 +9,6 @@ namespace FitSwipe.Shared.Dtos.Tags
         public required string Name { get; set; } = string.Empty;
         [Required]
         public required TagType TagType { get; set; }
+        public string? TagImage { get; set; }
     }
 }

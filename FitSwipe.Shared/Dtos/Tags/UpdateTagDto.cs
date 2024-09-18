@@ -15,5 +15,6 @@ namespace FitSwipe.Shared.Dtos.Tags
 
         public string? Name { get; set; }
         public TagType? TagType { get; set; }
+        public string? TagImage { get; set; }
     }
 }
