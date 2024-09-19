@@ -65,6 +65,10 @@ namespace FitSwipe.API.Extensions
                 Credential = GoogleCredential.FromFile(firebaseJsonPath),
                 ProjectId = firebaseSettings?.ProjectId,
             });
+
+            //var storageClient = StorageClient.Create(GoogleCredential.FromFile(firebaseJsonPath));
+
+
             return services;
         }
 

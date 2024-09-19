@@ -21,11 +21,14 @@ namespace FitSwipe.BusinessLogic.Services.Auth
         private readonly IEmailServices _emailServices;
         private readonly HttpClient _httpClient;
         private readonly IUserRepository _userRepository;
+
+
         public FirebaseAuthServices(IEmailServices emailServices, HttpClient httpClient, IUserRepository userRepository)
         {
             _emailServices = emailServices;
             _httpClient = httpClient;
             _userRepository = userRepository;
+
 
         }
 

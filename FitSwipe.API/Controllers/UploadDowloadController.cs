@@ -45,7 +45,7 @@ namespace FitSwipe.API.Controllers
                 using (var stream = file.OpenReadStream())
                 {
                     // Call the service method with the MIME type
-                    var fileUrl = await _firebaseUploadServices.UploadImageAsync(HttpContext.User.ToString(), fileName, stream, file.ContentType);
+                    var fileUrl = await _firebaseUploadServices.UploadImageAsync(CurrentUserFirebaseId, fileName, stream, file.ContentType);
                     return Ok(new { fileUrl });
                 }
             }
