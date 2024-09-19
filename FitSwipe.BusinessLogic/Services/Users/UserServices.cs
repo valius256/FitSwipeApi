@@ -1,31 +1,24 @@
 ﻿using FirebaseAdmin.Auth;
-using FitSwipe.BusinessLogic.Interfaces.Auth;
 using FitSwipe.BusinessLogic.Interfaces.Sender;
 using FitSwipe.BusinessLogic.Interfaces.Users;
 using FitSwipe.DataAccess.Model.Entity;
-using FitSwipe.DataAccess.Model.Enum;
 using FitSwipe.DataAccess.Model.Paging;
 using FitSwipe.DataAccess.Repository.Intefaces;
 using FitSwipe.Shared.Dtos.Tags;
 using FitSwipe.Shared.Dtos.UploadDowloads;
 using FitSwipe.Shared.Dtos.Users;
-using FitSwipe.Shared.Enum;
 using FitSwipe.Shared.Exceptions;
-using FitSwipe.Shared.Model.Auth;
-using FitSwipe.Shared.Model.Users;
 using Mapster;
 
 namespace FitSwipe.BusinessLogic.Services.Users
 {
     public class UserServices : IUserServices
     {
-        private readonly IFirebaseAuthServices _firebaseAuthServices;
         private readonly IUserRepository _userRepository;
         private readonly IEmailServices _emailServices;
 
-        public UserServices(IFirebaseAuthServices firebaseAuthServices, IUserRepository userRepository, IEmailServices emailServices)
+        public UserServices(IUserRepository userRepository, IEmailServices emailServices)
         {
-            _firebaseAuthServices = firebaseAuthServices;
             _userRepository = userRepository;
             _emailServices = emailServices;
         }
@@ -49,28 +42,7 @@ namespace FitSwipe.BusinessLogic.Services.Users
             return mappedResult;
         }
 
-        public async Task<bool> ForgotPassword(string email)
-        {
 
-            var resetPasswordLink = await _firebaseAuthServices.ForgotPasswordAsync(email);
-            if (resetPasswordLink == null)
-            {
-                return false;
-            }
-
-            var emailParams = new Dictionary<string, string>()
-            {
-                { "Name", $"{email}" },
-                {"ResetPasswordLink", $"{resetPasswordLink}"}
-            };
-            var toAddress = new List<string>() { email };
-            await _emailServices.SendAsync(EmailType.Forgot_Password, toAddress, new List<string>(), emailParams,
-                false);
-
-
-
-            return true;
-        }
 
         public async Task<List<User>> GetAllUserAsync()
         {
@@ -132,44 +104,7 @@ namespace FitSwipe.BusinessLogic.Services.Users
         }
 
 
-        public async Task<GetUserProfileResponse> RegisterUser(RegisterRequestModel registerDtos)
-        {
-            var registerAuthModel = await _firebaseAuthServices.RegisterUserWithFirebaseAsync(registerDtos);
 
-            // Map Register DTO to User entity
-            var userEntity = registerDtos.Adapt<User>();
-
-            // Populate additional fields for the User entity
-            userEntity.FireBaseId = registerAuthModel.UserFirebaseId;
-            userEntity.Role = registerDtos.Role;
-            userEntity.UserName = registerDtos.Email;
-            userEntity.Status = UserStatus.Active;
-
-            // Add the User entity to the database
-            await _userRepository.AddAsync(userEntity);
-
-
-            var toAddress = new List<string> { registerDtos.Email };
-            var emailParams = new Dictionary<string, string>()
-            {
-                { "Name", $"{registerDtos.Email}" },
-                {"VerificationLink", $"{registerAuthModel.RegisterLink}"}
-            };
-
-            await _emailServices.SendAsync(EmailType.Register_Mail, toAddress, new List<string>(), emailParams,
-                false);
-
-
-            var userResponseModel = new GetUserProfileResponse()
-            {
-                Email = registerDtos.Email,
-                Password = registerDtos.Password,
-                Role = registerDtos.Role,
-                CreateDate = userEntity.CreatedDate
-            };
-
-            return userResponseModel;
-        }
 
         public async Task<GetProfileUserDto> GetProfileUser(string userFirebaseId)
         {
@@ -177,14 +112,31 @@ namespace FitSwipe.BusinessLogic.Services.Users
             return (userEntity.Adapt<GetProfileUserDto>());
         }
 
-        public Task UpdatePTDegree(string userId, UpdateImageUrlDto updateImageUrlDto)
+        public async Task UpdatePTDegree(string userId, UpdateImageUrlDto updateImageUrlDto)
         {
-            throw new NotImplementedException();
+            var user = await GetUserByIdRequired(userId);
+            user.PTDegreeImageUrl = updateImageUrlDto.Url;
+            await _userRepository.UpdateAsync(user);
+        }
+        public async Task SetupProfile(string userId, SetupProfileDto setupProfileDto)
+        {
+            var user = await GetUserByIdRequired(userId);
+            user.Adapt(setupProfileDto);
+            await _userRepository.UpdateAsync(user);
         }
 
-        public Task SetupProfile(string userId, SetupProfileDto setupProfileDto)
+        public async Task<User> AddUserAsync(User user)
         {
-            throw new NotImplementedException();
+            var userInDb = await _userRepository.FindOneAsync(u => u.FireBaseId == user.FireBaseId);
+            if (user == null)
+            {
+                throw new DataNotFoundException("User not found");
+            }
+            else
+            {
+                await _userRepository.AddAsync(userInDb);
+            }
+            return user;
         }
     }
 }

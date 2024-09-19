@@ -2,11 +2,13 @@
 using FitSwipe.BusinessLogic.Models.User;
 using FitSwipe.Shared.Dtos.Users;
 using FitSwipe.Shared.Model.Auth;
+using FitSwipe.Shared.Model.Users;
 
 namespace FitSwipe.BusinessLogic.Interfaces.Auth
 {
     public interface IFirebaseAuthServices
     {
+        Task<GetUserProfileResponse> RegisterUser(RegisterRequestModel registerDtos);
         Task<bool> GenerateVerificationEmailAsync(string email);
         Task<RegisterAuthModel> RegisterUserWithFirebaseAsync(RegisterRequestModel registerRequest);
         Task<string?> ForgotPasswordAsync(string email);
