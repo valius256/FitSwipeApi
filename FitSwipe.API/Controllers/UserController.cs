@@ -1,20 +1,23 @@
-﻿using FitSwipe.BusinessLogic.Interfaces.Tags;
+﻿using FitSwipe.BusinessLogic.Interfaces.Auth;
+using FitSwipe.BusinessLogic.Interfaces.Tags;
 using FitSwipe.BusinessLogic.Interfaces.Users;
 using FitSwipe.DataAccess.Model.Paging;
 using FitSwipe.Shared.Dtos.Tags;
+using FitSwipe.Shared.Dtos.UploadDowloads;
 using FitSwipe.Shared.Dtos.Users;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace FitSwipe.API.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    public class UserController : ControllerBase
+    public class UserController : BaseController<UserController>
     {
         private readonly IUserServices _userServices;
         private readonly IUserTagService _userTagService;
 
-        public UserController(IUserServices userServices, IUserTagService userTagService)
+        public UserController(IUserServices userServices, IUserTagService userTagService, ILogger<UserController> logger) : base(logger)
         {
             _userServices = userServices;
             _userTagService = userTagService;
@@ -31,11 +34,25 @@ namespace FitSwipe.API.Controllers
         {
             return await _userServices.GetUserPagedWithTags(queryUserDto);
         }
-
+        [Authorize]
         [HttpGet("match-ordered")]
-        public async Task<PagedResult<GetUserWithTagDto>> GetMatchedUsersWithTagsPaged([FromQuery] string userId, [FromQuery] int page = 1, [FromQuery] int limit = 10)//Remove later the userId later
+        public async Task<PagedResult<GetUserWithTagDto>> GetMatchedUsersWithTagsPaged([FromQuery] int page = 1, [FromQuery] int limit = 10)
         {
-            return await _userTagService.GetRecommendedPTListByTags(userId, page, limit);
+            return await _userTagService.GetRecommendedPTListByTags(CurrentUserFirebaseId, page, limit);
+        }
+        [Authorize]
+        [HttpPatch("update-degree")]
+        public async Task<IActionResult> UpdatePTDegree([FromBody] UpdateImageUrlDto updateImageUrlDto)
+        {
+            await _userServices.UpdatePTDegree(CurrentUserFirebaseId, updateImageUrlDto);
+            return Ok();
+        }
+        [Authorize]
+        [HttpPatch("set-up")]
+        public async Task<IActionResult> SetupProfile([FromBody] SetupProfileDto setupProfileDto)
+        {
+            await _userServices.SetupProfile(CurrentUserFirebaseId, setupProfileDto);
+            return Ok();
         }
     }
 }

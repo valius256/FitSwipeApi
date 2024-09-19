@@ -4,11 +4,11 @@ namespace FitSwipe.Shared.Dtos.Users
 {
     public class GetProfileUserDto
     {
-        public string UserName { get; set; }
+        public string UserName { get; set; } = string.Empty;
         public Gender Gender { get; set; }
-        public string Email { get; set; }
+        public string Email { get; set; } = string.Empty;
         public string? AvatarUrl { get; set; }
-        public string Phone { get; set; }
+        public string Phone { get; set; } = string.Empty;
         public DateTime DateOfBirth { get; set; }
         public double? Weight { get; set; }
         public double? Height { get; set; }

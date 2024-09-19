@@ -5,12 +5,11 @@ namespace FitSwipe.Shared.Model.Auth
 {
     public class RegisterRequestModel
     {
-        public string FirstName { get; set; }
-        public string LastName { get; set; }
+        public required string Username { get; set; }
         
         [Required(ErrorMessage = "Email is required.")]
         // [RegularExpression(@"^[^@\s]+@[^@\s]+\.[^@\s]+$", ErrorMessage = "Invalid email format.")]
-        public string Email { get; set; }
+        public required string Email { get; set; }
 
         [Required(ErrorMessage = "Password is required.")]
         public string? Password { get; set; }

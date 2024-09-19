@@ -4,6 +4,6 @@
     {
         public string UserId { get; set; } = string.Empty;// Remove later
 
-        public List<Guid> NewTagIds { get; set; } = new List<Guid>();
+        public List<Guid> NewTagIds { get; set; } = [];
     }
 }

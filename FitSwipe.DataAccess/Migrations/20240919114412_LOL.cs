@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace FitSwipe.DataAccess.Migrations
 {
     /// <inheritdoc />
-    public partial class Initial : Migration
+    public partial class LOL : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -59,6 +59,7 @@ namespace FitSwipe.DataAccess.Migrations
                     Balance = table.Column<int>(type: "int", nullable: true),
                     PTStatus = table.Column<int>(type: "int", nullable: true),
                     PTExperienceYear = table.Column<double>(type: "float", nullable: true),
+                    PTDegreeImageUrl = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     SubscriptionPurchasedDate = table.Column<DateTime>(type: "datetime2", nullable: true),
                     SubscriptionLevel = table.Column<int>(type: "int", nullable: true),
                     SubscriptionPaymentStatus = table.Column<int>(type: "int", nullable: true),
@@ -112,6 +113,7 @@ namespace FitSwipe.DataAccess.Migrations
                     Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     TagType = table.Column<int>(type: "int", nullable: false),
                     CreateById = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    TagImage = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     CreatedDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     UpdatedDate = table.Column<DateTime>(type: "datetime2", nullable: true),
                     DeletedDate = table.Column<DateTime>(type: "datetime2", nullable: true),
@@ -327,35 +329,35 @@ namespace FitSwipe.DataAccess.Migrations
                 columns: new[] { "Id", "Body", "CreatedDate", "DeletedDate", "Description", "Name", "Params", "RecordStatus", "Status", "Subject", "UpdatedDate" },
                 values: new object[,]
                 {
-                    { new Guid("3fec9dc1-4bc7-43a1-b814-4f33d9b169a5"), "Chào mừng bạn đến với FitWipe! Kính gửi [Name], vui lòng xác nhận địa chỉ email của bạn bằng cách nhấn vào đường link sau: <a href=\"[VerificationLink]\">Xác nhận Email</a>.<br><br>Cảm ơn bạn đã tham gia cùng chúng tôi!<br><br>Đội ngũ FitWipe", new DateTime(2024, 9, 16, 7, 38, 57, 882, DateTimeKind.Local).AddTicks(9058), null, "Email này được gửi để xác nhận đăng ký tài khoản FitWipe.", "Register_Mail", "[Name], [VerificationLink]", 0, true, "Chào mừng đến với FitWipe! Vui lòng xác nhận email của bạn", null },
-                    { new Guid("98d25a97-19b2-4c0d-97f7-524506028882"), "Chúng tôi đã nhận được yêu cầu đặt lại mật khẩu cho tài khoản của bạn tại FitWipe. Kính gửi [Name], vui lòng đặt lại mật khẩu của bạn bằng cách nhấn vào đường link sau: <a href=\"[ResetPasswordLink]\">Đặt lại mật khẩu</a>.<br><br>Nếu bạn không yêu cầu việc này, vui lòng bỏ qua email này.<br><br>Đội ngũ FitWipe", new DateTime(2024, 9, 16, 7, 38, 57, 882, DateTimeKind.Local).AddTicks(9095), null, "Email này được gửi khi người dùng yêu cầu đặt lại mật khẩu cho tài khoản FitWipe.", "Forgot_Password", "[Name], [ResetPasswordLink]", 0, true, "Yêu cầu đặt lại mật khẩu FitWipe", null }
+                    { new Guid("d002d6fd-beec-4d62-91b8-f7f14a2a2298"), "Chào mừng bạn đến với FitWipe! Kính gửi [Name], vui lòng xác nhận địa chỉ email của bạn bằng cách nhấn vào đường link sau: <a href=\"[VerificationLink]\">Xác nhận Email</a>.<br><br>Cảm ơn bạn đã tham gia cùng chúng tôi!<br><br>Đội ngũ FitWipe", new DateTime(2024, 9, 19, 18, 44, 12, 476, DateTimeKind.Local).AddTicks(6292), null, "Email này được gửi để xác nhận đăng ký tài khoản FitWipe.", "Register_Mail", "[Name], [VerificationLink]", 0, true, "Chào mừng đến với FitWipe! Vui lòng xác nhận email của bạn", null },
+                    { new Guid("d353192d-2652-4cf3-9a7e-b987f3b7e39d"), "Chúng tôi đã nhận được yêu cầu đặt lại mật khẩu cho tài khoản của bạn tại FitWipe. Kính gửi [Name], vui lòng đặt lại mật khẩu của bạn bằng cách nhấn vào đường link sau: <a href=\"[ResetPasswordLink]\">Đặt lại mật khẩu</a>.<br><br>Nếu bạn không yêu cầu việc này, vui lòng bỏ qua email này.<br><br>Đội ngũ FitWipe", new DateTime(2024, 9, 19, 18, 44, 12, 476, DateTimeKind.Local).AddTicks(6336), null, "Email này được gửi khi người dùng yêu cầu đặt lại mật khẩu cho tài khoản FitWipe.", "Forgot_Password", "[Name], [ResetPasswordLink]", 0, true, "Yêu cầu đặt lại mật khẩu FitWipe", null }
                 });
 
             migrationBuilder.InsertData(
                 table: "Users",
-                columns: new[] { "FireBaseId", "AvatarUrl", "Balance", "Bio", "City", "CreatedDate", "DateOfBirth", "DeletedDate", "District", "Email", "Gender", "Height", "Id", "Job", "PTExperienceYear", "PTStatus", "Password", "Phone", "RecordStatus", "Role", "Status", "Street", "SubscriptionLevel", "SubscriptionPaymentStatus", "SubscriptionPurchasedDate", "UpdatedDate", "UserName", "Ward", "Weight" },
+                columns: new[] { "FireBaseId", "AvatarUrl", "Balance", "Bio", "City", "CreatedDate", "DateOfBirth", "DeletedDate", "District", "Email", "Gender", "Height", "Id", "Job", "PTDegreeImageUrl", "PTExperienceYear", "PTStatus", "Password", "Phone", "RecordStatus", "Role", "Status", "Street", "SubscriptionLevel", "SubscriptionPaymentStatus", "SubscriptionPurchasedDate", "UpdatedDate", "UserName", "Ward", "Weight" },
                 values: new object[,]
                 {
-                    { "123abc", "https://example.com/avatar1.jpg", 1000, "Fitness enthusiast and certified personal trainer.", "New York", new DateTime(2024, 9, 16, 7, 38, 57, 882, DateTimeKind.Local).AddTicks(8448), new DateTime(1990, 5, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, "Manhattan", "john.doe@example.com", 0, 180.30000000000001, new Guid("469e46e9-c1ef-4eaa-990c-37f06c82ffe5"), "Student", null, null, "hashedpassword1", "1234567890", 0, 0, 0, "5th Avenue", null, null, null, null, "john doe", "Ward 5", 75.5 },
-                    { "456def", "https://example.com/avatar2.jpg", 1500, "Yoga instructor with a passion for holistic health.", "Los Angeles", new DateTime(2024, 9, 16, 7, 38, 57, 882, DateTimeKind.Local).AddTicks(8550), new DateTime(1985, 8, 20, 0, 0, 0, 0, DateTimeKind.Unspecified), null, "Beverly Hills", "jane.smith@example.com", 1, 170.19999999999999, new Guid("500537b3-4be9-46df-9700-4392b752c611"), "Yoga Instructor", 3.5, 1, "hashedpassword2", "0987654321", 0, 1, 0, "Rodeo Drive", 1, 0, new DateTime(2023, 2, 10, 0, 0, 0, 0, DateTimeKind.Unspecified), null, "jane smith", "Ward 3", 65.0 },
-                    { "789ghi", "https://example.com/avatar3.jpg", 2000, "Aspiring bodybuilder and nutrition expert.", "Chicago", new DateTime(2024, 9, 16, 7, 38, 57, 882, DateTimeKind.Local).AddTicks(8569), new DateTime(1992, 3, 10, 0, 0, 0, 0, DateTimeKind.Unspecified), null, "Lincoln Park", "alex.jones@example.com", 0, 185.40000000000001, new Guid("f733cf80-efd2-491b-872f-21d1fe65ca88"), "Nutritionist", 2.0, 0, "hashedpassword3", "5551234567", 0, 1, 0, "Clark Street", null, null, null, null, "alex jones", "Ward 7", 85.0 }
+                    { "123abc", "https://example.com/avatar1.jpg", 1000, "Fitness enthusiast and certified personal trainer.", "New York", new DateTime(2024, 9, 19, 18, 44, 12, 476, DateTimeKind.Local).AddTicks(5613), new DateTime(1990, 5, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, "Manhattan", "john.doe@example.com", 0, 180.30000000000001, new Guid("e05cab2b-839c-4d4f-92d5-2b700e3a28d1"), "Student", null, null, null, "hashedpassword1", "1234567890", 0, 0, 0, "5th Avenue", null, null, null, null, "john doe", "Ward 5", 75.5 },
+                    { "456def", "https://example.com/avatar2.jpg", 1500, "Yoga instructor with a passion for holistic health.", "Los Angeles", new DateTime(2024, 9, 19, 18, 44, 12, 476, DateTimeKind.Local).AddTicks(5735), new DateTime(1985, 8, 20, 0, 0, 0, 0, DateTimeKind.Unspecified), null, "Beverly Hills", "jane.smith@example.com", 1, 170.19999999999999, new Guid("edf44f9a-815b-4d04-a11d-d8c68f3b1139"), "Yoga Instructor", null, 3.5, 1, "hashedpassword2", "0987654321", 0, 1, 0, "Rodeo Drive", 1, 0, new DateTime(2023, 2, 10, 0, 0, 0, 0, DateTimeKind.Unspecified), null, "jane smith", "Ward 3", 65.0 },
+                    { "789ghi", "https://example.com/avatar3.jpg", 2000, "Aspiring bodybuilder and nutrition expert.", "Chicago", new DateTime(2024, 9, 19, 18, 44, 12, 476, DateTimeKind.Local).AddTicks(5746), new DateTime(1992, 3, 10, 0, 0, 0, 0, DateTimeKind.Unspecified), null, "Lincoln Park", "alex.jones@example.com", 0, 185.40000000000001, new Guid("676428d9-c4dc-40b5-b04e-31b0af64b5ab"), "Nutritionist", null, 2.0, 0, "hashedpassword3", "5551234567", 0, 1, 0, "Clark Street", null, null, null, null, "alex jones", "Ward 7", 85.0 }
                 });
 
             migrationBuilder.InsertData(
                 table: "Tags",
-                columns: new[] { "Id", "CreateById", "CreatedDate", "DeletedDate", "Name", "RecordStatus", "TagType", "UpdatedDate" },
+                columns: new[] { "Id", "CreateById", "CreatedDate", "DeletedDate", "Name", "RecordStatus", "TagImage", "TagType", "UpdatedDate" },
                 values: new object[,]
                 {
-                    { new Guid("07d31b84-4fbf-4eda-8f12-6a6e99512da7"), "123abc", new DateTime(2024, 9, 16, 7, 38, 57, 882, DateTimeKind.Local).AddTicks(8999), null, "Giá rẻ", 0, 3, null },
-                    { new Guid("1039f57a-e5b6-4b61-b05f-9c0e1c474837"), "123abc", new DateTime(2024, 9, 16, 7, 38, 57, 882, DateTimeKind.Local).AddTicks(8952), null, "Bóng đá", 0, 0, null },
-                    { new Guid("2c45a5ea-0674-4623-8e5e-8848fbada623"), "123abc", new DateTime(2024, 9, 16, 7, 38, 57, 882, DateTimeKind.Local).AddTicks(8958), null, "Video game", 0, 0, null },
-                    { new Guid("336d75f4-5e78-4266-a63c-fe28b7ba7ab0"), "123abc", new DateTime(2024, 9, 16, 7, 38, 57, 882, DateTimeKind.Local).AddTicks(8995), null, "Ngoại hình đẹp", 0, 3, null },
-                    { new Guid("69c3f245-6775-46c2-8c96-0f6fd2fcf22e"), "123abc", new DateTime(2024, 9, 16, 7, 38, 57, 882, DateTimeKind.Local).AddTicks(8989), null, "Yoga", 0, 2, null },
-                    { new Guid("a03a8253-126c-4a8c-a587-32e34fca94c3"), "123abc", new DateTime(2024, 9, 16, 7, 38, 57, 882, DateTimeKind.Local).AddTicks(8962), null, "Giảm cân", 0, 1, null },
-                    { new Guid("a0e6107f-6a87-4dcc-b36a-264ac30e7bcb"), "123abc", new DateTime(2024, 9, 16, 7, 38, 57, 882, DateTimeKind.Local).AddTicks(9005), null, "Siêng năng", 0, 4, null },
-                    { new Guid("d474e7c0-c880-4122-a2d6-87b86229945c"), "123abc", new DateTime(2024, 9, 16, 7, 38, 57, 882, DateTimeKind.Local).AddTicks(8992), null, "Cardino", 0, 2, null },
-                    { new Guid("e94ea900-0c86-40e6-afaa-58048b233b2e"), "123abc", new DateTime(2024, 9, 16, 7, 38, 57, 882, DateTimeKind.Local).AddTicks(9002), null, "Kiên trì", 0, 4, null },
-                    { new Guid("f54f052e-a8e8-4136-8989-2ef67010e956"), "123abc", new DateTime(2024, 9, 16, 7, 38, 57, 882, DateTimeKind.Local).AddTicks(8985), null, "Phát triển cơ bắp", 0, 1, null }
+                    { new Guid("166ec7dc-d0b8-4cf4-a06f-c099a9e0ad4d"), "123abc", new DateTime(2024, 9, 19, 18, 44, 12, 476, DateTimeKind.Local).AddTicks(6149), null, "Yoga", 0, null, 2, null },
+                    { new Guid("2bf3e0bf-de43-46c6-a926-2e550bf83681"), "123abc", new DateTime(2024, 9, 19, 18, 44, 12, 476, DateTimeKind.Local).AddTicks(6151), null, "Cardino", 0, null, 2, null },
+                    { new Guid("346adc11-a6f3-4818-a3b0-02fb67a14ad9"), "123abc", new DateTime(2024, 9, 19, 18, 44, 12, 476, DateTimeKind.Local).AddTicks(6136), null, "Bóng đá", 0, null, 0, null },
+                    { new Guid("78223ef7-771d-4fb0-894d-5ccc9d4dec29"), "123abc", new DateTime(2024, 9, 19, 18, 44, 12, 476, DateTimeKind.Local).AddTicks(6148), null, "Phát triển cơ bắp", 0, null, 1, null },
+                    { new Guid("79af082d-87cb-4e06-8527-55966caf2b63"), "123abc", new DateTime(2024, 9, 19, 18, 44, 12, 476, DateTimeKind.Local).AddTicks(6157), null, "Kiên trì", 0, null, 4, null },
+                    { new Guid("a30ac05c-728c-4463-8505-05ae0a16dd61"), "123abc", new DateTime(2024, 9, 19, 18, 44, 12, 476, DateTimeKind.Local).AddTicks(6155), null, "Giá rẻ", 0, null, 3, null },
+                    { new Guid("aceced72-5d04-478a-b3b0-d5cacf85c69c"), "123abc", new DateTime(2024, 9, 19, 18, 44, 12, 476, DateTimeKind.Local).AddTicks(6158), null, "Siêng năng", 0, null, 4, null },
+                    { new Guid("adf31298-684b-4a26-ad56-227cbd5a09bd"), "123abc", new DateTime(2024, 9, 19, 18, 44, 12, 476, DateTimeKind.Local).AddTicks(6146), null, "Giảm cân", 0, null, 1, null },
+                    { new Guid("eb455c96-e17d-4388-9d5d-e363dd7019d1"), "123abc", new DateTime(2024, 9, 19, 18, 44, 12, 476, DateTimeKind.Local).AddTicks(6154), null, "Ngoại hình đẹp", 0, null, 3, null },
+                    { new Guid("f3e76667-ce2c-475a-b9eb-a8247ef9fdca"), "123abc", new DateTime(2024, 9, 19, 18, 44, 12, 476, DateTimeKind.Local).AddTicks(6144), null, "Video game", 0, null, 0, null }
                 });
 
             migrationBuilder.CreateIndex(
