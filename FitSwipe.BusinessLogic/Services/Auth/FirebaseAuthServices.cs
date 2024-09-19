@@ -2,11 +2,14 @@
 using FitSwipe.BusinessLogic.Interfaces.Auth;
 using FitSwipe.BusinessLogic.Interfaces.Sender;
 using FitSwipe.BusinessLogic.Models.User;
+using FitSwipe.DataAccess.Model.Entity;
 using FitSwipe.DataAccess.Model.Enum;
 using FitSwipe.DataAccess.Repository.Intefaces;
 using FitSwipe.Shared.Dtos.Users;
+using FitSwipe.Shared.Enum;
 using FitSwipe.Shared.Exceptions;
 using FitSwipe.Shared.Model.Auth;
+using Mapster;
 using System.Net.Http.Json;
 using static FitSwipe.BusinessLogic.Services.Auth.JwtProviderServices;
 
@@ -140,7 +143,29 @@ namespace FitSwipe.BusinessLogic.Services.Auth
                 if (authToken == null)
                     throw new InvalidOperationException("Authentication token is null");
 
+               
                 var userInDb = await _userRepository.FindOneAsync(user => user.FireBaseId == authToken.LocalId);
+                //==== This section will be removed later ====
+                if (userInDb == null)
+                {
+                    var recordToFetch = await FirebaseAuth.DefaultInstance.GetUserAsync(authToken.LocalId);
+                    if (recordToFetch == null)
+                    {
+                        throw new DataNotFoundException("User not found");
+                    }
+                    else
+                    {
+                        userInDb = recordToFetch.Adapt<User>();
+                        userInDb.Id = Guid.NewGuid();
+                        userInDb.Password = "defaultPassword";
+                        userInDb.Phone = recordToFetch.PhoneNumber != null ? recordToFetch.PhoneNumber : "0935333333";
+                        userInDb.FireBaseId = recordToFetch.Uid;
+                        userInDb.Role = Role.Trainee; //default;
+                        userInDb.UserName =
+                            recordToFetch.DisplayName != null ? recordToFetch.DisplayName : recordToFetch.Email;
+                    }
+                }
+                //==============================================
 
                 var customClaims = new Dictionary<string, object>
                 {

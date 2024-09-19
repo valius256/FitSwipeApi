@@ -11,7 +11,7 @@ namespace FitSwipe.API.Controllers
             _logger = logger;
         }
 
-        protected string? CurrentUserFirebaseId
+        protected string CurrentUserFirebaseId
         {
             get
             {
@@ -21,7 +21,7 @@ namespace FitSwipe.API.Controllers
                     return firebaseId;
                 }
                 _logger.LogInformation("Can't get user from HttpContext");
-                return null;
+                return string.Empty;
             }
         }
     }

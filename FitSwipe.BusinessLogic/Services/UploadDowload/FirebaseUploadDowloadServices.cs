@@ -12,8 +12,7 @@ namespace FitSwipe.BusinessLogic.Services.UploadDowload
     public class FirebaseUploadDowloadServices : IFirebaseUploadDowloadServices
     {
 
-        private readonly string ServiceAccountPath =
-                @"D:\Semester8\Exe201\Project\FitSwipeApi\FitSwipe.API\fit-swipe-161d7-firebase-adminsdk-l0tth-9884dc9fa1.json";
+        private readonly string ServiceAccountPath = Path.Combine(AppContext.BaseDirectory, "fit-swipe-161d7-firebase-adminsdk-l0tth-9884dc9fa1.json");
         private readonly string StorageBucketName = "fit-swipe-161d7.appspot.com";
 
 
