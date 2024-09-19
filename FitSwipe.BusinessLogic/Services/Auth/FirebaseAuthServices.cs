@@ -145,6 +145,9 @@ namespace FitSwipe.BusinessLogic.Services.Auth
                 var customClaims = new Dictionary<string, object>
                 {
                     { "roles", userInDb.Role.ToString() },
+                    { "User", userInDb },
+
+
                 };
                 await SetCustomClaimsAsync(authToken.LocalId, customClaims);
 
