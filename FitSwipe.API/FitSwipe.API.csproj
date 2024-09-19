@@ -44,6 +44,15 @@
 		<Content Update="appsettings.json">
 			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
 		</Content>
+		<Content Update="fit-swipe-161d7-firebase-adminsdk-l0tth-9884dc9fa1.json">
+			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</Content>
 	</ItemGroup>
 
+
+	<ItemGroup>
+		<Content Update="FitSwipeApi\FitSwipe.API\fit-swipe-161d7-firebase-adminsdk-l0tth-9884dc9fa1.json">
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</Content>
+	</ItemGroup>
 </Project>
