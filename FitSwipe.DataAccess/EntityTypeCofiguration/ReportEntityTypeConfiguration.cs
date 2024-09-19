@@ -17,7 +17,7 @@ namespace FitSwipe.DataAccess.EntityTypeCofiguration
                 .HasForeignKey(x => x.ReporterId)
                 .OnDelete(DeleteBehavior.Restrict);
 
-            
+
         }
     }
 }

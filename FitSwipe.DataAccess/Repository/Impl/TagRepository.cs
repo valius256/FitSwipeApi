@@ -1,12 +1,8 @@
-﻿
-using FitSwipe.DataAccess.Helper;
-using FitSwipe.DataAccess.Model;
+﻿using FitSwipe.DataAccess.Model;
 using FitSwipe.DataAccess.Model.Entity;
-using FitSwipe.DataAccess.Model.Paging;
 using FitSwipe.DataAccess.Repository.Intefaces;
 using FitSwipe.Shared.Dtos.Tags;
 using Microsoft.EntityFrameworkCore;
-using System.ComponentModel;
 
 namespace FitSwipe.DataAccess.Repository.Impl
 {

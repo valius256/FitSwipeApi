@@ -9,7 +9,7 @@ namespace FitSwipe.DataAccess.EntityTypeCofiguration
         public void Configure(EntityTypeBuilder<User> builder)
         {
             builder.HasKey(x => x.FireBaseId);
-            
+
             builder.Property(u => u.Phone)
                 .IsRequired()   // Phone number is required
                 .HasMaxLength(10) // The length of a Vietnamese phone number is 10 digits
@@ -21,6 +21,8 @@ namespace FitSwipe.DataAccess.EntityTypeCofiguration
                 .WithOne(x => x.PT)
                 .HasForeignKey(x => x.PTId)
                 .OnDelete(DeleteBehavior.Restrict);
+
+
 
             builder.HasMany(x => x.ReportsReceived)
                 .WithOne(x => x.Target)

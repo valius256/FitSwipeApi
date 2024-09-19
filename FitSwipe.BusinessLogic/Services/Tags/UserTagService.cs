@@ -8,8 +8,6 @@ using FitSwipe.Shared.Dtos.Tags;
 using FitSwipe.Shared.Dtos.Users;
 using FitSwipe.Shared.Exceptions;
 using Mapster;
-using Org.BouncyCastle.Crypto;
-using System.Linq;
 
 namespace FitSwipe.BusinessLogic.Services.Tags
 {
@@ -61,7 +59,7 @@ namespace FitSwipe.BusinessLogic.Services.Tags
 
         public async Task DeleteUserTag(string userId, Guid tagId)
         {
-            var existedUserTag = await _userTagRepository.FindOneAsync(ut => ut.UserId ==  userId && ut.TagId == tagId);
+            var existedUserTag = await _userTagRepository.FindOneAsync(ut => ut.UserId == userId && ut.TagId == tagId);
             if (existedUserTag == null)
             {
                 throw new DataNotFoundException("User tag not found");

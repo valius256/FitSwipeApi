@@ -2,7 +2,6 @@
 
 using FitSwipe.BusinessLogic.Interfaces.Tags;
 using FitSwipe.DataAccess.Model.Entity;
-using FitSwipe.DataAccess.Model.Paging;
 using FitSwipe.DataAccess.Repository.Intefaces;
 using FitSwipe.Shared.Dtos.Tags;
 using FitSwipe.Shared.Exceptions;

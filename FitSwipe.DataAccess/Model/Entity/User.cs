@@ -1,8 +1,7 @@
-﻿using FitSwipe.DataAccess.Model;
-using FitSwipe.DataAccess.Model.Entity;
-using FitSwipe.Shared.Enum;
+﻿using FitSwipe.Shared.Enum;
 using System.ComponentModel.DataAnnotations;
 using System.Diagnostics.CodeAnalysis;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 
 namespace FitSwipe.DataAccess.Model.Entity
 {
@@ -45,6 +44,8 @@ namespace FitSwipe.DataAccess.Model.Entity
         //PT Exclusive
         [AllowNull]
         public PTStatus? PTStatus { get; set; }
+        [AllowNull]
+        public string? Description { get; set; }
         [AllowNull]
         public double? PTExperienceYear { get; set; }
         [AllowNull]

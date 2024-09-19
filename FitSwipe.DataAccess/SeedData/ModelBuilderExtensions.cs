@@ -166,7 +166,7 @@ namespace FitSwipe.DataAccess.SeedData
                }
             );
             #endregion
-            
+
             #region EmailTemplateModel
 
             modelBuilder.Entity<EmailTemplate>().HasData(
@@ -181,7 +181,7 @@ namespace FitSwipe.DataAccess.SeedData
                     Description = "Email này được gửi để xác nhận đăng ký tài khoản FitWipe."
                 }
             );
-            
+
             modelBuilder.Entity<EmailTemplate>().HasData(
                 new EmailTemplate
                 {
