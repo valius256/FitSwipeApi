@@ -15,6 +15,8 @@ builder.Services.AddLogging();
 builder.Services.Configure<Appsettings>(builder.Configuration.GetSection("Appsettings"));
 
 builder.Services.Configure<SmtpAppSetting>(builder.Configuration.GetSection("SmtpSettings"));
+builder.Services.Configure<FirebaseUpload>(builder.Configuration.GetSection("FirebaseUpload"));
+
 builder.Services.Configure<VnPay>(builder.Configuration.GetSection("VnPay"));
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle

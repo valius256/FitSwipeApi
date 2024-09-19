@@ -2,11 +2,13 @@
 using FitSwipe.BusinessLogic.Interfaces.Auth;
 using FitSwipe.BusinessLogic.Interfaces.Sender;
 using FitSwipe.BusinessLogic.Models.User;
+using FitSwipe.DataAccess.Model;
 using FitSwipe.DataAccess.Model.Enum;
 using FitSwipe.DataAccess.Repository.Intefaces;
 using FitSwipe.Shared.Dtos.Users;
 using FitSwipe.Shared.Exceptions;
 using FitSwipe.Shared.Model.Auth;
+using Microsoft.Extensions.Options;
 using System.Net.Http.Json;
 using static FitSwipe.BusinessLogic.Services.Auth.JwtProviderServices;
 
@@ -18,11 +20,14 @@ namespace FitSwipe.BusinessLogic.Services.Auth
         private readonly IEmailServices _emailServices;
         private readonly HttpClient _httpClient;
         private readonly IUserRepository _userRepository;
-        public FirebaseAuthServices(IEmailServices emailServices, HttpClient httpClient, IUserRepository userRepository)
+
+
+        public FirebaseAuthServices(IEmailServices emailServices, HttpClient httpClient, IUserRepository userRepository, IOptions<FirebaseUpload> firebaseUpload)
         {
             _emailServices = emailServices;
             _httpClient = httpClient;
             _userRepository = userRepository;
+
 
         }
 

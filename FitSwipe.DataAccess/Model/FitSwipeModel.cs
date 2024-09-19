@@ -26,6 +26,8 @@ public partial class Appsettings
     public string Hangfire { get; set; }
     [JsonPropertyName("SmtpAppSetting")]
     public SmtpAppSetting SmtpAppSetting { get; set; }
+    [JsonPropertyName("FirebaseUpload")]
+    public FirebaseUpload FirebaseUpload { get; set; }
 }
 
 public partial class SmtpAppSetting
@@ -36,6 +38,17 @@ public partial class SmtpAppSetting
     public string SmtpPassword { get; set; }
     public bool EnableSsl { get; set; }
     public string AppVerify { get; set; }
+}
+
+public partial class FirebaseUpload
+{
+    [JsonPropertyName("BucketName")]
+    public string BucketName { get; set; }
+    [JsonPropertyName("ProjectId")]
+    public string ProjectId { get; set; }
+    [JsonPropertyName("ServicesAccountPath")]
+    public string ServicesAccountPath { get; set; }
+
 }
 
 public partial class SmtpSettings

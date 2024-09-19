@@ -1,8 +1,10 @@
 ﻿using FitSwipe.BusinessLogic.Interfaces.UploadDowload;
+using FitSwipe.DataAccess.Model;
 using FitSwipe.Shared.Dtos.UploadDowloads;
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Storage.v1.Data;
 using Google.Cloud.Storage.V1;
+using Microsoft.Extensions.Options;
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.Formats;
 
@@ -11,12 +13,13 @@ namespace FitSwipe.BusinessLogic.Services.UploadDowload
 {
     public class FirebaseUploadDowloadServices : IFirebaseUploadDowloadServices
     {
+        private readonly FirebaseUpload _firebaseUpload;
 
-        private readonly string ServiceAccountPath =
-                @"D:\Semester8\Exe201\Project\FitSwipeApi\FitSwipe.API\fit-swipe-161d7-firebase-adminsdk-l0tth-9884dc9fa1.json";
-        private readonly string StorageBucketName = "fit-swipe-161d7.appspot.com";
+        public FirebaseUploadDowloadServices(IOptions<FirebaseUpload> firebaseUpload)
+        {
+            _firebaseUpload = firebaseUpload.Value;
 
-
+        }
 
         public async Task<string> UploadVideoAsync(string userFirebaseId, string fileName, Stream fileStream)
         {
@@ -41,7 +44,7 @@ namespace FitSwipe.BusinessLogic.Services.UploadDowload
 
         private async Task EnsurePublicAccess(StorageClient storage)
         {
-            var policy = storage.GetBucketIamPolicy(StorageBucketName);
+            var policy = storage.GetBucketIamPolicy(_firebaseUpload.BucketName);
             if (!policy.Bindings.Any(b => b.Role == "roles/storage.objectViewer" && b.Members.Contains("allUsers")))
             {
                 policy.Bindings.Add(new Policy.BindingsData
@@ -49,7 +52,7 @@ namespace FitSwipe.BusinessLogic.Services.UploadDowload
                     Role = "roles/storage.objectViewer",
                     Members = new List<string> { "allUsers" }
                 });
-                storage.SetBucketIamPolicy(StorageBucketName, policy);
+                storage.SetBucketIamPolicy(_firebaseUpload.BucketName, policy);
             }
         }
 
@@ -93,15 +96,14 @@ namespace FitSwipe.BusinessLogic.Services.UploadDowload
         public async Task<List<DowloadImagesDtos>> DownloadImagesAsync(string uid)
         {
             var downloadLinksList = new List<DowloadImagesDtos>();
-            var storage = StorageClient.Create(GoogleCredential.FromFile(ServiceAccountPath));
+            var storage = StorageClient.Create(GoogleCredential.FromFile(_firebaseUpload.ServicesAccountPath));
             try
             {
                 // Reference to the folder containing images for the given uid
-                var objects = storage.ListObjects(StorageBucketName, $"images/{uid}/");
+                var objects = storage.ListObjects(_firebaseUpload.BucketName, $"images/{uid}/");
 
                 var urlSigner = UrlSigner.FromCredential(
-                    GoogleCredential.FromFile(ServiceAccountPath).UnderlyingCredential as ServiceAccountCredential);
-
+                                 GoogleCredential.FromFile(_firebaseUpload.ServicesAccountPath).UnderlyingCredential as ServiceAccountCredential);
 
                 foreach (var obj in objects)
                 {
@@ -141,19 +143,20 @@ namespace FitSwipe.BusinessLogic.Services.UploadDowload
         {
             try
             {
-                var storage = StorageClient.Create(GoogleCredential.FromFile(ServiceAccountPath));
+
+                var storage = StorageClient.Create(GoogleCredential.FromFile(_firebaseUpload.ServicesAccountPath));
                 await EnsurePublicAccess(storage);
 
                 // Determine the folder based on content type
                 var folder = contentType.StartsWith("image/") ? "images" : "videos";
                 var storageFileName = $"{folder}/{uid}/{fileName}";
-                await storage.UploadObjectAsync(StorageBucketName, storageFileName, contentType, fileStream);
+                await storage.UploadObjectAsync(_firebaseUpload.BucketName, storageFileName, contentType, fileStream);
 
-                var storageObject = await storage.GetObjectAsync(StorageBucketName, storageFileName);
+                var storageObject = await storage.GetObjectAsync(_firebaseUpload.BucketName, storageFileName);
                 storage.UpdateObject(storageObject,
                     new UpdateObjectOptions { PredefinedAcl = PredefinedObjectAcl.PublicRead });
 
-                return $"https://storage.googleapis.com/{StorageBucketName}/{storageFileName}";
+                return $"https://storage.googleapis.com/{_firebaseUpload.BucketName}/{storageFileName}";
             }
             catch (Exception ex)
             {
