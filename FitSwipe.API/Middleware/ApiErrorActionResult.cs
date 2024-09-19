@@ -4,7 +4,7 @@
     {
         public string Title { get; set; }
         public int Status { get; set; }
-        public List<ValidationErrorModel> Errors { get; set; }
+        public required List<ValidationErrorModel> Errors { get; set; }
     }
 
     public class ValidationErrorModel
