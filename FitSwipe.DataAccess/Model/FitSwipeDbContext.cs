@@ -29,7 +29,7 @@ namespace FitSwipe.DataAccess.Model
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.ApplyConfiguration(new UserEntityTypeConfiguration());
-            
+
 
             modelBuilder.Seed();
         }

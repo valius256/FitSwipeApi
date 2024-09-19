@@ -5,8 +5,6 @@ using FitSwipe.DataAccess.Model.Paging;
 using FitSwipe.DataAccess.Repository.Intefaces;
 using FitSwipe.Shared.Dtos.Users;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.IdentityModel.Tokens;
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace FitSwipe.DataAccess.Repository.Impl
 {
@@ -51,7 +49,7 @@ namespace FitSwipe.DataAccess.Repository.Impl
             var query = _context.Users
                 .Include(u => u.UserTags)
                     .ThenInclude(ut => ut.Tag)
-                .OrderByDescending(u => 
+                .OrderByDescending(u =>
                     u.UserTags.Where(ut => tagIds.Contains(ut.TagId)).ToList().Count)
                 .AsQueryable();
 
@@ -158,7 +156,7 @@ namespace FitSwipe.DataAccess.Repository.Impl
                     query = query.Where(u => queryUserDto.Statuses.Contains(u.Status));
                 }
             }
-            
+
             #endregion
             return query;
         }

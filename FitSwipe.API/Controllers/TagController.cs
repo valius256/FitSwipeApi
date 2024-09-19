@@ -34,7 +34,7 @@ namespace FitSwipe.API.Controllers
         [HttpPut("upsert-user-tags")]
         public async Task<IActionResult> UpsertUserTags([FromBody] UpsertUserTagDto upsertUserTagDto)
         {
-            await _userTagService.UpsertUserTags(upsertUserTagDto.UserId,upsertUserTagDto);
+            await _userTagService.UpsertUserTags(upsertUserTagDto.UserId, upsertUserTagDto);
             return Ok();
         }
     }

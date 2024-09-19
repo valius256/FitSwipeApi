@@ -146,7 +146,7 @@ namespace FitSwipe.BusinessLogic.Services.Auth
                 if (authToken == null)
                     throw new InvalidOperationException("Authentication token is null");
 
-               
+
                 var userInDb = await _userRepository.FindOneAsync(user => user.FireBaseId == authToken.LocalId);
                 //==== This section will be removed later ====
                 if (userInDb == null)

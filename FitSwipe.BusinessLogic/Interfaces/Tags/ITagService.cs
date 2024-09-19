@@ -4,7 +4,7 @@ using FitSwipe.Shared.Dtos.Tags;
 
 namespace FitSwipe.BusinessLogic.Interfaces.Tags
 {
-    public interface ITagService 
+    public interface ITagService
     {
         Task<List<GetTagDto>> GetAllTags();
         Task<List<GetTagDto>> GetTagsQueried(QueryTagDto queryTagDto);

@@ -18,7 +18,7 @@ namespace FitSwipe.DataAccess.EntityTypeCofiguration
                 .HasForeignKey(ut => ut.TagId)
                 .OnDelete(DeleteBehavior.Restrict);
 
-            
+
         }
     }
 }

@@ -1,8 +1,6 @@
-﻿using FitSwipe.BusinessLogic.Interfaces.Auth;
-using FitSwipe.BusinessLogic.Interfaces.Tags;
+﻿using FitSwipe.BusinessLogic.Interfaces.Tags;
 using FitSwipe.BusinessLogic.Interfaces.Users;
 using FitSwipe.DataAccess.Model.Paging;
-using FitSwipe.Shared.Dtos.Tags;
 using FitSwipe.Shared.Dtos.UploadDowloads;
 using FitSwipe.Shared.Dtos.Users;
 using Microsoft.AspNetCore.Authorization;
