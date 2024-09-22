@@ -58,6 +58,11 @@ public class ExceptionHandlingMiddleware
                 title = "Unauthorized";
                 errors.Add(new ValidationErrorModel(unauthorizedAccessException.Message));
                 break;
+            case ForbiddenException forbiddenException:
+                status = HttpStatusCode.Forbidden;
+                title = "Unauthorized";
+                errors.Add(new ValidationErrorModel(forbiddenException.Message));
+                break;
             case DataNotFoundException dataNotFoundException:
                 status = HttpStatusCode.NotFound;
                 title = "Not Found";
