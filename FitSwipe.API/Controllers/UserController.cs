@@ -9,7 +9,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace FitSwipe.API.Controllers
 {
     [ApiController]
-    [Route("api/[controller]")]
+    [Route("api/users")]
     public class UserController : BaseController<UserController>
     {
         private readonly IUserServices _userServices;
