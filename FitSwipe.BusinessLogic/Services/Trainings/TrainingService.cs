@@ -67,7 +67,7 @@ namespace FitSwipe.BusinessLogic.Services.Trainings
             var user = await _userServices.GetUserByIdRequired(userId);
             if (queryTrainingDto.Filter == null)
             {
-                queryTrainingDto.Filter = new QueryTrainingDto();
+                queryTrainingDto.Filter = new QueryTrainingDto(); 
             }
             if (user.Role == Role.Trainee)
             {             
