@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace FitSwipe.API.Controllers
 {
     [ApiController]
-    [Route("api/[controller]")]
+    [Route("api/tags")]
     public class TagController : ControllerBase
     {
         private readonly IUserTagService _userTagService;

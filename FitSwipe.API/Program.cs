@@ -4,6 +4,7 @@ using FitSwipe.DataAccess.Model;
 using Hangfire;
 using Hangfire.Dashboard;
 using Microsoft.EntityFrameworkCore;
+using Scalar.AspNetCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -28,7 +29,7 @@ builder.Services.AddDbContext<FitSwipeDbContext>(options =>
 {
     options.EnableSensitiveDataLogging();
     options.EnableDetailedErrors();
-    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
+    options.UseSqlServer(builder.Configuration.GetConnectionString("deploy"));
 });
 
 
@@ -60,8 +61,13 @@ var app = builder.Build();
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
-    app.UseSwagger();
-    app.UseSwaggerUI();
+    //app.UseSwagger();
+    //app.UseSwaggerUI();
+    app.UseSwagger(options =>
+    {
+        options.RouteTemplate = "openapi/{documentName}.json";
+    });
+    app.MapScalarApiReference();
 }
 
 using (var scope = app.Services.CreateScope())
@@ -98,13 +104,14 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.UseCors();
+app.MapControllers();
+app.MapHangfireDashboard();
+//app.UseEndpoints(endpoints =>
+//{
 
-app.UseEndpoints(endpoints =>
-{
-
-    endpoints.MapControllers();
-    endpoints.MapHangfireDashboard();
-});
+//    endpoints.MapControllers();
+//    endpoints.MapHangfireDashboard();
+//});
 
 
-app.Run("http://0.0.0.0:5250");
+app.Run();
