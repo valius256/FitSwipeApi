@@ -2,11 +2,13 @@
 using FitSwipe.BusinessLogic.Interfaces.Auth;
 using FitSwipe.BusinessLogic.Interfaces.Sender;
 using FitSwipe.BusinessLogic.Interfaces.Tags;
+using FitSwipe.BusinessLogic.Interfaces.Trainings;
 using FitSwipe.BusinessLogic.Interfaces.UploadDowload;
 using FitSwipe.BusinessLogic.Interfaces.Users;
 using FitSwipe.BusinessLogic.Services.Auth;
 using FitSwipe.BusinessLogic.Services.Sender;
 using FitSwipe.BusinessLogic.Services.Tags;
+using FitSwipe.BusinessLogic.Services.Trainings;
 using FitSwipe.BusinessLogic.Services.UploadDowload;
 using FitSwipe.BusinessLogic.Services.Users;
 using FitSwipe.DataAccess.Model;
@@ -30,10 +32,11 @@ namespace FitSwipe.API.Extensions
         public static IServiceCollection AddRepositories(this IServiceCollection services)
         {
             services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
-            services.AddScoped(typeof(IUserRepository), typeof(UserRepository));
+            services.AddScoped<IUserRepository,UserRepository>();
             services.AddScoped<ITagRepository, TagRepository>();
             services.AddScoped<IUserTagRepository, UserTagRepository>();
             services.AddScoped<IEmailTemplateRepository, EmailTemplateRepository>();
+            services.AddScoped<ITrainingRepository, TrainingRepository>();
             services.AddProblemDetails();
             services.AddLogging();
 
@@ -46,8 +49,8 @@ namespace FitSwipe.API.Extensions
             services.AddScoped<IUserTagService, UserTagService>();
             services.AddScoped<ITagService, TagService>();
             services.AddScoped<IFirebaseAuthServices, FirebaseAuthServices>();
-            services.AddScoped<IFirebaseUploadDowloadServices, FirebaseUploadDowloadServices>()
-            ;
+            services.AddScoped<IFirebaseUploadDowloadServices, FirebaseUploadDowloadServices>();
+            services.AddScoped<ITrainingService, TrainingService>();
 
             services.AddTransient<IEmailServices, EmailServices>();
             services.AddScoped<IJwtProviderServices, JwtProviderServices>();

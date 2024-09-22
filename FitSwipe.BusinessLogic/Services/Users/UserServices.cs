@@ -74,15 +74,21 @@ namespace FitSwipe.BusinessLogic.Services.Users
             var user = await _userRepository.FindOneAsync(u => u.FireBaseId == id);
             if (user == null)
             {
-                var recordToFetch = await FirebaseAuth.DefaultInstance.GetUserAsync(id);
-                if (recordToFetch == null)
+                try
+                {
+                    var recordToFetch = await FirebaseAuth.DefaultInstance.GetUserAsync(id);
+                    if (recordToFetch == null)
+                    {
+                        throw new DataNotFoundException("User not found");
+                    }
+                    else
+                    {
+                        user = FetchUserRecordToUserEntity(recordToFetch);
+                        await _userRepository.AddAsync(user);
+                    }
+                } catch (FirebaseAuthException)
                 {
                     throw new DataNotFoundException("User not found");
-                }
-                else
-                {
-                    user = FetchUserRecordToUserEntity(recordToFetch);
-                    await _userRepository.AddAsync(user);
                 }
             }
             return user;

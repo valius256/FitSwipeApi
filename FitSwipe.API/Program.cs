@@ -29,7 +29,7 @@ builder.Services.AddDbContext<FitSwipeDbContext>(options =>
 {
     options.EnableSensitiveDataLogging();
     options.EnableDetailedErrors();
-    options.UseSqlServer(builder.Configuration.GetConnectionString("deploy"));
+    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
 });
 
 
