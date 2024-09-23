@@ -36,11 +36,11 @@ namespace FitSwipe.API.Extensions
         public static IServiceCollection AddRepositories(this IServiceCollection services)
         {
             services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
-            services.AddScoped<IUserRepository,UserRepository>();
+            services.AddScoped<IUserRepository, UserRepository>();
             services.AddScoped<ITagRepository, TagRepository>();
             services.AddScoped<IUserTagRepository, UserTagRepository>();
             services.AddScoped<ISlotRepository, SlotRepository>();
-            services.AddScoped<ITrainingRepository, TrainningRepository>();
+            services.AddScoped<ITrainingRepository, TrainingRepository>();
             services.AddScoped<IEmailTemplateRepository, EmailTemplateRepository>();
             services.AddScoped<ITrainingRepository, TrainingRepository>();
             services.AddProblemDetails();
