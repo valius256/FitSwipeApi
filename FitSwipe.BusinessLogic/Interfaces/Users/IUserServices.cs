@@ -8,14 +8,14 @@ namespace FitSwipe.BusinessLogic.Interfaces.Users
     public interface IUserServices
     {
         Task<User> AddUserAsync(User user);
-        Task<GetProfileUserDto> GetProfileUser(string userFirebaseId);
+        Task<GetProfileUserDto> GetProfileUserAsync(string userFirebaseId);
         Task<List<User>> GetAllUserAsync();
-        Task<User?> GetUserByEmail(string email);
-        Task<User> GetUserByIdRequired(string id);
-        Task<PagedResult<GetUserDto>> GetUserPaged(PagingModel<QueryUserDto> pagingModel);
-        Task<PagedResult<GetUserWithTagDto>> GetUserPagedWithTags(PagingModel<QueryUserDto> pagingModel);
-        Task<PagedResult<GetUserWithTagDto>> GetMatchedUserPagedWithTagsOrdered(List<Guid> tagIds, int page, int limit);
-        Task UpdatePTDegree(string userId, UpdateImageUrlDto updateImageUrlDto);
-        Task SetupProfile(string userId, SetupProfileDto setupProfileDto);
+        Task<User?> GetUserByEmailAsync(string email);
+        Task<User> GetUserByIdRequiredAsync(string id);
+        Task<PagedResult<GetUserDto>> GetUserPagedAsync(PagingModel<QueryUserDto> pagingModel);
+        Task<PagedResult<GetUserWithTagDto>> GetUserPagedWithTagsAsync(PagingModel<QueryUserDto> pagingModel);
+        Task<PagedResult<GetUserWithTagDto>> GetMatchedUserPagedWithTagsOrderedAsync(List<Guid> tagIds, int page, int limit);
+        Task UpdatePTDegreeAsync(string userId, UpdateImageUrlDto updateImageUrlDto);
+        Task SetupProfileAsync(string userId, SetupProfileDto setupProfileDto);
     }
 }

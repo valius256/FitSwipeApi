@@ -1,6 +1,6 @@
 ﻿namespace FitSwipe.Shared.Model.Auth
 {
-    public class LoginReponse
+    public class LoginDtos
     {
         public string? Token { get; set; }
         public string? RefreshToken { get; set; }

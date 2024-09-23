@@ -77,7 +77,9 @@ using (var scope = app.Services.CreateScope())
 
     try
     {
-        dbContext.Database.Migrate(); Console.WriteLine("Database migrations applied successfully.");
+        dbContext.Database.Migrate();
+        
+        Console.WriteLine("Database migrations applied successfully.");
     }
     catch (Exception ex)
     {

@@ -1,6 +1,6 @@
 ﻿namespace FitSwipe.Shared.Model.Auth;
 
-public class TokenVerificationRequest
+public class TokenVerificationRequestDtos
 {
     public string Token { get; set; }
 }

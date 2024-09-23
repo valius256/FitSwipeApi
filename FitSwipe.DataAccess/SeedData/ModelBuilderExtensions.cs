@@ -31,6 +31,7 @@ namespace FitSwipe.DataAccess.SeedData
                     Street = "5th Avenue",
                     Role = Role.Trainee,
                     Job = "Student",
+                    PricePerHour = 0,
                     Status = UserStatus.Active,
                     Balance = 1000,
                 },
@@ -58,6 +59,7 @@ namespace FitSwipe.DataAccess.SeedData
                     Balance = 1500,
                     PTStatus = PTStatus.Active,
                     PTExperienceYear = 3.5,
+                    PricePerHour = 100000,
                     SubscriptionPurchasedDate = new DateTime(2023, 2, 10),
                     SubscriptionLevel = 1,
                     SubscriptionPaymentStatus = PaymentStatus.Paid
@@ -84,6 +86,7 @@ namespace FitSwipe.DataAccess.SeedData
                     Job = "Nutritionist",
                     Status = UserStatus.Active,
                     Balance = 2000,
+                    PricePerHour = 150000,
                     PTStatus = PTStatus.Pending,
                     PTExperienceYear = 2.0,
                 }
@@ -194,6 +197,12 @@ namespace FitSwipe.DataAccess.SeedData
                     Description = "Email này được gửi khi người dùng yêu cầu đặt lại mật khẩu cho tài khoản FitWipe."
                 }
             );
+
+            #endregion
+
+            #region Slot
+
+            
 
             #endregion
         }

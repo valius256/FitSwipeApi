@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace FitSwipe.Shared.Model.Users
 {
-    public class GetUserProfileResponse
+    public class GetUserProfileDtos
     {
         [Required]
         public string? Email { get; set; }

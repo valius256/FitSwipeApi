@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace FitSwipe.Shared.Model.Auth
 {
-    public class RegisterRequestModel
+    public class RegisterRequestDtos
     {
         public string FirstName { get; set; }
         public string LastName { get; set; }

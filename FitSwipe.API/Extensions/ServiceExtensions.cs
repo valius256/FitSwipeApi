@@ -1,12 +1,16 @@
 ﻿using FirebaseAdmin;
 using FitSwipe.BusinessLogic.Interfaces.Auth;
+using FitSwipe.BusinessLogic.Interfaces.Payments;
 using FitSwipe.BusinessLogic.Interfaces.Sender;
+using FitSwipe.BusinessLogic.Interfaces.Slot;
 using FitSwipe.BusinessLogic.Interfaces.Tags;
 using FitSwipe.BusinessLogic.Interfaces.Trainings;
 using FitSwipe.BusinessLogic.Interfaces.UploadDowload;
 using FitSwipe.BusinessLogic.Interfaces.Users;
-using FitSwipe.BusinessLogic.Services.Auth;
+using FitSwipe.BusinessLogic.Services.Auths;
+using FitSwipe.BusinessLogic.Services.Payments;
 using FitSwipe.BusinessLogic.Services.Sender;
+using FitSwipe.BusinessLogic.Services.Slots;
 using FitSwipe.BusinessLogic.Services.Tags;
 using FitSwipe.BusinessLogic.Services.Trainings;
 using FitSwipe.BusinessLogic.Services.UploadDowload;
@@ -35,6 +39,8 @@ namespace FitSwipe.API.Extensions
             services.AddScoped<IUserRepository,UserRepository>();
             services.AddScoped<ITagRepository, TagRepository>();
             services.AddScoped<IUserTagRepository, UserTagRepository>();
+            services.AddScoped<ISlotRepository, SlotRepository>();
+            services.AddScoped<ITrainingRepository, TrainningRepository>();
             services.AddScoped<IEmailTemplateRepository, EmailTemplateRepository>();
             services.AddScoped<ITrainingRepository, TrainingRepository>();
             services.AddProblemDetails();
@@ -49,6 +55,11 @@ namespace FitSwipe.API.Extensions
             services.AddScoped<IUserTagService, UserTagService>();
             services.AddScoped<ITagService, TagService>();
             services.AddScoped<IFirebaseAuthServices, FirebaseAuthServices>();
+            services.AddScoped<IFirebaseUploadDowloadServices, FirebaseUploadDowloadServices>();
+            services.AddScoped<IPaymentServices, PaymentServices>();
+            services.AddScoped<ISlotServices, SlotServices>();
+
+
             services.AddScoped<IFirebaseUploadDowloadServices, FirebaseUploadDowloadServices>();
             services.AddScoped<ITrainingService, TrainingService>();
 
@@ -108,7 +119,7 @@ namespace FitSwipe.API.Extensions
             services.AddEndpointsApiExplorer();
             services.AddSwaggerGen(options =>
             {
-                options.SwaggerDoc("v1", new OpenApiInfo { Title = "On Demand Tutor API V1", Version = "V1.0" });
+                options.SwaggerDoc("v1", new OpenApiInfo { Title = "Fit Swipe API V1", Version = "V1.0" });
 
                 options.AddSecurityDefinition("oauth2", new OpenApiSecurityScheme
                 {

@@ -1,9 +1,9 @@
 ﻿using FitSwipe.Shared.Enum;
 using System.ComponentModel.DataAnnotations;
 
-namespace FitSwipe.Shared.Model.User
+namespace FitSwipe.Shared.Model.Users
 {
-    public class GetUserSimpleProfileResponse
+    public class GetUserSimpleProfileDtos
     {
         [Required]
         public string? Email { get; set; }

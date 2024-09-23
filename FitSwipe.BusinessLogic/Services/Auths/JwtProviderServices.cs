@@ -3,7 +3,7 @@ using FitSwipe.DataAccess.Repository.Intefaces;
 using FitSwipe.Shared.Dtos.Users;
 using System.Text.Json.Serialization;
 
-namespace FitSwipe.BusinessLogic.Services.Auth
+namespace FitSwipe.BusinessLogic.Services.Auths
 {
     public class JwtProviderServices : IJwtProviderServices
     {

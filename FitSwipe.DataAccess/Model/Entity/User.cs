@@ -1,7 +1,6 @@
 ﻿using FitSwipe.Shared.Enum;
 using System.ComponentModel.DataAnnotations;
 using System.Diagnostics.CodeAnalysis;
-using Microsoft.EntityFrameworkCore.Metadata.Internal;
 
 namespace FitSwipe.DataAccess.Model.Entity
 {
@@ -38,6 +37,7 @@ namespace FitSwipe.DataAccess.Model.Entity
         public Role Role { get; set; }
         [AllowNull]
         public string? Job { get; set; }
+        public double PricePerHour { get; set; }
         public UserStatus Status { get; set; }
 
         public int? Balance { get; set; } = 0;
