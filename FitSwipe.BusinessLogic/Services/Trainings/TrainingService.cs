@@ -24,13 +24,13 @@ namespace FitSwipe.BusinessLogic.Services.Trainings
 
         public async Task<GetTrainingDto> CreateTraining(string userId, CreateTrainingDto createTrainingDto)
         {
-            var user = await _userServices.GetUserByIdRequired(userId);
+            var user = await _userServices.GetUserByIdRequiredAsync(userId);
             if (user.Role != Role.Trainee)
             {
                 throw new BadRequestException("Only trainee can use this feature");
             }
 
-            await _userServices.GetUserByIdRequired(createTrainingDto.PTId);
+            await _userServices.GetUserByIdRequiredAsync(createTrainingDto.PTId);
 
             if (createTrainingDto.Status != TrainingStatus.Matched && createTrainingDto.Status != TrainingStatus.NotStarted)
             {
@@ -50,7 +50,7 @@ namespace FitSwipe.BusinessLogic.Services.Trainings
         }
         public async Task<GetTrainingDetailDto> GetDetailById(string userId, Guid id)
         {
-            var user = await _userServices.GetUserByIdRequired(userId);
+            var user = await _userServices.GetUserByIdRequiredAsync(userId);
             var training = (await _trainingRepository.GetTrainingById(id)).Adapt<GetTrainingDetailDto>();
             if (training == null)
             {
@@ -62,15 +62,15 @@ namespace FitSwipe.BusinessLogic.Services.Trainings
             }
             return training;
         }
-        public async Task<PagedResult<GetTrainingWithTraineeAndPT>> GetTrainings(string userId ,PagingModel<QueryTrainingDto> queryTrainingDto)
+        public async Task<PagedResult<GetTrainingWithTraineeAndPT>> GetTrainings(string userId, PagingModel<QueryTrainingDto> queryTrainingDto)
         {
-            var user = await _userServices.GetUserByIdRequired(userId);
+            var user = await _userServices.GetUserByIdRequiredAsync(userId);
             if (queryTrainingDto.Filter == null)
             {
-                queryTrainingDto.Filter = new QueryTrainingDto(); 
+                queryTrainingDto.Filter = new QueryTrainingDto();
             }
             if (user.Role == Role.Trainee)
-            {             
+            {
                 queryTrainingDto.Filter.TraineeId = userId;
             }
             if (user.Role == Role.PT)

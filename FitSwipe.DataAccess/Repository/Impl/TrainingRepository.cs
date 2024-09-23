@@ -40,8 +40,8 @@ namespace FitSwipe.DataAccess.Repository.Impl
                 {
                     query = query.Where(t => pagingModel.Filter.TrainingStatuses.Contains(t.Status));
                 }
-                if (pagingModel.Filter.PTId != null) 
-                { 
+                if (pagingModel.Filter.PTId != null)
+                {
                     query = query.Where(t => pagingModel.Filter.PTId == t.PTId);
                 }
                 if (pagingModel.Filter.TraineeId != null)
