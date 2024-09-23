@@ -23,5 +23,6 @@ namespace FitSwipe.Shared.Dtos.Users
         public int? Balance { get; set; }
         public PTStatus? PTStatus { get; set; }
         public double? PTExperienceYear { get; set; }
+        public double PricePerHour { get; set; }
     }
 }

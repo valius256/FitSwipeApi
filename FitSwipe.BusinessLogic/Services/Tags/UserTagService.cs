@@ -26,7 +26,7 @@ namespace FitSwipe.BusinessLogic.Services.Tags
 
         public async Task UpsertUserTags(string userId, UpsertUserTagDto upsertUserTagDto)
         {
-            await _userServices.GetUserByIdRequired(userId);
+            await _userServices.GetUserByIdRequiredAsync(userId);
             var oldTagIds = (await GetsTagByUserId(userId)).Select(t => t.Id);
             // Add new tags that are not in the old tags
             foreach (var newTagId in upsertUserTagDto.NewTagIds)
@@ -52,7 +52,7 @@ namespace FitSwipe.BusinessLogic.Services.Tags
         }
         public async Task<UserTag> AddUserTag(string userId, Guid tagId)
         {
-            await _userServices.GetUserByIdRequired(userId);
+            await _userServices.GetUserByIdRequiredAsync(userId);
             await _tagService.GetTagByIdRequired(tagId);
             return await _userTagRepository.AddAsync(new UserTag() { UserId = userId, TagId = tagId });
         }
@@ -76,9 +76,9 @@ namespace FitSwipe.BusinessLogic.Services.Tags
 
         public async Task<PagedResult<GetUserWithTagDto>> GetRecommendedPTListByTags(string userId, int page, int limit)
         {
-            await _userServices.GetUserByIdRequired(userId);
+            await _userServices.GetUserByIdRequiredAsync(userId);
             var userTags = await GetsTagByUserId(userId);
-            var result = await _userServices.GetMatchedUserPagedWithTagsOrdered(userTags.Select(ut => ut.Id).ToList(), page, limit);
+            var result = await _userServices.GetMatchedUserPagedWithTagsOrderedAsync(userTags.Select(ut => ut.Id).ToList(), page, limit);
             return result;
         }
     }

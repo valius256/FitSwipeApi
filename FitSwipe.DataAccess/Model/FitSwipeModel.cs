@@ -83,6 +83,10 @@ public partial class VnPay
     public string Version { get; set; }
     [JsonPropertyName("Locale")]
     public string Locale { get; set; }
+    [JsonPropertyName("ReturnUrl")]
+    public string ReturnUrl { get; set; }
+    [JsonPropertyName("TimeZoneId")]
+    public string TimeZoneId { get; set; }
 }
 
 public partial class Logging

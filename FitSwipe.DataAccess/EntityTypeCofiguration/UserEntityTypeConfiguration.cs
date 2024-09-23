@@ -17,6 +17,13 @@ namespace FitSwipe.DataAccess.EntityTypeCofiguration
 
             builder.Property(u => u.Id).ValueGeneratedOnAdd();
 
+            builder.Property(u => u.PricePerHour)
+                .IsRequired(true)
+                .ValueGeneratedOnAdd()
+                .HasDefaultValue(0)
+                .HasColumnType("decimal(10,2)");
+
+
             builder.HasMany(x => x.TrainingsInstructing)
                 .WithOne(x => x.PT)
                 .HasForeignKey(x => x.PTId)

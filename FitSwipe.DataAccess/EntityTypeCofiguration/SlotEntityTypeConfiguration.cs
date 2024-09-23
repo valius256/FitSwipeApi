@@ -1,5 +1,6 @@
 ﻿
 using FitSwipe.DataAccess.Model.Entity;
+using FitSwipe.Shared.Enum;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
@@ -11,6 +12,10 @@ namespace FitSwipe.DataAccess.EntityTypeCofiguration
         {
             builder.HasKey(s => s.Id);
             builder.Property(s => s.Id).ValueGeneratedOnAdd();
+
+            builder.Property(s => s.PaymentStatus).HasDefaultValue(PaymentStatus.NotPaid);
+            builder.Property(s => s.Status).HasDefaultValue(SlotStatus.Unbooked);
+
 
             builder.HasOne(s => s.Training)
                 .WithMany(t => t.Slots)

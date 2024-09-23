@@ -39,14 +39,14 @@ namespace FitSwipe.DataAccess.Repository
         public async Task<TEntity> AddAsync(TEntity entity)
         {
             await _context.AddAsync(entity);
-            await _context.SaveChangesAsync();
+            await SaveChangesWithTransactionAsync();
             return entity;
         }
 
         public async Task<IEnumerable<TEntity>> AddRangeAsync(IEnumerable<TEntity> entities)
         {
             await _context.AddRangeAsync(entities);
-            await _context.SaveChangesAsync();
+            await SaveChangesWithTransactionAsync();
             return entities;
         }
 
@@ -56,7 +56,7 @@ namespace FitSwipe.DataAccess.Repository
             if (enumerable.Any())
             {
                 _context.Set<TEntity>().RemoveRange(enumerable);
-                await _context.SaveChangesAsync();
+                await SaveChangesWithTransactionAsync();
             }
         }
 
@@ -66,14 +66,14 @@ namespace FitSwipe.DataAccess.Repository
             if (enumerable.Any())
             {
                 _context.Set<TEntity>().UpdateRange(enumerable);
-                await _context.SaveChangesAsync();
+                await SaveChangesWithTransactionAsync();
             }
         }
 
         public async Task UpdateAsync(TEntity entity)
         {
             _context.Update(entity);
-            await _context.SaveChangesAsync();
+            await SaveChangesWithTransactionAsync();
         }
 
         public async Task DeleteAsync(Guid id)
@@ -82,9 +82,11 @@ namespace FitSwipe.DataAccess.Repository
             if (entity != null)
             {
                 _context.Set<TEntity>().Remove(entity);
-                await _context.SaveChangesAsync();
+                await SaveChangesWithTransactionAsync();
             }
         }
+
+
 
         public async Task<bool> Exists(Guid id)
         {
@@ -194,5 +196,53 @@ namespace FitSwipe.DataAccess.Repository
                 .Select(selector)
                 .ToListAsync();
         }
+
+        public int SaveChangesWithTransaction()
+        {
+            int result = -1;
+
+            //System.DataAccess.IsolationLevel.Snapshot
+            using (var dbContextTransaction = _context.Database.BeginTransaction())
+            {
+                try
+                {
+                    result = _context.SaveChanges();
+                    dbContextTransaction.Commit();
+                }
+                catch (Exception)
+                {
+                    //Log Exception Handling message                      
+                    result = -1;
+                    dbContextTransaction.Rollback();
+                }
+            }
+
+            return result;
+        }
+
+        public async Task<int> SaveChangesWithTransactionAsync()
+        {
+            int result = -1;
+
+            //System.DataAccess.IsolationLevel.Snapshot
+            using (var dbContextTransaction = await _context.Database.BeginTransactionAsync())
+            {
+                try
+                {
+                    result = await _context.SaveChangesAsync();
+                    dbContextTransaction.Commit();
+                }
+                catch (Exception)
+                {
+                    //Log Exception Handling message                      
+                    result = -1;
+                    dbContextTransaction.Rollback();
+                }
+            }
+
+            return result;
+        }
+
+
     }
 }

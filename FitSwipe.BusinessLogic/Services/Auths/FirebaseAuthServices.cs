@@ -2,7 +2,7 @@
 using FitSwipe.BusinessLogic.Interfaces.Auth;
 using FitSwipe.BusinessLogic.Interfaces.Sender;
 using FitSwipe.BusinessLogic.Interfaces.Users;
-using FitSwipe.BusinessLogic.Models.User;
+using FitSwipe.BusinessLogic.Models.Users;
 using FitSwipe.DataAccess.Model.Entity;
 using FitSwipe.DataAccess.Model.Enum;
 using FitSwipe.Shared.Dtos.Users;
@@ -12,10 +12,10 @@ using FitSwipe.Shared.Model.Auth;
 using FitSwipe.Shared.Model.Users;
 using Mapster;
 using System.Net.Http.Json;
-using static FitSwipe.BusinessLogic.Services.Auth.JwtProviderServices;
+using static FitSwipe.BusinessLogic.Services.Auths.JwtProviderServices;
 
 
-namespace FitSwipe.BusinessLogic.Services.Auth
+namespace FitSwipe.BusinessLogic.Services.Auths
 {
     public class FirebaseAuthServices : IFirebaseAuthServices
     {
@@ -33,13 +33,13 @@ namespace FitSwipe.BusinessLogic.Services.Auth
 
         }
 
-        public async Task<bool> ForgotPassword(string email)
+        public async Task<string> ForgotPasswordAsync(string email)
         {
 
-            var resetPasswordLink = await ForgotPasswordAsync(email);
+            var resetPasswordLink = await GenerateFirebaseForgotPasswordLinkAsync(email);
             if (resetPasswordLink == null)
             {
-                return false;
+                return "Email của bạn không nằm trong hệ thống. Vui lòng đăng ký";
             }
 
             var emailParams = new Dictionary<string, string>()
@@ -51,7 +51,7 @@ namespace FitSwipe.BusinessLogic.Services.Auth
             await _emailServices.SendAsync(EmailType.Forgot_Password, toAddress, new List<string>(), emailParams,
                 false);
 
-            return true;
+            return "Kiểm tra hộp thư của bạn đi. FitSwipe 😂";
         }
 
         public async Task<bool> GenerateVerificationEmailAsync(string email)
@@ -73,7 +73,7 @@ namespace FitSwipe.BusinessLogic.Services.Auth
         }
 
 
-        public async Task<RegisterAuthModel> RegisterUserWithFirebaseAsync(RegisterRequestModel registerRequestModel)
+        public async Task<RegisterAuthModel> RegisterUserWithFirebaseAsync(RegisterRequestDtos registerRequestModel)
         {
             var userForFireBaseAuth = new UserRecordArgs
             {
@@ -92,14 +92,15 @@ namespace FitSwipe.BusinessLogic.Services.Auth
             };
         }
 
-        public async Task<string?> ForgotPasswordAsync(string email)
+        public async Task<string?> GenerateFirebaseForgotPasswordLinkAsync(string email)
         {
             if (await FirebaseAuth.DefaultInstance.GetUserByEmailAsync(email) == null)
             {
                 return null;
             }
 
-            return await FirebaseAuth.DefaultInstance.GeneratePasswordResetLinkAsync(email);
+            var rs = await FirebaseAuth.DefaultInstance.GeneratePasswordResetLinkAsync(email);
+            return rs;
         }
 
         public async Task VerifyFirebaseToken(string token)
@@ -129,7 +130,7 @@ namespace FitSwipe.BusinessLogic.Services.Auth
             return sessionCookie;
         }
 
-        public async Task<GetUserProfileResponse> RegisterUser(RegisterRequestModel registerDtos)
+        public async Task<GetUserProfileDtos> RegisterUser(RegisterRequestDtos registerDtos)
         {
             var registerAuthModel = await RegisterUserWithFirebaseAsync(registerDtos);
 
@@ -157,7 +158,7 @@ namespace FitSwipe.BusinessLogic.Services.Auth
                 false);
 
 
-            var userResponseModel = new GetUserProfileResponse()
+            var userResponseModel = new GetUserProfileDtos()
             {
                 Email = registerDtos.Email,
                 Password = registerDtos.Password,
@@ -168,7 +169,7 @@ namespace FitSwipe.BusinessLogic.Services.Auth
             return userResponseModel;
         }
 
-        public async Task<AuthenResponseDto> LoginWithFireBase(LoginRequest loginDto)
+        public async Task<AuthenResponseDto> LoginWithFireBase(LoginRequestDtos loginDto)
         {
             if (string.IsNullOrEmpty(loginDto.Email))
             {
@@ -200,6 +201,7 @@ namespace FitSwipe.BusinessLogic.Services.Auth
                     var parsedJson = Newtonsoft.Json.Linq.JObject.Parse(errorContent);
                     responseModel.Code = parsedJson["error"]?["code"]?.ToString() ?? response.StatusCode.ToString();
                     responseModel.Message = parsedJson["error"]?["message"]?.ToString() ?? errorContent;
+
                     return responseModel;
                 }
 
@@ -208,7 +210,7 @@ namespace FitSwipe.BusinessLogic.Services.Auth
                     throw new InvalidOperationException("Authentication token is null");
 
 
-                var userInDb = await _userServices.GetUserByIdRequired(authToken.LocalId);
+                var userInDb = await _userServices.GetUserByIdRequiredAsync(authToken.LocalId);
 
                 var customClaims = new Dictionary<string, object>
                 {

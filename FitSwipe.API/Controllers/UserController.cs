@@ -24,13 +24,13 @@ namespace FitSwipe.API.Controllers
         [HttpGet]
         public async Task<PagedResult<GetUserDto>> GetUsers([FromQuery] PagingModel<QueryUserDto> queryUserDto)
         {
-            return await _userServices.GetUserPaged(queryUserDto);
+            return await _userServices.GetUserPagedAsync(queryUserDto);
         }
 
         [HttpGet("with-tags")]
         public async Task<PagedResult<GetUserWithTagDto>> GetUserPagedWithTags([FromQuery] PagingModel<QueryUserDto> queryUserDto)
         {
-            return await _userServices.GetUserPagedWithTags(queryUserDto);
+            return await _userServices.GetUserPagedWithTagsAsync(queryUserDto);
         }
         [Authorize]
         [HttpGet("match-ordered")]
@@ -42,14 +42,14 @@ namespace FitSwipe.API.Controllers
         [HttpPatch("update-degree")]
         public async Task<IActionResult> UpdatePTDegree([FromBody] UpdateImageUrlDto updateImageUrlDto)
         {
-            await _userServices.UpdatePTDegree(CurrentUserFirebaseId, updateImageUrlDto);
+            await _userServices.UpdatePTDegreeAsync(CurrentUserFirebaseId, updateImageUrlDto);
             return Ok();
         }
         [Authorize]
         [HttpPatch("set-up")]
         public async Task<IActionResult> SetupProfile([FromBody] SetupProfileDto setupProfileDto)
         {
-            await _userServices.SetupProfile(CurrentUserFirebaseId, setupProfileDto);
+            await _userServices.SetupProfileAsync(CurrentUserFirebaseId, setupProfileDto);
             return Ok();
         }
     }

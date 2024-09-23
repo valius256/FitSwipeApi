@@ -1,4 +1,4 @@
-﻿namespace FitSwipe.BusinessLogic.Models.User;
+﻿namespace FitSwipe.BusinessLogic.Models.Users;
 
 public class RegisterAuthModel
 {

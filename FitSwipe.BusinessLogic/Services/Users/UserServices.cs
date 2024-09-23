@@ -23,11 +23,11 @@ namespace FitSwipe.BusinessLogic.Services.Users
             _emailServices = emailServices;
         }
 
-        public async Task<PagedResult<GetUserDto>> GetUserPaged(PagingModel<QueryUserDto> pagingModel)
+        public async Task<PagedResult<GetUserDto>> GetUserPagedAsync(PagingModel<QueryUserDto> pagingModel)
         {
             return (await _userRepository.GetUsersPaged(pagingModel)).Adapt<PagedResult<GetUserDto>>();
         }
-        public async Task<PagedResult<GetUserWithTagDto>> GetUserPagedWithTags(PagingModel<QueryUserDto> pagingModel)
+        public async Task<PagedResult<GetUserWithTagDto>> GetUserPagedWithTagsAsync(PagingModel<QueryUserDto> pagingModel)
         {
             var result = await _userRepository.GetUsersPagedWithTags(pagingModel);
             var mappedResult = result.Adapt<PagedResult<GetUserWithTagDto>>();
@@ -50,12 +50,12 @@ namespace FitSwipe.BusinessLogic.Services.Users
             return userListModal.Adapt<List<User>>();
         }
 
-        public async Task<User?> GetUserByEmail(string email)
+        public async Task<User?> GetUserByEmailAsync(string email)
         {
             return await _userRepository.FindOneAsync(l => l.Email == email);
         }
 
-        public async Task<PagedResult<GetUserWithTagDto>> GetMatchedUserPagedWithTagsOrdered(List<Guid> tagIds, int page, int limit)
+        public async Task<PagedResult<GetUserWithTagDto>> GetMatchedUserPagedWithTagsOrderedAsync(List<Guid> tagIds, int page, int limit)
         {
             var result = await _userRepository.GetMatchedPTOrdered(tagIds, page, limit);
             var mappedResult = result.Adapt<PagedResult<GetUserWithTagDto>>();
@@ -69,7 +69,20 @@ namespace FitSwipe.BusinessLogic.Services.Users
             }
             return mappedResult;
         }
-        public async Task<User> GetUserByIdRequired(string id)
+
+
+        /// <summary>
+        /// Retrieves a user from the database by their Firebase ID. If the user is not found in the database,
+        /// it will attempt to fetch the user record from Firebase, map it to a user entity, and store it in the database.
+        /// </summary>
+        /// <param name="id">The Firebase ID of the user to retrieve.</param>
+        /// <returns>
+        /// The <see cref="User"/> entity if found, either from the database or Firebase.
+        /// </returns>
+        /// <exception cref="DataNotFoundException">
+        /// Thrown if the user does not exist in both the local database and Firebase.
+        /// </exception>
+        public async Task<User> GetUserByIdRequiredAsync(string id)
         {
             var user = await _userRepository.FindOneAsync(u => u.FireBaseId == id);
             if (user == null)
@@ -112,21 +125,21 @@ namespace FitSwipe.BusinessLogic.Services.Users
 
 
 
-        public async Task<GetProfileUserDto> GetProfileUser(string userFirebaseId)
+        public async Task<GetProfileUserDto> GetProfileUserAsync(string userFirebaseId)
         {
             var userEntity = await _userRepository.FindOneAsync(u => u.FireBaseId == userFirebaseId);
             return (userEntity.Adapt<GetProfileUserDto>());
         }
 
-        public async Task UpdatePTDegree(string userId, UpdateImageUrlDto updateImageUrlDto)
+        public async Task UpdatePTDegreeAsync(string userId, UpdateImageUrlDto updateImageUrlDto)
         {
-            var user = await GetUserByIdRequired(userId);
+            var user = await GetUserByIdRequiredAsync(userId);
             user.PTDegreeImageUrl = updateImageUrlDto.Url;
             await _userRepository.UpdateAsync(user);
         }
-        public async Task SetupProfile(string userId, SetupProfileDto setupProfileDto)
+        public async Task SetupProfileAsync(string userId, SetupProfileDto setupProfileDto)
         {
-            var user = await GetUserByIdRequired(userId);
+            var user = await GetUserByIdRequiredAsync(userId);
             user.Adapt(setupProfileDto);
             await _userRepository.UpdateAsync(user);
         }

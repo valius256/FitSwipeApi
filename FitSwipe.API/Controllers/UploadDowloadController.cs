@@ -24,6 +24,8 @@ namespace FitSwipe.API.Controllers
             if (file == null || file.Length == 0)
                 return BadRequest("File is empty");
             var userFirebaseId = HttpContext.User.Claims.FirstOrDefault(c => c.Type == "user_id")?.Value;
+            if (userFirebaseId == null)
+                return BadRequest("Can't get user from HttpContext");
             using (var stream = file.OpenReadStream())
             {
                 var videoUrl = await _firebaseUploadServices.UploadVideoAsync(userFirebaseId, file.FileName, stream);

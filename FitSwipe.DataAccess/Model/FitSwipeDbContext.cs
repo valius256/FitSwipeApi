@@ -32,6 +32,7 @@ namespace FitSwipe.DataAccess.Model
 
 
             modelBuilder.Seed();
+            base.OnModelCreating(modelBuilder); 
         }
     }
 }

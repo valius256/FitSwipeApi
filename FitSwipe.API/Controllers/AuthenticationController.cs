@@ -21,7 +21,7 @@ namespace FitSwipe.API.Controllers
         }
 
         [HttpPost("register")]
-        public async Task<IActionResult> RegisterUser([FromBody] RegisterRequestModel registerRequestModel)
+        public async Task<IActionResult> RegisterUser([FromBody] RegisterRequestDtos registerRequestModel)
         {
             var response = await _authServices.RegisterUserWithFirebaseAsync(registerRequestModel);
             return Ok(response);
@@ -44,7 +44,7 @@ namespace FitSwipe.API.Controllers
 
 
         [HttpPost("login-firebase")]
-        public async Task<AuthenResponseDto> LoginFireBase([FromBody] LoginRequest body)
+        public async Task<AuthenResponseDto> LoginFireBase([FromBody] LoginRequestDtos body)
         {
             var response = await _authServices.LoginWithFireBase(body);
             return response;
@@ -55,7 +55,7 @@ namespace FitSwipe.API.Controllers
         [HttpGet("who-am-i")]
         public async Task<GetProfileUserDto> GetProfile()
         {
-            var response = await _userServices.GetProfileUser(CurrentUserFirebaseId);
+            var response = await _userServices.GetProfileUserAsync(CurrentUserFirebaseId);
             return response;
         }
 

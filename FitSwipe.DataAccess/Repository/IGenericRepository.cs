@@ -44,5 +44,6 @@ namespace FitSwipe.DataAccess.Repository
             Expression<Func<TEntity, bool>> predicate,
             Expression<Func<TEntity, T>> selector
         );
+
     }
 }
