@@ -77,23 +77,23 @@ namespace FitSwipe.DataAccess.Repository.Impl
                 }
                 if (queryUserDto.Job != null)
                 {
-                    query = query.Where(u => u.Job.Contains(queryUserDto.Job));
+                    query = query.Where(u => u.Job != null && u.Job.Contains(queryUserDto.Job));
                 }
                 if (queryUserDto.Ward != null)
                 {
-                    query = query.Where(u => u.Ward.Contains(queryUserDto.Ward));
+                    query = query.Where(u => u.Ward != null && u.Ward.Contains(queryUserDto.Ward));
                 }
                 if (queryUserDto.City != null)
                 {
-                    query = query.Where(u => u.Ward.Contains(queryUserDto.City));
+                    query = query.Where(u => u.City != null && u.City.Contains(queryUserDto.City));
                 }
                 if (queryUserDto.District != null)
                 {
-                    query = query.Where(u => u.District.Contains(queryUserDto.District));
+                    query = query.Where(u => u.District != null && u.District.Contains(queryUserDto.District));
                 }
                 if (queryUserDto.Street != null)
                 {
-                    query = query.Where(u => u.Ward.Contains(queryUserDto.Street));
+                    query = query.Where(u => u.Street != null && u.Street.Contains(queryUserDto.Street));
                 }
                 if (queryUserDto.Bio != null)
                 {
