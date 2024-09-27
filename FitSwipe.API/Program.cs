@@ -29,18 +29,17 @@ builder.Services.AddDbContext<FitSwipeDbContext>(options =>
 {
     options.EnableSensitiveDataLogging();
     options.EnableDetailedErrors();
-    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
+    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"),
+        b => b.MigrationsAssembly("FitSwipe.DataAccess"));
 });
-
-
 builder.Services.AddCors(options =>
 {
     options.AddDefaultPolicy(policy =>
     {
         policy.WithOrigins("http://localhost:5173") // Replace with your actual origin(s)
-              .AllowAnyMethod()
-              .AllowAnyHeader()
-              .AllowCredentials();
+            .AllowAnyMethod()
+            .AllowAnyHeader()
+            .AllowCredentials();
     });
 });
 
@@ -63,10 +62,7 @@ if (app.Environment.IsDevelopment())
 {
     //app.UseSwagger();
     //app.UseSwaggerUI();
-    app.UseSwagger(options =>
-    {
-        options.RouteTemplate = "openapi/{documentName}.json";
-    });
+    app.UseSwagger(options => { options.RouteTemplate = "openapi/{documentName}.json"; });
     app.MapScalarApiReference();
 }
 
@@ -78,7 +74,7 @@ using (var scope = app.Services.CreateScope())
     try
     {
         dbContext.Database.Migrate();
-        
+
         Console.WriteLine("Database migrations applied successfully.");
     }
     catch (Exception ex)
@@ -86,6 +82,7 @@ using (var scope = app.Services.CreateScope())
         Console.WriteLine($"An error occurred while applying migrations: {ex.Message}");
     }
 }
+
 app.UseHttpsRedirection();
 
 

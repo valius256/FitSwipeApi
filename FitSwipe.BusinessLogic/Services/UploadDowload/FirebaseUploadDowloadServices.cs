@@ -23,7 +23,7 @@ namespace FitSwipe.BusinessLogic.Services.UploadDowload
         {
             try
             {
-                var contentType = GetContentType(fileName);
+                var contentType = await GetContentTypeAsync(fileName);
                 if (string.IsNullOrEmpty(contentType))
                 {
                     throw new ArgumentException("Invalid video file type");
@@ -42,7 +42,7 @@ namespace FitSwipe.BusinessLogic.Services.UploadDowload
 
         private async Task EnsurePublicAccess(StorageClient storage)
         {
-            var policy = storage.GetBucketIamPolicy(_firebaseUpload.BucketName);
+            var policy = await storage.GetBucketIamPolicyAsync(_firebaseUpload.BucketName);
             if (!policy.Bindings.Any(b => b.Role == "roles/storage.objectViewer" && b.Members.Contains("allUsers")))
             {
                 policy.Bindings.Add(new Policy.BindingsData
@@ -50,7 +50,7 @@ namespace FitSwipe.BusinessLogic.Services.UploadDowload
                     Role = "roles/storage.objectViewer",
                     Members = new List<string> { "allUsers" }
                 });
-                storage.SetBucketIamPolicy(_firebaseUpload.BucketName, policy);
+                await storage.SetBucketIamPolicyAsync(_firebaseUpload.BucketName, policy);
             }
         }
 
@@ -95,7 +95,7 @@ namespace FitSwipe.BusinessLogic.Services.UploadDowload
         {
             var downloadLinksList = new List<DowloadImagesDtos>();
             var fireBasePath = Path.Combine(AppContext.BaseDirectory, _firebaseUpload.ServicesAccountPath);
-            var storage = StorageClient.Create(GoogleCredential.FromFile(fireBasePath));
+            var storage = await StorageClient.CreateAsync(GoogleCredential.FromFile(fireBasePath));
             try
             {
                 // Reference to the folder containing images for the given uid
@@ -116,7 +116,7 @@ namespace FitSwipe.BusinessLogic.Services.UploadDowload
                         obj.Name,
                         TimeSpan.FromDays(7),
                         HttpMethod.Get);
-                    var fetchUrl = storage.GetObjectAsync(obj.Bucket, obj.Name);
+                    var fetchUrl = await storage.GetObjectAsync(obj.Bucket, obj.Name);
 
                     // Create DTO object
                     var dto = new DowloadImagesDtos
@@ -171,7 +171,7 @@ namespace FitSwipe.BusinessLogic.Services.UploadDowload
         }
         // handle multiple type vide 
 
-        private string GetContentType(string fileName)
+        private async Task<string> GetContentTypeAsync(string fileName)
         {
             var extension = Path.GetExtension(fileName).ToLowerInvariant();
             return extension switch
@@ -185,6 +185,7 @@ namespace FitSwipe.BusinessLogic.Services.UploadDowload
                 ".webm" => "video/webm",
                 _ => null
             };
+
         }
 
         private string GetContentTypeImage(string fileName)

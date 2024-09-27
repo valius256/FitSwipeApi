@@ -5,6 +5,7 @@ using FitSwipe.BusinessLogic.Interfaces.Sender;
 using FitSwipe.BusinessLogic.Interfaces.Slot;
 using FitSwipe.BusinessLogic.Interfaces.Tags;
 using FitSwipe.BusinessLogic.Interfaces.Trainings;
+using FitSwipe.BusinessLogic.Interfaces.Transactions;
 using FitSwipe.BusinessLogic.Interfaces.UploadDowload;
 using FitSwipe.BusinessLogic.Interfaces.Users;
 using FitSwipe.BusinessLogic.Services.Auths;
@@ -13,6 +14,7 @@ using FitSwipe.BusinessLogic.Services.Sender;
 using FitSwipe.BusinessLogic.Services.Slots;
 using FitSwipe.BusinessLogic.Services.Tags;
 using FitSwipe.BusinessLogic.Services.Trainings;
+using FitSwipe.BusinessLogic.Services.Transactions;
 using FitSwipe.BusinessLogic.Services.UploadDowload;
 using FitSwipe.BusinessLogic.Services.Users;
 using FitSwipe.DataAccess.Model;
@@ -43,6 +45,7 @@ namespace FitSwipe.API.Extensions
             services.AddScoped<ITrainingRepository, TrainingRepository>();
             services.AddScoped<IEmailTemplateRepository, EmailTemplateRepository>();
             services.AddScoped<ITrainingRepository, TrainingRepository>();
+            services.AddScoped<ITransactionRepository, TransactionRepository>();
             services.AddProblemDetails();
             services.AddLogging();
 
@@ -58,7 +61,7 @@ namespace FitSwipe.API.Extensions
             services.AddScoped<IFirebaseUploadDowloadServices, FirebaseUploadDowloadServices>();
             services.AddScoped<IPaymentServices, PaymentServices>();
             services.AddScoped<ISlotServices, SlotServices>();
-
+            services.AddScoped<ITransactionServices, TransactionServices>();
 
             services.AddScoped<IFirebaseUploadDowloadServices, FirebaseUploadDowloadServices>();
             services.AddScoped<ITrainingService, TrainingService>();

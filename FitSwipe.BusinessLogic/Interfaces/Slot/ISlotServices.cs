@@ -1,6 +1,5 @@
 ﻿using FitSwipe.DataAccess.Model.Paging;
 using FitSwipe.Shared.Dtos.Slots;
-using FitSwipe.Shared.Model.Slot;
 
 namespace FitSwipe.BusinessLogic.Interfaces.Slot
 {

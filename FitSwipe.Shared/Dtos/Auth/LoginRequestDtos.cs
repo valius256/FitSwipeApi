@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace FitSwipe.Shared.Model.Auth
+namespace FitSwipe.Shared.Dtos.Auth
 {
     public class LoginRequestDtos
     {

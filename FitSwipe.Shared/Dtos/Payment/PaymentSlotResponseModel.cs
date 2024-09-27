@@ -1,6 +1,6 @@
 ﻿using FitSwipe.Shared.Enum;
 
-namespace FitSwipe.Shared.Model.Payment
+namespace FitSwipe.Shared.Dtos.Payment
 {
     public class PaymentSlotResponseModel
     {
@@ -12,8 +12,8 @@ namespace FitSwipe.Shared.Model.Payment
         public bool Success { get; set; }
         public string Token { get; set; }
         public string VnPayResponseCode { get; set; }
-        public List<int>? SlotId { get; set; }
-        public int UserId { get; set; }
+        public List<Guid> SlotIds { get; set; }
+        public string UserFireBaseId { get; set; }
         public bool IsRechargePayment { get; set; }
         public PaymentStatus PaymentStatus { get; set; }
         public string? RedirectResult { get; set; }

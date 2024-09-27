@@ -4,6 +4,7 @@ using FitSwipe.DataAccess.Model;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace FitSwipe.DataAccess.Migrations
 {
     [DbContext(typeof(FitSwipeDbContext))]
-    partial class FitSwipeDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240927021449_Add_Table_SLotTransaction")]
+    partial class Add_Table_SLotTransaction
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -68,9 +71,9 @@ namespace FitSwipe.DataAccess.Migrations
                     b.HasData(
                         new
                         {
-                            Id = new Guid("3fa1e03a-fa7e-42f4-b851-a51e18def90b"),
+                            Id = new Guid("9c56c3bc-b40c-4e1f-a36d-6d51ae4f443f"),
                             Body = "Chào mừng bạn đến với FitWipe! Kính gửi [Name], vui lòng xác nhận địa chỉ email của bạn bằng cách nhấn vào đường link sau: <a href=\"[VerificationLink]\">Xác nhận Email</a>.<br><br>Cảm ơn bạn đã tham gia cùng chúng tôi!<br><br>Đội ngũ FitWipe",
-                            CreatedDate = new DateTime(2024, 9, 27, 9, 35, 40, 326, DateTimeKind.Local).AddTicks(5622),
+                            CreatedDate = new DateTime(2024, 9, 27, 9, 14, 48, 499, DateTimeKind.Local).AddTicks(2842),
                             Description = "Email này được gửi để xác nhận đăng ký tài khoản FitWipe.",
                             Name = "Register_Mail",
                             Params = "[Name], [VerificationLink]",
@@ -80,9 +83,9 @@ namespace FitSwipe.DataAccess.Migrations
                         },
                         new
                         {
-                            Id = new Guid("0422300c-6fc0-437f-8b65-e5921f03ba65"),
+                            Id = new Guid("6a9f3507-a330-482d-9b63-3154d00c1d43"),
                             Body = "Chúng tôi đã nhận được yêu cầu đặt lại mật khẩu cho tài khoản của bạn tại FitWipe. Kính gửi [Name], vui lòng đặt lại mật khẩu của bạn bằng cách nhấn vào đường link sau: <a href=\"[ResetPasswordLink]\">Đặt lại mật khẩu</a>.<br><br>Nếu bạn không yêu cầu việc này, vui lòng bỏ qua email này.<br><br>Đội ngũ FitWipe",
-                            CreatedDate = new DateTime(2024, 9, 27, 9, 35, 40, 326, DateTimeKind.Local).AddTicks(5760),
+                            CreatedDate = new DateTime(2024, 9, 27, 9, 14, 48, 499, DateTimeKind.Local).AddTicks(2869),
                             Description = "Email này được gửi khi người dùng yêu cầu đặt lại mật khẩu cho tài khoản FitWipe.",
                             Name = "Forgot_Password",
                             Params = "[Name], [ResetPasswordLink]",
@@ -334,90 +337,90 @@ namespace FitSwipe.DataAccess.Migrations
                     b.HasData(
                         new
                         {
-                            Id = new Guid("345ec15d-42b3-448a-9bc3-2edecf55673d"),
+                            Id = new Guid("299adece-8f54-4558-8a0a-934bda8db592"),
                             CreateById = "123abc",
-                            CreatedDate = new DateTime(2024, 9, 27, 9, 35, 40, 326, DateTimeKind.Local).AddTicks(5492),
+                            CreatedDate = new DateTime(2024, 9, 27, 9, 14, 48, 499, DateTimeKind.Local).AddTicks(2755),
                             Name = "Bóng đá",
                             RecordStatus = 0,
                             TagType = 0
                         },
                         new
                         {
-                            Id = new Guid("73331a03-ab7a-4962-9bc4-a73ad64f193a"),
+                            Id = new Guid("8ea08891-ad11-4e7f-99a6-3f02eff83b7d"),
                             CreateById = "123abc",
-                            CreatedDate = new DateTime(2024, 9, 27, 9, 35, 40, 326, DateTimeKind.Local).AddTicks(5496),
+                            CreatedDate = new DateTime(2024, 9, 27, 9, 14, 48, 499, DateTimeKind.Local).AddTicks(2758),
                             Name = "Video game",
                             RecordStatus = 0,
                             TagType = 0
                         },
                         new
                         {
-                            Id = new Guid("efc33543-7354-4b7c-af2b-0ce44bdac07a"),
+                            Id = new Guid("8c236bbd-d4b3-4249-b08b-5deb1c29ab9e"),
                             CreateById = "123abc",
-                            CreatedDate = new DateTime(2024, 9, 27, 9, 35, 40, 326, DateTimeKind.Local).AddTicks(5499),
+                            CreatedDate = new DateTime(2024, 9, 27, 9, 14, 48, 499, DateTimeKind.Local).AddTicks(2782),
                             Name = "Giảm cân",
                             RecordStatus = 0,
                             TagType = 1
                         },
                         new
                         {
-                            Id = new Guid("6a99e1a9-4a3c-473c-a3c8-777f944de1fe"),
+                            Id = new Guid("2455bada-77ab-4193-bfc5-43b24cac3e43"),
                             CreateById = "123abc",
-                            CreatedDate = new DateTime(2024, 9, 27, 9, 35, 40, 326, DateTimeKind.Local).AddTicks(5529),
+                            CreatedDate = new DateTime(2024, 9, 27, 9, 14, 48, 499, DateTimeKind.Local).AddTicks(2784),
                             Name = "Phát triển cơ bắp",
                             RecordStatus = 0,
                             TagType = 1
                         },
                         new
                         {
-                            Id = new Guid("721b346f-41c2-4f35-85fd-23ac6eeb9330"),
+                            Id = new Guid("1d8f4a6d-a72f-4471-885f-2ebba7aca4c4"),
                             CreateById = "123abc",
-                            CreatedDate = new DateTime(2024, 9, 27, 9, 35, 40, 326, DateTimeKind.Local).AddTicks(5535),
+                            CreatedDate = new DateTime(2024, 9, 27, 9, 14, 48, 499, DateTimeKind.Local).AddTicks(2786),
                             Name = "Yoga",
                             RecordStatus = 0,
                             TagType = 2
                         },
                         new
                         {
-                            Id = new Guid("6f6cc7d1-2c3c-406f-ba2d-3c239b90e8d0"),
+                            Id = new Guid("9a510e65-3c75-4917-85ca-95802b71abc8"),
                             CreateById = "123abc",
-                            CreatedDate = new DateTime(2024, 9, 27, 9, 35, 40, 326, DateTimeKind.Local).AddTicks(5538),
+                            CreatedDate = new DateTime(2024, 9, 27, 9, 14, 48, 499, DateTimeKind.Local).AddTicks(2788),
                             Name = "Cardino",
                             RecordStatus = 0,
                             TagType = 2
                         },
                         new
                         {
-                            Id = new Guid("8d750c81-089a-4018-aa95-1c4215bc1bb1"),
+                            Id = new Guid("20c0081c-a9fb-49ff-94ab-3921f06b7d6d"),
                             CreateById = "123abc",
-                            CreatedDate = new DateTime(2024, 9, 27, 9, 35, 40, 326, DateTimeKind.Local).AddTicks(5541),
+                            CreatedDate = new DateTime(2024, 9, 27, 9, 14, 48, 499, DateTimeKind.Local).AddTicks(2790),
                             Name = "Ngoại hình đẹp",
                             RecordStatus = 0,
                             TagType = 3
                         },
                         new
                         {
-                            Id = new Guid("fa717782-b51b-4a82-96e9-683acc942944"),
+                            Id = new Guid("a969c1d2-d00b-48d5-8daf-915ee4a1a23d"),
                             CreateById = "123abc",
-                            CreatedDate = new DateTime(2024, 9, 27, 9, 35, 40, 326, DateTimeKind.Local).AddTicks(5544),
+                            CreatedDate = new DateTime(2024, 9, 27, 9, 14, 48, 499, DateTimeKind.Local).AddTicks(2791),
                             Name = "Giá rẻ",
                             RecordStatus = 0,
                             TagType = 3
                         },
                         new
                         {
-                            Id = new Guid("6e1018cd-23a8-4dad-89c9-3dbd13a0b160"),
+                            Id = new Guid("9689fa27-d287-4bf4-bd78-734a36152b18"),
                             CreateById = "123abc",
-                            CreatedDate = new DateTime(2024, 9, 27, 9, 35, 40, 326, DateTimeKind.Local).AddTicks(5546),
+                            CreatedDate = new DateTime(2024, 9, 27, 9, 14, 48, 499, DateTimeKind.Local).AddTicks(2793),
                             Name = "Kiên trì",
                             RecordStatus = 0,
                             TagType = 4
                         },
                         new
                         {
-                            Id = new Guid("6e2127af-6c34-4b74-bc48-a27cc8fe937c"),
+                            Id = new Guid("4c72490a-815a-47d9-99bd-b97e97bd6741"),
                             CreateById = "123abc",
-                            CreatedDate = new DateTime(2024, 9, 27, 9, 35, 40, 326, DateTimeKind.Local).AddTicks(5549),
+                            CreatedDate = new DateTime(2024, 9, 27, 9, 14, 48, 499, DateTimeKind.Local).AddTicks(2795),
                             Name = "Siêng năng",
                             RecordStatus = 0,
                             TagType = 4
@@ -662,13 +665,13 @@ namespace FitSwipe.DataAccess.Migrations
                             Balance = 1000,
                             Bio = "Fitness enthusiast and certified personal trainer.",
                             City = "New York",
-                            CreatedDate = new DateTime(2024, 9, 27, 9, 35, 40, 326, DateTimeKind.Local).AddTicks(4786),
+                            CreatedDate = new DateTime(2024, 9, 27, 9, 14, 48, 499, DateTimeKind.Local).AddTicks(2321),
                             DateOfBirth = new DateTime(1990, 5, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             District = "Manhattan",
                             Email = "john.doe@example.com",
                             Gender = 0,
                             Height = 180.30000000000001,
-                            Id = new Guid("80f50c05-0dcc-49c7-acd0-4549425874c5"),
+                            Id = new Guid("5ce2737b-17ce-489c-8bcf-c75557cfae72"),
                             Job = "Student",
                             Password = "hashedpassword1",
                             Phone = "1234567890",
@@ -688,13 +691,13 @@ namespace FitSwipe.DataAccess.Migrations
                             Balance = 1500,
                             Bio = "Yoga instructor with a passion for holistic health.",
                             City = "Los Angeles",
-                            CreatedDate = new DateTime(2024, 9, 27, 9, 35, 40, 326, DateTimeKind.Local).AddTicks(4875),
+                            CreatedDate = new DateTime(2024, 9, 27, 9, 14, 48, 499, DateTimeKind.Local).AddTicks(2382),
                             DateOfBirth = new DateTime(1985, 8, 20, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             District = "Beverly Hills",
                             Email = "jane.smith@example.com",
                             Gender = 1,
                             Height = 170.19999999999999,
-                            Id = new Guid("c2a5e40b-54ba-45cd-8e1f-20b6af02f985"),
+                            Id = new Guid("a880d4c3-35b0-430e-98c0-f9fd552d6b8a"),
                             Job = "Yoga Instructor",
                             PTExperienceYear = 3.5,
                             PTStatus = 1,
@@ -719,13 +722,13 @@ namespace FitSwipe.DataAccess.Migrations
                             Balance = 2000,
                             Bio = "Aspiring bodybuilder and nutrition expert.",
                             City = "Chicago",
-                            CreatedDate = new DateTime(2024, 9, 27, 9, 35, 40, 326, DateTimeKind.Local).AddTicks(4893),
+                            CreatedDate = new DateTime(2024, 9, 27, 9, 14, 48, 499, DateTimeKind.Local).AddTicks(2393),
                             DateOfBirth = new DateTime(1992, 3, 10, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             District = "Lincoln Park",
                             Email = "alex.jones@example.com",
                             Gender = 0,
                             Height = 185.40000000000001,
-                            Id = new Guid("d86635c7-ef52-4dd0-b0e5-5a34c81a8ad5"),
+                            Id = new Guid("d0842e66-2d1d-4244-be9c-cfc62b3cfc41"),
                             Job = "Nutritionist",
                             PTExperienceYear = 2.0,
                             PTStatus = 0,
@@ -878,9 +881,9 @@ namespace FitSwipe.DataAccess.Migrations
             modelBuilder.Entity("FitSwipe.DataAccess.Model.Entity.SlotVideos", b =>
                 {
                     b.HasOne("FitSwipe.DataAccess.Model.Entity.Slot", "Slot")
-                        .WithMany("Videos")
+                        .WithMany()
                         .HasForeignKey("SlotId")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Slot");
@@ -984,8 +987,6 @@ namespace FitSwipe.DataAccess.Migrations
             modelBuilder.Entity("FitSwipe.DataAccess.Model.Entity.Slot", b =>
                 {
                     b.Navigation("TransactionSlots");
-
-                    b.Navigation("Videos");
                 });
 
             modelBuilder.Entity("FitSwipe.DataAccess.Model.Entity.Tag", b =>

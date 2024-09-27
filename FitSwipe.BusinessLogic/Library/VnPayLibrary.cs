@@ -1,4 +1,4 @@
-﻿using FitSwipe.Shared.Model.Payment;
+﻿using FitSwipe.Shared.Dtos.Payment;
 using Microsoft.AspNetCore.Http;
 using System.Globalization;
 using System.Net;
@@ -42,26 +42,16 @@ namespace FitSwipe.BusinessLogic.Library
             }
 
             var description = orderInfoParts.Length > 1 ? orderInfoParts[1] : "";
-            var userId = orderInfoParts.Length > 2 ? Convert.ToInt32(orderInfoParts[2]) : 0;
-
+            var userId = orderInfoParts.Length > 2 ? orderInfoParts[2] : "  ";
 
 
             var returnUrl = orderInfoParts.Length > 3 ? orderInfoParts[3] : "";
 
-            // Parse slotIds
-            List<int> slotIds = new List<int>();
-            if (orderInfoParts.Length > 4)
-            {
-                var slotIdParts = orderInfoParts[4].Split(' '); // Corrected to index 5
 
-                foreach (var slotIdPart in slotIdParts)
-                {
-                    if (!string.IsNullOrEmpty(slotIdPart) && int.TryParse(slotIdPart, out int tempSlotId))
-                    {
-                        slotIds.Add(tempSlotId);
-                    }
-                }
-            }
+            string slotId = orderInfoParts.Length > 4 ? orderInfoParts[4] : "";
+            List<Guid> slotIds = string.IsNullOrEmpty(slotId)
+                ? new List<Guid>()
+                : slotId.Split(',').Select(Guid.Parse).ToList();
 
             var checkSignature = vnPay.ValidateSignature(vnpSecureHash, hashSecret);
 
@@ -81,9 +71,9 @@ namespace FitSwipe.BusinessLogic.Library
                 TransactionCode = orderId.ToString(),
                 Token = vnpSecureHash,
                 VnPayResponseCode = vnpResponseCode,
-                SlotId = slotIds,
-                UserId = userId,
-                Money = (decimal.Parse(money)),
+                SlotIds = slotIds,
+                UserFireBaseId = userId,
+                Money = ((decimal.Parse(money)) / 100),
                 IsRechargePayment = isRecharge,
                 RedirectResult = returnUrl
             };

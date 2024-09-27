@@ -1,6 +1,6 @@
 ﻿using FitSwipe.Shared.Enum;
 
-namespace FitSwipe.Shared.Model.Users.FIlter
+namespace FitSwipe.Shared.Dtos.Users
 {
     public class UserFilterModel
     {
