@@ -25,7 +25,7 @@ using FitSwipe.SchedulerJobs;
 using FitSwipe.Shared.Enum;
 using Google.Apis.Auth.OAuth2;
 using Hangfire;
-using Hangfire.SqlServer;
+using Hangfire.PostgreSql;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
@@ -89,20 +89,17 @@ namespace FitSwipe.API.Extensions
             return services;
         }
 
+        [Obsolete]
         public static IServiceCollection AddHangFireConfigurations(this IServiceCollection services, IConfiguration configuration)
         {
             // Register Hangfire and configure it
             services.AddHangfire(config =>
 
-                config.UseSqlServerStorage(configuration.GetConnectionString("DefaultConnection"),
-                    new SqlServerStorageOptions
+                config.UsePostgreSqlStorage(configuration.GetConnectionString("PostgresConnectionString"),
+                    new PostgreSqlStorageOptions
                     {
-                        TryAutoDetectSchemaDependentOptions = false,
-                        CommandBatchMaxTimeout = TimeSpan.FromMinutes(5),
-                        SlidingInvisibilityTimeout = TimeSpan.FromMinutes(5),
-                        QueuePollInterval = TimeSpan.Zero,
-                        UseRecommendedIsolationLevel = true,
-                        DisableGlobalLocks = true
+                        QueuePollInterval = TimeSpan.FromSeconds(15), // Adjust the poll interval as needed
+                        PrepareSchemaIfNecessary = true
                     })
             );
 

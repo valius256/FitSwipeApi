@@ -43,9 +43,11 @@ namespace FitSwipe.DataAccess.Model
             modelBuilder.ApplyConfiguration(new ReportImageEntityTypeConfiguration());
             modelBuilder.ApplyConfiguration(new TransactionSlotEntityTypeConfiguration());
             modelBuilder.ApplyConfiguration(new SlotVideoEntityTypeConfiguration());
-            
+
             modelBuilder.Seed();
             base.OnModelCreating(modelBuilder);
         }
+
+
     }
 }

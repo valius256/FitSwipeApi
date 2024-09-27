@@ -3,8 +3,8 @@ using System;
 using FitSwipe.DataAccess.Model;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
-using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
+using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 #nullable disable
 
@@ -18,48 +18,48 @@ namespace FitSwipe.DataAccess.Migrations
 #pragma warning disable 612, 618
             modelBuilder
                 .HasAnnotation("ProductVersion", "8.0.8")
-                .HasAnnotation("Relational:MaxIdentifierLength", 128);
+                .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
-            SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
+            NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
             modelBuilder.Entity("FitSwipe.DataAccess.Model.Entity.EmailTemplate", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid");
 
                     b.Property<string>("Body")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text");
 
                     b.Property<DateTime>("CreatedDate")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("timestamp with time zone");
 
                     b.Property<DateTime?>("DeletedDate")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("Description")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text");
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text");
 
                     b.Property<string>("Params")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text");
 
                     b.Property<int>("RecordStatus")
-                        .HasColumnType("int");
+                        .HasColumnType("integer");
 
                     b.Property<bool>("Status")
-                        .HasColumnType("bit");
+                        .HasColumnType("boolean");
 
                     b.Property<string>("Subject")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text");
 
                     b.Property<DateTime?>("UpdatedDate")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("timestamp with time zone");
 
                     b.HasKey("Id");
 
@@ -68,9 +68,9 @@ namespace FitSwipe.DataAccess.Migrations
                     b.HasData(
                         new
                         {
-                            Id = new Guid("3fa1e03a-fa7e-42f4-b851-a51e18def90b"),
+                            Id = new Guid("3d4a1c24-ed0b-4497-9019-99103af4390b"),
                             Body = "Chào mừng bạn đến với FitWipe! Kính gửi [Name], vui lòng xác nhận địa chỉ email của bạn bằng cách nhấn vào đường link sau: <a href=\"[VerificationLink]\">Xác nhận Email</a>.<br><br>Cảm ơn bạn đã tham gia cùng chúng tôi!<br><br>Đội ngũ FitWipe",
-                            CreatedDate = new DateTime(2024, 9, 27, 9, 35, 40, 326, DateTimeKind.Local).AddTicks(5622),
+                            CreatedDate = new DateTime(2024, 9, 27, 7, 50, 24, 509, DateTimeKind.Utc).AddTicks(7749),
                             Description = "Email này được gửi để xác nhận đăng ký tài khoản FitWipe.",
                             Name = "Register_Mail",
                             Params = "[Name], [VerificationLink]",
@@ -80,9 +80,9 @@ namespace FitSwipe.DataAccess.Migrations
                         },
                         new
                         {
-                            Id = new Guid("0422300c-6fc0-437f-8b65-e5921f03ba65"),
+                            Id = new Guid("2549dc34-b7e6-4d68-a026-8b5e09f23362"),
                             Body = "Chúng tôi đã nhận được yêu cầu đặt lại mật khẩu cho tài khoản của bạn tại FitWipe. Kính gửi [Name], vui lòng đặt lại mật khẩu của bạn bằng cách nhấn vào đường link sau: <a href=\"[ResetPasswordLink]\">Đặt lại mật khẩu</a>.<br><br>Nếu bạn không yêu cầu việc này, vui lòng bỏ qua email này.<br><br>Đội ngũ FitWipe",
-                            CreatedDate = new DateTime(2024, 9, 27, 9, 35, 40, 326, DateTimeKind.Local).AddTicks(5760),
+                            CreatedDate = new DateTime(2024, 9, 27, 7, 50, 24, 509, DateTimeKind.Utc).AddTicks(7771),
                             Description = "Email này được gửi khi người dùng yêu cầu đặt lại mật khẩu cho tài khoản FitWipe.",
                             Name = "Forgot_Password",
                             Params = "[Name], [ResetPasswordLink]",
@@ -96,26 +96,26 @@ namespace FitSwipe.DataAccess.Migrations
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid");
 
                     b.Property<DateTime>("CreatedDate")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("timestamp with time zone");
 
                     b.Property<DateTime?>("DeletedDate")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("MediaUrl")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text");
 
                     b.Property<int>("RecordStatus")
-                        .HasColumnType("int");
+                        .HasColumnType("integer");
 
                     b.Property<Guid>("TrainingId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid");
 
                     b.Property<DateTime?>("UpdatedDate")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("timestamp with time zone");
 
                     b.HasKey("Id");
 
@@ -128,34 +128,34 @@ namespace FitSwipe.DataAccess.Migrations
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid");
 
                     b.Property<DateTime>("CreatedDate")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("timestamp with time zone");
 
                     b.Property<DateTime?>("DeletedDate")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("Reason")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text");
 
                     b.Property<int>("RecordStatus")
-                        .HasColumnType("int");
+                        .HasColumnType("integer");
 
                     b.Property<string>("ReporterId")
                         .IsRequired()
-                        .HasColumnType("nvarchar(450)");
+                        .HasColumnType("text");
 
                     b.Property<int>("Status")
-                        .HasColumnType("int");
+                        .HasColumnType("integer");
 
                     b.Property<string>("TargetId")
                         .IsRequired()
-                        .HasColumnType("nvarchar(450)");
+                        .HasColumnType("text");
 
                     b.Property<DateTime?>("UpdatedDate")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("timestamp with time zone");
 
                     b.HasKey("Id");
 
@@ -170,26 +170,26 @@ namespace FitSwipe.DataAccess.Migrations
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid");
 
                     b.Property<DateTime>("CreatedDate")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("timestamp with time zone");
 
                     b.Property<DateTime?>("DeletedDate")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("MediaUrl")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text");
 
                     b.Property<int>("RecordStatus")
-                        .HasColumnType("int");
+                        .HasColumnType("integer");
 
                     b.Property<Guid>("ReportId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid");
 
                     b.Property<DateTime?>("UpdatedDate")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("timestamp with time zone");
 
                     b.HasKey("Id");
 
@@ -202,51 +202,51 @@ namespace FitSwipe.DataAccess.Migrations
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid");
 
                     b.Property<string>("CreateById")
                         .IsRequired()
-                        .HasColumnType("nvarchar(450)");
+                        .HasColumnType("text");
 
                     b.Property<DateTime>("CreatedDate")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("timestamp with time zone");
 
                     b.Property<DateTime?>("DeletedDate")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("timestamp with time zone");
 
                     b.Property<DateTime>("EndTime")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("Feedback")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text");
 
                     b.Property<int?>("PaymentStatus")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
+                        .HasColumnType("integer")
                         .HasDefaultValue(1);
 
                     b.Property<double?>("Rating")
-                        .HasColumnType("float");
+                        .HasColumnType("double precision");
 
                     b.Property<int>("RecordStatus")
-                        .HasColumnType("int");
+                        .HasColumnType("integer");
 
                     b.Property<DateTime>("StartTime")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("timestamp with time zone");
 
                     b.Property<int?>("Status")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
+                        .HasColumnType("integer")
                         .HasDefaultValue(0);
 
                     b.Property<Guid?>("TrainingId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid");
 
                     b.Property<int?>("Type")
-                        .HasColumnType("int");
+                        .HasColumnType("integer");
 
                     b.Property<DateTime?>("UpdatedDate")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("timestamp with time zone");
 
                     b.HasKey("Id");
 
@@ -261,30 +261,30 @@ namespace FitSwipe.DataAccess.Migrations
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid");
 
                     b.Property<DateTime>("CreatedDate")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("timestamp with time zone");
 
                     b.Property<DateTime?>("DeletedDate")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("timestamp with time zone");
 
                     b.Property<int>("RecordStatus")
-                        .HasColumnType("int");
+                        .HasColumnType("integer");
 
                     b.Property<Guid>("SlotId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid");
 
                     b.Property<DateTime?>("UpdatedDate")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("Url")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text");
 
                     b.Property<string>("VideoUrl")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text");
 
                     b.HasKey("Id");
 
@@ -297,33 +297,33 @@ namespace FitSwipe.DataAccess.Migrations
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid");
 
                     b.Property<string>("CreateById")
                         .IsRequired()
-                        .HasColumnType("nvarchar(450)");
+                        .HasColumnType("text");
 
                     b.Property<DateTime>("CreatedDate")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("timestamp with time zone");
 
                     b.Property<DateTime?>("DeletedDate")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text");
 
                     b.Property<int>("RecordStatus")
-                        .HasColumnType("int");
+                        .HasColumnType("integer");
 
                     b.Property<string>("TagImage")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text");
 
                     b.Property<int>("TagType")
-                        .HasColumnType("int");
+                        .HasColumnType("integer");
 
                     b.Property<DateTime?>("UpdatedDate")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("timestamp with time zone");
 
                     b.HasKey("Id");
 
@@ -334,90 +334,90 @@ namespace FitSwipe.DataAccess.Migrations
                     b.HasData(
                         new
                         {
-                            Id = new Guid("345ec15d-42b3-448a-9bc3-2edecf55673d"),
+                            Id = new Guid("aed8e0d1-0b25-48e5-a50e-d39bfde282be"),
                             CreateById = "123abc",
-                            CreatedDate = new DateTime(2024, 9, 27, 9, 35, 40, 326, DateTimeKind.Local).AddTicks(5492),
+                            CreatedDate = new DateTime(2024, 9, 27, 7, 50, 24, 509, DateTimeKind.Utc).AddTicks(7681),
                             Name = "Bóng đá",
                             RecordStatus = 0,
                             TagType = 0
                         },
                         new
                         {
-                            Id = new Guid("73331a03-ab7a-4962-9bc4-a73ad64f193a"),
+                            Id = new Guid("f6ebaff4-cf62-4fdd-9f2c-64f5cf609ec4"),
                             CreateById = "123abc",
-                            CreatedDate = new DateTime(2024, 9, 27, 9, 35, 40, 326, DateTimeKind.Local).AddTicks(5496),
+                            CreatedDate = new DateTime(2024, 9, 27, 7, 50, 24, 509, DateTimeKind.Utc).AddTicks(7683),
                             Name = "Video game",
                             RecordStatus = 0,
                             TagType = 0
                         },
                         new
                         {
-                            Id = new Guid("efc33543-7354-4b7c-af2b-0ce44bdac07a"),
+                            Id = new Guid("991b69e6-cf77-4d82-975d-0cdb0999f4a3"),
                             CreateById = "123abc",
-                            CreatedDate = new DateTime(2024, 9, 27, 9, 35, 40, 326, DateTimeKind.Local).AddTicks(5499),
+                            CreatedDate = new DateTime(2024, 9, 27, 7, 50, 24, 509, DateTimeKind.Utc).AddTicks(7685),
                             Name = "Giảm cân",
                             RecordStatus = 0,
                             TagType = 1
                         },
                         new
                         {
-                            Id = new Guid("6a99e1a9-4a3c-473c-a3c8-777f944de1fe"),
+                            Id = new Guid("5873fa44-8f08-45b2-8a00-6170515ca940"),
                             CreateById = "123abc",
-                            CreatedDate = new DateTime(2024, 9, 27, 9, 35, 40, 326, DateTimeKind.Local).AddTicks(5529),
+                            CreatedDate = new DateTime(2024, 9, 27, 7, 50, 24, 509, DateTimeKind.Utc).AddTicks(7704),
                             Name = "Phát triển cơ bắp",
                             RecordStatus = 0,
                             TagType = 1
                         },
                         new
                         {
-                            Id = new Guid("721b346f-41c2-4f35-85fd-23ac6eeb9330"),
+                            Id = new Guid("d98b9fbe-6ea2-404b-a171-ecc73ea95440"),
                             CreateById = "123abc",
-                            CreatedDate = new DateTime(2024, 9, 27, 9, 35, 40, 326, DateTimeKind.Local).AddTicks(5535),
+                            CreatedDate = new DateTime(2024, 9, 27, 7, 50, 24, 509, DateTimeKind.Utc).AddTicks(7706),
                             Name = "Yoga",
                             RecordStatus = 0,
                             TagType = 2
                         },
                         new
                         {
-                            Id = new Guid("6f6cc7d1-2c3c-406f-ba2d-3c239b90e8d0"),
+                            Id = new Guid("60856b8a-33b4-40b3-b4ce-a57a8c8b9a22"),
                             CreateById = "123abc",
-                            CreatedDate = new DateTime(2024, 9, 27, 9, 35, 40, 326, DateTimeKind.Local).AddTicks(5538),
+                            CreatedDate = new DateTime(2024, 9, 27, 7, 50, 24, 509, DateTimeKind.Utc).AddTicks(7708),
                             Name = "Cardino",
                             RecordStatus = 0,
                             TagType = 2
                         },
                         new
                         {
-                            Id = new Guid("8d750c81-089a-4018-aa95-1c4215bc1bb1"),
+                            Id = new Guid("4b379bea-f884-405d-8e47-6aa087633f14"),
                             CreateById = "123abc",
-                            CreatedDate = new DateTime(2024, 9, 27, 9, 35, 40, 326, DateTimeKind.Local).AddTicks(5541),
+                            CreatedDate = new DateTime(2024, 9, 27, 7, 50, 24, 509, DateTimeKind.Utc).AddTicks(7709),
                             Name = "Ngoại hình đẹp",
                             RecordStatus = 0,
                             TagType = 3
                         },
                         new
                         {
-                            Id = new Guid("fa717782-b51b-4a82-96e9-683acc942944"),
+                            Id = new Guid("ff178496-071d-4830-89d4-e72cc7991552"),
                             CreateById = "123abc",
-                            CreatedDate = new DateTime(2024, 9, 27, 9, 35, 40, 326, DateTimeKind.Local).AddTicks(5544),
+                            CreatedDate = new DateTime(2024, 9, 27, 7, 50, 24, 509, DateTimeKind.Utc).AddTicks(7711),
                             Name = "Giá rẻ",
                             RecordStatus = 0,
                             TagType = 3
                         },
                         new
                         {
-                            Id = new Guid("6e1018cd-23a8-4dad-89c9-3dbd13a0b160"),
+                            Id = new Guid("befc0381-c5bf-4b7c-abd3-d9180fe73c17"),
                             CreateById = "123abc",
-                            CreatedDate = new DateTime(2024, 9, 27, 9, 35, 40, 326, DateTimeKind.Local).AddTicks(5546),
+                            CreatedDate = new DateTime(2024, 9, 27, 7, 50, 24, 509, DateTimeKind.Utc).AddTicks(7713),
                             Name = "Kiên trì",
                             RecordStatus = 0,
                             TagType = 4
                         },
                         new
                         {
-                            Id = new Guid("6e2127af-6c34-4b74-bc48-a27cc8fe937c"),
+                            Id = new Guid("0cfc7076-b3d5-4b8b-b9d5-4ec5fb651d1c"),
                             CreateById = "123abc",
-                            CreatedDate = new DateTime(2024, 9, 27, 9, 35, 40, 326, DateTimeKind.Local).AddTicks(5549),
+                            CreatedDate = new DateTime(2024, 9, 27, 7, 50, 24, 509, DateTimeKind.Utc).AddTicks(7714),
                             Name = "Siêng năng",
                             RecordStatus = 0,
                             TagType = 4
@@ -428,36 +428,36 @@ namespace FitSwipe.DataAccess.Migrations
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid");
 
                     b.Property<DateTime>("CreatedDate")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("timestamp with time zone");
 
                     b.Property<DateTime?>("DeletedDate")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("Feedback")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text");
 
                     b.Property<string>("PTId")
                         .IsRequired()
-                        .HasColumnType("nvarchar(450)");
+                        .HasColumnType("text");
 
                     b.Property<double?>("Rating")
-                        .HasColumnType("float");
+                        .HasColumnType("double precision");
 
                     b.Property<int>("RecordStatus")
-                        .HasColumnType("int");
+                        .HasColumnType("integer");
 
                     b.Property<int>("Status")
-                        .HasColumnType("int");
+                        .HasColumnType("integer");
 
                     b.Property<string>("TraineeId")
                         .IsRequired()
-                        .HasColumnType("nvarchar(450)");
+                        .HasColumnType("text");
 
                     b.Property<DateTime?>("UpdatedDate")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("timestamp with time zone");
 
                     b.HasKey("Id");
 
@@ -472,40 +472,40 @@ namespace FitSwipe.DataAccess.Migrations
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid");
 
                     b.Property<int>("Amount")
-                        .HasColumnType("int");
+                        .HasColumnType("integer");
 
                     b.Property<DateTime>("CreatedDate")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("timestamp with time zone");
 
                     b.Property<DateTime?>("DeletedDate")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("Description")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text");
 
                     b.Property<int>("Method")
-                        .HasColumnType("int");
+                        .HasColumnType("integer");
 
                     b.Property<int>("RecordStatus")
-                        .HasColumnType("int");
+                        .HasColumnType("integer");
 
                     b.Property<int>("Status")
-                        .HasColumnType("int");
+                        .HasColumnType("integer");
 
                     b.Property<string>("TranscationCode")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text");
 
                     b.Property<DateTime?>("UpdatedDate")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("UserFireBaseId")
                         .IsRequired()
-                        .HasColumnType("nvarchar(450)");
+                        .HasColumnType("text");
 
                     b.HasKey("Id");
 
@@ -517,25 +517,25 @@ namespace FitSwipe.DataAccess.Migrations
             modelBuilder.Entity("FitSwipe.DataAccess.Model.Entity.TransactionSlot", b =>
                 {
                     b.Property<Guid>("SlotId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid");
 
                     b.Property<Guid>("TransactionId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid");
 
                     b.Property<DateTime>("CreatedDate")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("timestamp with time zone");
 
                     b.Property<DateTime?>("DeletedDate")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("timestamp with time zone");
 
                     b.Property<Guid>("Id")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid");
 
                     b.Property<int>("RecordStatus")
-                        .HasColumnType("int");
+                        .HasColumnType("integer");
 
                     b.Property<DateTime?>("UpdatedDate")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("timestamp with time zone");
 
                     b.HasKey("SlotId", "TransactionId");
 
@@ -547,108 +547,108 @@ namespace FitSwipe.DataAccess.Migrations
             modelBuilder.Entity("FitSwipe.DataAccess.Model.Entity.User", b =>
                 {
                     b.Property<string>("FireBaseId")
-                        .HasColumnType("nvarchar(450)");
+                        .HasColumnType("text");
 
                     b.Property<string>("AvatarUrl")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text");
 
                     b.Property<int?>("Balance")
-                        .HasColumnType("int");
+                        .HasColumnType("integer");
 
                     b.Property<string>("Bio")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text");
 
                     b.Property<string>("City")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text");
 
                     b.Property<DateTime>("CreatedDate")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("timestamp with time zone");
 
                     b.Property<DateTime>("DateOfBirth")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("timestamp with time zone");
 
                     b.Property<DateTime?>("DeletedDate")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("Description")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text");
 
                     b.Property<string>("District")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text");
 
                     b.Property<string>("Email")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text");
 
                     b.Property<int>("Gender")
-                        .HasColumnType("int");
+                        .HasColumnType("integer");
 
                     b.Property<double?>("Height")
-                        .HasColumnType("float");
+                        .HasColumnType("double precision");
 
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid");
 
                     b.Property<string>("Job")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text");
 
                     b.Property<string>("PTDegreeImageUrl")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text");
 
                     b.Property<double?>("PTExperienceYear")
-                        .HasColumnType("float");
+                        .HasColumnType("double precision");
 
                     b.Property<int?>("PTStatus")
-                        .HasColumnType("int");
+                        .HasColumnType("integer");
 
                     b.Property<string>("Password")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text");
 
                     b.Property<string>("Phone")
                         .IsRequired()
                         .HasMaxLength(10)
                         .HasColumnType("varchar(10)");
 
-                    b.Property<decimal>("PricePerHour")
+                    b.Property<double>("PricePerHour")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("decimal(10,2)")
-                        .HasDefaultValue(0m);
+                        .HasDefaultValue(0.0);
 
                     b.Property<int>("RecordStatus")
-                        .HasColumnType("int");
+                        .HasColumnType("integer");
 
                     b.Property<int>("Role")
-                        .HasColumnType("int");
+                        .HasColumnType("integer");
 
                     b.Property<int>("Status")
-                        .HasColumnType("int");
+                        .HasColumnType("integer");
 
                     b.Property<string>("Street")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text");
 
                     b.Property<int?>("SubscriptionLevel")
-                        .HasColumnType("int");
+                        .HasColumnType("integer");
 
                     b.Property<int?>("SubscriptionPaymentStatus")
-                        .HasColumnType("int");
+                        .HasColumnType("integer");
 
                     b.Property<DateTime?>("SubscriptionPurchasedDate")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("timestamp with time zone");
 
                     b.Property<DateTime?>("UpdatedDate")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("UserName")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text");
 
                     b.Property<string>("Ward")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text");
 
                     b.Property<double?>("Weight")
-                        .HasColumnType("float");
+                        .HasColumnType("double precision");
 
                     b.HasKey("FireBaseId");
 
@@ -662,17 +662,17 @@ namespace FitSwipe.DataAccess.Migrations
                             Balance = 1000,
                             Bio = "Fitness enthusiast and certified personal trainer.",
                             City = "New York",
-                            CreatedDate = new DateTime(2024, 9, 27, 9, 35, 40, 326, DateTimeKind.Local).AddTicks(4786),
-                            DateOfBirth = new DateTime(1990, 5, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedDate = new DateTime(2024, 9, 27, 7, 50, 24, 509, DateTimeKind.Utc).AddTicks(7495),
+                            DateOfBirth = new DateTime(1990, 5, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             District = "Manhattan",
                             Email = "john.doe@example.com",
                             Gender = 0,
                             Height = 180.30000000000001,
-                            Id = new Guid("80f50c05-0dcc-49c7-acd0-4549425874c5"),
+                            Id = new Guid("946e340e-2207-48fe-82f6-7ac424008bab"),
                             Job = "Student",
                             Password = "hashedpassword1",
                             Phone = "1234567890",
-                            PricePerHour = 0m,
+                            PricePerHour = 0.0,
                             RecordStatus = 0,
                             Role = 0,
                             Status = 0,
@@ -688,26 +688,26 @@ namespace FitSwipe.DataAccess.Migrations
                             Balance = 1500,
                             Bio = "Yoga instructor with a passion for holistic health.",
                             City = "Los Angeles",
-                            CreatedDate = new DateTime(2024, 9, 27, 9, 35, 40, 326, DateTimeKind.Local).AddTicks(4875),
-                            DateOfBirth = new DateTime(1985, 8, 20, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedDate = new DateTime(2024, 9, 27, 7, 50, 24, 509, DateTimeKind.Utc).AddTicks(7538),
+                            DateOfBirth = new DateTime(1985, 8, 20, 0, 0, 0, 0, DateTimeKind.Utc),
                             District = "Beverly Hills",
                             Email = "jane.smith@example.com",
                             Gender = 1,
                             Height = 170.19999999999999,
-                            Id = new Guid("c2a5e40b-54ba-45cd-8e1f-20b6af02f985"),
+                            Id = new Guid("8a9d3d48-4fc4-4218-83db-8de82b247a28"),
                             Job = "Yoga Instructor",
                             PTExperienceYear = 3.5,
                             PTStatus = 1,
                             Password = "hashedpassword2",
                             Phone = "0987654321",
-                            PricePerHour = 100000m,
+                            PricePerHour = 100000.0,
                             RecordStatus = 0,
                             Role = 1,
                             Status = 0,
                             Street = "Rodeo Drive",
                             SubscriptionLevel = 1,
                             SubscriptionPaymentStatus = 0,
-                            SubscriptionPurchasedDate = new DateTime(2023, 2, 10, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            SubscriptionPurchasedDate = new DateTime(2023, 2, 10, 0, 0, 0, 0, DateTimeKind.Utc),
                             UserName = "jane smith",
                             Ward = "Ward 3",
                             Weight = 65.0
@@ -719,19 +719,19 @@ namespace FitSwipe.DataAccess.Migrations
                             Balance = 2000,
                             Bio = "Aspiring bodybuilder and nutrition expert.",
                             City = "Chicago",
-                            CreatedDate = new DateTime(2024, 9, 27, 9, 35, 40, 326, DateTimeKind.Local).AddTicks(4893),
-                            DateOfBirth = new DateTime(1992, 3, 10, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedDate = new DateTime(2024, 9, 27, 7, 50, 24, 509, DateTimeKind.Utc).AddTicks(7547),
+                            DateOfBirth = new DateTime(1992, 3, 10, 0, 0, 0, 0, DateTimeKind.Utc),
                             District = "Lincoln Park",
                             Email = "alex.jones@example.com",
                             Gender = 0,
                             Height = 185.40000000000001,
-                            Id = new Guid("d86635c7-ef52-4dd0-b0e5-5a34c81a8ad5"),
+                            Id = new Guid("6142fe08-d75d-46bb-bc89-a0f860192c0a"),
                             Job = "Nutritionist",
                             PTExperienceYear = 2.0,
                             PTStatus = 0,
                             Password = "hashedpassword3",
                             Phone = "5551234567",
-                            PricePerHour = 150000m,
+                            PricePerHour = 150000.0,
                             RecordStatus = 0,
                             Role = 1,
                             Status = 0,
@@ -746,34 +746,34 @@ namespace FitSwipe.DataAccess.Migrations
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid");
 
                     b.Property<DateTime>("CreatedDate")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("timestamp with time zone");
 
                     b.Property<DateTime?>("DeletedDate")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("Description")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text");
 
                     b.Property<string>("MediaUrl")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text");
 
                     b.Property<int>("RecordStatus")
-                        .HasColumnType("int");
+                        .HasColumnType("integer");
 
                     b.Property<int>("Status")
-                        .HasColumnType("int");
+                        .HasColumnType("integer");
 
                     b.Property<DateTime?>("UpdatedDate")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("UserId")
                         .IsRequired()
-                        .HasColumnType("nvarchar(450)");
+                        .HasColumnType("text");
 
                     b.HasKey("Id");
 
@@ -786,26 +786,26 @@ namespace FitSwipe.DataAccess.Migrations
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid");
 
                     b.Property<DateTime>("CreatedDate")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("timestamp with time zone");
 
                     b.Property<DateTime?>("DeletedDate")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("timestamp with time zone");
 
                     b.Property<int>("RecordStatus")
-                        .HasColumnType("int");
+                        .HasColumnType("integer");
 
                     b.Property<Guid>("TagId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid");
 
                     b.Property<DateTime?>("UpdatedDate")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("UserId")
                         .IsRequired()
-                        .HasColumnType("nvarchar(450)");
+                        .HasColumnType("text");
 
                     b.HasKey("Id");
 

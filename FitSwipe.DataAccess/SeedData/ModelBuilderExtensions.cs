@@ -8,7 +8,7 @@ namespace FitSwipe.DataAccess.SeedData
     {
         public static void Seed(this ModelBuilder modelBuilder)
         {
-            #region UserModel
+           #region UserModel
 
             modelBuilder.Entity<User>().HasData(
                 new User
@@ -18,10 +18,10 @@ namespace FitSwipe.DataAccess.SeedData
                     UserName = "john doe",
                     Gender = Gender.Male,
                     Email = "john.doe@example.com",
-                    Password = "hashedpassword1",
+                    Password = "hashedpassword1", // Ensure this is hashed securely before production
                     AvatarUrl = "https://example.com/avatar1.jpg",
                     Phone = "1234567890",
-                    DateOfBirth = new DateTime(1990, 5, 1),
+                    DateOfBirth = DateTime.SpecifyKind(new DateTime(1990, 5, 1), DateTimeKind.Utc), // Set to UTC
                     Weight = 75.5,
                     Height = 180.3,
                     Bio = "Fitness enthusiast and certified personal trainer.",
@@ -42,10 +42,10 @@ namespace FitSwipe.DataAccess.SeedData
                     UserName = "jane smith",
                     Gender = Gender.Female,
                     Email = "jane.smith@example.com",
-                    Password = "hashedpassword2",
+                    Password = "hashedpassword2", // Ensure this is hashed securely before production
                     AvatarUrl = "https://example.com/avatar2.jpg",
                     Phone = "0987654321",
-                    DateOfBirth = new DateTime(1985, 8, 20),
+                    DateOfBirth = DateTime.SpecifyKind(new DateTime(1985, 8, 20), DateTimeKind.Utc), // Set to UTC
                     Weight = 65.0,
                     Height = 170.2,
                     Bio = "Yoga instructor with a passion for holistic health.",
@@ -60,7 +60,7 @@ namespace FitSwipe.DataAccess.SeedData
                     PTStatus = PTStatus.Active,
                     PTExperienceYear = 3.5,
                     PricePerHour = 100000,
-                    SubscriptionPurchasedDate = new DateTime(2023, 2, 10),
+                    SubscriptionPurchasedDate = DateTime.SpecifyKind(new DateTime(2023, 2, 10), DateTimeKind.Utc), // Set to UTC
                     SubscriptionLevel = 1,
                     SubscriptionPaymentStatus = PaymentStatus.Paid
                 },
@@ -71,10 +71,10 @@ namespace FitSwipe.DataAccess.SeedData
                     UserName = "alex jones",
                     Gender = Gender.Male,
                     Email = "alex.jones@example.com",
-                    Password = "hashedpassword3",
+                    Password = "hashedpassword3", // Ensure this is hashed securely before production
                     AvatarUrl = "https://example.com/avatar3.jpg",
                     Phone = "5551234567",
-                    DateOfBirth = new DateTime(1992, 3, 10),
+                    DateOfBirth = DateTime.SpecifyKind(new DateTime(1992, 3, 10), DateTimeKind.Utc), // Set to UTC
                     Weight = 85.0,
                     Height = 185.4,
                     Bio = "Aspiring bodybuilder and nutrition expert.",
@@ -92,8 +92,8 @@ namespace FitSwipe.DataAccess.SeedData
                 }
             );
 
-
             #endregion
+
 
             #region Tag
             modelBuilder.Entity<Tag>().HasData(
