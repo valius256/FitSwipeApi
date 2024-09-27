@@ -35,6 +35,16 @@ namespace FitSwipe.API.Controllers
             return Ok(slotDetailDtos);
         }
 
+
+
+        /// <summary>
+        ///  Need in frontend block that the slot only book in days and don;t last to next day
+        /// </summary>
+        /// <param name="slotId"></param>
+        /// <param name="customerId"></param>
+        /// <returns></returns>
+        /// <exception cref="DataNotFoundException"></exception>
+        /// <exception cref="BadRequestException"></exception>
         [HttpPost("create-slot")]
         [Authorize]
         public async Task<IActionResult> CreateSlotAsync([FromBody] CreateSlotDtos model)

@@ -1,5 +1,4 @@
-﻿
-using FitSwipe.Shared.Enum;
+﻿using FitSwipe.Shared.Enum;
 
 namespace FitSwipe.DataAccess.Model.Entity
 {

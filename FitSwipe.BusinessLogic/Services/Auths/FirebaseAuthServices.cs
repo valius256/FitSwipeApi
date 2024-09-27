@@ -5,11 +5,10 @@ using FitSwipe.BusinessLogic.Interfaces.Users;
 using FitSwipe.BusinessLogic.Models.Users;
 using FitSwipe.DataAccess.Model.Entity;
 using FitSwipe.DataAccess.Model.Enum;
+using FitSwipe.Shared.Dtos.Auth;
 using FitSwipe.Shared.Dtos.Users;
 using FitSwipe.Shared.Enum;
 using FitSwipe.Shared.Exceptions;
-using FitSwipe.Shared.Model.Auth;
-using FitSwipe.Shared.Model.Users;
 using Mapster;
 using System.Net.Http.Json;
 using static FitSwipe.BusinessLogic.Services.Auths.JwtProviderServices;
@@ -215,7 +214,7 @@ namespace FitSwipe.BusinessLogic.Services.Auths
                 var customClaims = new Dictionary<string, object>
                 {
                     { "roles", userInDb.Role.ToString() },
-
+                    { "userEntityId", userInDb.Id.ToString() }
 
                 };
                 await SetCustomClaimsAsync(authToken.LocalId, customClaims);

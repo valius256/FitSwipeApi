@@ -1,11 +1,14 @@
 ﻿using FitSwipe.BusinessLogic.Interfaces.Payments;
 using FitSwipe.BusinessLogic.Interfaces.Slot;
+using FitSwipe.BusinessLogic.Interfaces.Transactions;
 using FitSwipe.BusinessLogic.Interfaces.Users;
 using FitSwipe.BusinessLogic.Library;
 using FitSwipe.DataAccess.Model;
+using FitSwipe.DataAccess.Model.Entity;
+using FitSwipe.Shared.Dtos.Payment;
+using FitSwipe.Shared.Dtos.Transactions;
+using FitSwipe.Shared.Enum;
 using FitSwipe.Shared.Exceptions;
-using FitSwipe.Shared.Model.Payment;
-using FitSwipe.Shared.Model.Slot;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Options;
 
@@ -15,42 +18,62 @@ namespace FitSwipe.BusinessLogic.Services.Payments
     {
         private readonly IUserServices _userServices;
         private readonly ISlotServices _slotServices;
+        private readonly ITransactionServices _transactionServices;
         private readonly VnPay _vnPay;
-        public PaymentServices(IUserServices userServices, ISlotServices slotServices, IOptions<VnPay> vnPay)
+        public PaymentServices(IUserServices userServices, ISlotServices slotServices, IOptions<VnPay> vnPay, ITransactionServices transactionServices)
         {
             _userServices = userServices;
+            _transactionServices = transactionServices;
             _slotServices = slotServices;
             _vnPay = vnPay.Value;
         }
 
-        public async Task<string> CreatePaymentForSlotAsync(PaySlotDtos model, HttpContext context, GetSlotDetailDtos slot, string CurrentUserFirebaseId)
+        public async Task<string> CreatePaymentForSlotAsync(PaySlotDtos model, HttpContext context, string CurrentUserFirebaseId)
         {
             var user = await _userServices.GetUserByIdRequiredAsync(CurrentUserFirebaseId);
 
             if (user is null)
             {
-                throw new Exception("User not found");
+                throw new ModelException(nameof(User), "Người dùng không khả dụng");
             }
 
-            var slotDetailDtos = await _slotServices.GetSlotByIdAsync(model.SlotId);
-            var isSlotValid = await _slotServices.ValidateSlotForCustomer(model.SlotId, user.FireBaseId);
-            if (!isSlotValid)
+            // Initialize total cost
+            double totalCost = 0;
+
+            // Validate each slot
+            foreach (var slotId in model.SlotIds)
             {
-                throw new ModelException("Slot", "Slot không hợp lệ");
-            }
-            var ptOfSlot = await _userServices.GetProfileUserAsync(slotDetailDtos.CreateById.ToString());
+                var slotDetailDtos = await _slotServices.GetSlotByIdAsync(slotId);
+                if (slotDetailDtos is null)
+                {
+                    throw new ModelException("Slot", $"Slot {slotId} không tồn tại");
+                }
 
+                var isSlotValid = await _slotServices.ValidateSlotForCustomer(slotId, user.FireBaseId);
+                if (!isSlotValid)
+                {
+                    throw new ModelException("Slot", $"Slot {slotId} không hợp lệ do trùng lịch với 1 slot khác");
+                }
+
+                var ptOfSlot = await _userServices.GetProfileUserAsync(slotDetailDtos.CreateById.ToString());
+
+                if (ptOfSlot is null || ptOfSlot.PTStatus != PTStatus.Active || ptOfSlot.PricePerHour <= 0 || ptOfSlot.Status != UserStatus.Active)
+                {
+                    throw new ModelException("PT", $"PT cho Slot {slotId} chưa đủ điều kiện dạy");
+                }
+
+                // Calculate cost for the slot and add to total cost
+                var slotCost = (slotDetailDtos.EndTime - slotDetailDtos.StartTime).TotalHours * ptOfSlot.PricePerHour;
+                totalCost += slotCost;
+            }
+
+            var lastOrderDescription = model.OrderDescription?.Trim() ?? "";
+            var lastUrl = model.ReturnUrl?.Trim() ?? "";
             var tick = DateTime.Now.Ticks.ToString();
-            if (ptOfSlot.PricePerHour == 0)
-            {
-                throw new ModelException("PT", "PT chưa đủ điều kiện dạy");
-            }
 
-            var slotCost = (slotDetailDtos.EndTime - slotDetailDtos.StartTime).TotalHours * ptOfSlot.PricePerHour;
-
-            var paymentUrl = CreateVnPayRequest(model, context, new List<Guid> { slotDetailDtos.Id }, slotCost, model.OrderDescription, false, tick, model.ReturnUrl);
+            // Create payment URL for multiple slots
+            var paymentUrl = CreateVnPayRequest(model, context, model.SlotIds, totalCost, lastOrderDescription, false, tick, lastUrl);
             return paymentUrl;
-
         }
 
         private string CreateVnPayRequest<T>(T model, HttpContext context, List<Guid>? slotId, double amount, string? description, bool? isRechargePayment, string tick, string? returnPage)
@@ -60,7 +83,7 @@ namespace FitSwipe.BusinessLogic.Services.Payments
             var pay = new VnPayLibrary();
 
             var currUid = context.User.FindFirst(c => c.Type == "user_id")?.Value;
-            string slotIdString = slotId != null ? string.Join(" ", slotId) : string.Empty;
+            string slotIdString = slotId != null ? string.Join(",", slotId.Select(id => id.ToString())) : string.Empty;
             pay.AddRequestData("vnp_Version", _vnPay.Version);
             pay.AddRequestData("vnp_Command", _vnPay.Command);
             pay.AddRequestData("vnp_TmnCode", _vnPay.TmnCode);
@@ -71,7 +94,7 @@ namespace FitSwipe.BusinessLogic.Services.Payments
             pay.AddRequestData("vnp_Locale", _vnPay.Locale);
             pay.AddRequestData("vnp_OrderInfo", $"{isRechargePayment}|{description}|{currUid}|{returnPage}|{slotIdString}");
             pay.AddRequestData("vnp_OrderType", "other");
-            pay.AddRequestData("vnp_ReturnUrl", "https://localhost:7142/api/Payment/execute");
+            pay.AddRequestData("vnp_ReturnUrl", "http://localhost:5250/api/Payment/execute");
             pay.AddRequestData("vnp_TxnRef", tick);
             pay.AddRequestData("vnp_ExpireDate", timeNow.AddMinutes(20).ToString("yyyyMMddHHmmss"));
 
@@ -80,9 +103,32 @@ namespace FitSwipe.BusinessLogic.Services.Payments
         }
 
 
-        public Task<PaymentSlotResponseModel> PaymentExecuteAsync(IQueryCollection collections)
+        public async Task<PaymentSlotResponseModel> PaymentExecuteAsync(IQueryCollection collections)
         {
-            throw new NotImplementedException();
+            var pay = new VnPayLibrary();
+            var response = pay.GetFullResponseData(collections, _vnPay.HashSecret);
+            if (response.Success)
+            {
+                var createTransactionDtos = new CreateTransactionDtos
+                {
+                    TranscationCode = response.TransactionCode,
+                    UserFireBaseId = response.UserFireBaseId,
+                    Amount = (int)response.Money,
+                    Method = TransactionMethod.VnPay,
+                    SlotIds = response.SlotIds
+                };
+
+                // Create the transaction in the service
+                await _transactionServices.CreateTransactionAsync(createTransactionDtos);
+
+            }
+            else if (response.VnPayResponseCode == "24")
+            {
+                throw new BadRequestException("Giao dịch đã bị hủy");
+            }
+
+
+            return response;
         }
     }
 }

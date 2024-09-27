@@ -1,6 +1,6 @@
 ﻿using FitSwipe.Shared.Enum;
 
-namespace FitSwipe.Shared.Model.Slot
+namespace FitSwipe.Shared.Dtos.Slots
 {
     public class GetSlotDetailDtos
     {

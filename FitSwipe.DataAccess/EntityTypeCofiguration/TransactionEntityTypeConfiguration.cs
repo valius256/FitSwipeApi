@@ -13,7 +13,9 @@ namespace FitSwipe.DataAccess.EntityTypeCofiguration
             builder.HasKey(t => t.Id);
             builder.Property(t => t.Id).ValueGeneratedOnAdd();
 
-            builder.HasOne(t => t.User).WithMany(u => u.Transactions).HasForeignKey(t => t.UserId)
+            builder.HasOne(t => t.User)
+                .WithMany(u => u.Transactions)
+                .HasForeignKey(t => t.UserFireBaseId)
                 .OnDelete(DeleteBehavior.Restrict);
         }
     }

@@ -1,7 +1,7 @@
 ﻿using FitSwipe.BusinessLogic.Interfaces.Auth;
 using FitSwipe.BusinessLogic.Interfaces.Users;
+using FitSwipe.Shared.Dtos.Auth;
 using FitSwipe.Shared.Dtos.Users;
-using FitSwipe.Shared.Model.Auth;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 

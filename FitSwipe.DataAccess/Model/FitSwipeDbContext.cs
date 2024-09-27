@@ -26,13 +26,26 @@ namespace FitSwipe.DataAccess.Model
         public DbSet<UserMedia> UserMedias { get; set; }
         public DbSet<FeedbackImage> FeedbackImages { get; set; }
         public DbSet<EmailTemplate> EmailTemplates { get; set; }
+        public DbSet<SlotVideos> SlotVideos { get; set; }
+        public DbSet<TransactionSlot> TransactionSlots { get; set; }
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.ApplyConfiguration(new UserEntityTypeConfiguration());
-
-
+            modelBuilder.ApplyConfiguration(new FeedbackImageEntityTypeConfiguration());
+            modelBuilder.ApplyConfiguration(new ReportEntityTypeConfiguration());
+            modelBuilder.ApplyConfiguration(new SlotEntityTypeConfiguration());
+            modelBuilder.ApplyConfiguration(new TagEntityTypeConfiguration());
+            modelBuilder.ApplyConfiguration(new TrainingEntityTypeConfiguration());
+            modelBuilder.ApplyConfiguration(new TransactionEntityTypeConfiguration());
+            modelBuilder.ApplyConfiguration(new UserMediaEntityTypeConfiguration());
+            modelBuilder.ApplyConfiguration(new UserTagEntityTypeConfiguration());
+            modelBuilder.ApplyConfiguration(new ReportImageEntityTypeConfiguration());
+            modelBuilder.ApplyConfiguration(new TransactionSlotEntityTypeConfiguration());
+            modelBuilder.ApplyConfiguration(new SlotVideoEntityTypeConfiguration());
+            
             modelBuilder.Seed();
-            base.OnModelCreating(modelBuilder); 
+            base.OnModelCreating(modelBuilder);
         }
     }
 }

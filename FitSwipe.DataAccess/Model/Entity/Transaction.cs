@@ -8,9 +8,11 @@ namespace FitSwipe.DataAccess.Model.Entity
         public string TranscationCode { get; set; }
         public TransactionMethod Method { get; set; }
         public TransactionStatus Status { get; set; }
-        public Guid UserId { get; set; } //Người dùng chịu trách nhiệm chính cho giao dịch này
+        public string UserFireBaseId { get; set; } //Người dùng chịu trách nhiệm chính cho giao dịch này
         public int Amount { get; set; }
-
+        public string Description { get; set; }
         public virtual User User { get; set; } = default!;
+
+        public virtual ICollection<TransactionSlot> TransactionSlots { get; set; } = new List<TransactionSlot>();
     }
 }
