@@ -2,7 +2,6 @@
 using FitSwipe.BusinessLogic.Interfaces.Slot;
 using FitSwipe.DataAccess.Model.Paging;
 using FitSwipe.Shared.Dtos.Slots;
-using FitSwipe.Shared.Model.Slot;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 

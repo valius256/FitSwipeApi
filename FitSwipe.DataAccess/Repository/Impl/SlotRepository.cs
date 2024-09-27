@@ -4,7 +4,6 @@ using FitSwipe.DataAccess.Model.Entity;
 using FitSwipe.DataAccess.Model.Paging;
 using FitSwipe.DataAccess.Repository.Intefaces;
 using FitSwipe.Shared.Dtos.Slots;
-using System.Linq;
 
 namespace FitSwipe.DataAccess.Repository.Impl
 {
@@ -21,7 +20,7 @@ namespace FitSwipe.DataAccess.Repository.Impl
             var query = _context.Slots
                 .AsQueryable();
 
-            if (pagingModel.Filter != null) 
+            if (pagingModel.Filter != null)
             {
                 if (pagingModel.Filter.CreateById != null)
                 {
@@ -51,17 +50,17 @@ namespace FitSwipe.DataAccess.Repository.Impl
                 {
                     query = query.Where(s => s.Rating <= pagingModel.Filter.RatingTo);
                 }
-                if(pagingModel.Filter.IsFeedbacked.HasValue)
+                if (pagingModel.Filter.IsFeedbacked.HasValue)
                 {
                     query = query.Where(s => (s.Feedback != null) == pagingModel.Filter.IsFeedbacked);
                 }
                 if (pagingModel.Filter.PaymentStatus.Count > 0)
                 {
-                    query = query.Where(s => pagingModel.Filter.PaymentStatus.Contains(s.PaymentStatus));
+                    query = query.Where(s => pagingModel.Filter.PaymentStatus.Contains((Shared.Enum.PaymentStatus)s.PaymentStatus));
                 }
                 if (pagingModel.Filter.Status.Count > 0)
                 {
-                    query = query.Where(s => pagingModel.Filter.Status.Contains(s.Status));
+                    query = query.Where(s => pagingModel.Filter.Status.Contains((Shared.Enum.SlotStatus)s.Status));
                 }
 
             }

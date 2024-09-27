@@ -23,6 +23,7 @@ namespace FitSwipe.BusinessLogic.Services.Slots
         {
             return (await _slotRepository.GetSlots(pagingModel)).Adapt<PagedResult<GetSlotDto>>();
         }
+
         public async Task<GetSlotDetailDtos> CreateSlotAsync(CreateSlotDtos model, string currentUserId)
         {
             var currPTEntity = await _userServices.GetUserByIdRequiredAsync(currentUserId);
