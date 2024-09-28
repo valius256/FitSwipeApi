@@ -35,7 +35,7 @@ namespace FitSwipe.API.Controllers
         [HttpPost]
         public async Task<ActionResult<GetTrainingDto>> CreateTraining([FromBody] CreateTrainingDto createTrainingDto)
         {
-            return await _trainingService.CreateTraining(CurrentUserFirebaseId,createTrainingDto);
+            return await _trainingService.CreateTraining(CurrentUserFirebaseId, createTrainingDto);
         }
     }
 }

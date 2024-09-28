@@ -7,5 +7,6 @@ namespace FitSwipe.DataAccess.Repository.Intefaces
     public interface ISlotRepository : IGenericRepository<Slot>
     {
         Task<PagedResult<Slot>> GetSlots(PagingModel<QuerySlotDto> pagingModel);
+        Task<Slot> GetSlotDetailDtos(Guid slotId);
     }
 }

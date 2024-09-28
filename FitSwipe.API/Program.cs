@@ -34,7 +34,7 @@ builder.Services.AddDbContext<FitSwipeDbContext>(options =>
     //     b => b.MigrationsAssembly("FitSwipe.DataAccess"));
 
     // using postgres 
-    options.UseNpgsql(builder.Configuration.GetConnectionString("PostgresConnectionString"),
+    options.UseNpgsql(builder.Configuration.GetConnectionString("PostgresInLocal"),
         b => b.MigrationsAssembly("FitSwipe.DataAccess"));
 });
 builder.Services.AddCors(options =>
@@ -50,12 +50,14 @@ builder.Services.AddCors(options =>
 
 
 // ADD Serviuces 
+#pragma warning disable CS0612 // Type or member is obsolete
 builder.Services.AddRepositories()
-    .AddGeneralServices()
-    .AddFireBaseServices(builder.Configuration)
-    .AddHangFireConfigurations(builder.Configuration)
-    .AddSwaggerWithConfigurations()
-    .AddFirebaseAuthentication(builder.Configuration);
+                .AddGeneralServices()
+                .AddFireBaseServices(builder.Configuration)
+                .AddHangFireConfigurations(builder.Configuration)
+                .AddSwaggerWithConfigurations()
+                .AddFirebaseAuthentication(builder.Configuration);
+#pragma warning restore CS0612 // Type or member is obsolete
 
 
 

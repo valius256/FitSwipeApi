@@ -4,6 +4,7 @@ using FitSwipe.DataAccess.Model.Entity;
 using FitSwipe.DataAccess.Model.Paging;
 using FitSwipe.DataAccess.Repository.Intefaces;
 using FitSwipe.Shared.Dtos.Slots;
+using Microsoft.EntityFrameworkCore;
 
 namespace FitSwipe.DataAccess.Repository.Impl
 {
@@ -14,6 +15,8 @@ namespace FitSwipe.DataAccess.Repository.Impl
         {
             _context = context;
         }
+
+        public async Task<Slot> GetSlotDetailDtos(Guid slotId) => await _context.Slots.Include(s => s.Videos).FirstOrDefaultAsync(x => x.Id == slotId);
 
         public async Task<PagedResult<Slot>> GetSlots(PagingModel<QuerySlotDto> pagingModel)
         {

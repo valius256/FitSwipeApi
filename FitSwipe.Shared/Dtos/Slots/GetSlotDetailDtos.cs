@@ -14,6 +14,6 @@ namespace FitSwipe.Shared.Dtos.Slots
         public PaymentStatus PaymentStatus { get; set; }
         public double? Rating { get; set; }
         public string? Feedback { get; set; }
-
+        public SlotVideoDto SlotVideo { get; set; }
     }
 }

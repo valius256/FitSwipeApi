@@ -2,8 +2,8 @@
 {
     public class DowloadImagesDtos
     {
-        public string Uid { get; set; }
-        public string Url { get; set; }
-        public string FileName { get; set; }
+        public required string Uid { get; set; }
+        public required string Url { get; set; }
+        public required string FileName { get; set; }
     }
 }
