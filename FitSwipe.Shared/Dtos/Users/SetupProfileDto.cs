@@ -4,9 +4,9 @@ namespace FitSwipe.Shared.Dtos.Users
 {
     public class SetupProfileDto
     {
-        public Gender Gender { get; set; }
+        public Gender? Gender { get; set; }
         public string? AvatarUrl { get; set; }
-        public DateTime DateOfBirth { get; set; }
+        public DateTime? DateOfBirth { get; set; }
         public string? Bio { get; set; }
         public string? City { get; set; }
         public string? District { get; set; }
