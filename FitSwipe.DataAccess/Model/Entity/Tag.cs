@@ -8,6 +8,7 @@ namespace FitSwipe.DataAccess.Model.Entity
         public TagType TagType { get; set; }
         public string CreateById { get; set; }
         public string? TagImage { get; set; }
+        public SpecialTag? SpecialTag { get; set; }
         public virtual ICollection<UserTag> UserTags { get; set; } = new List<UserTag>();
         public virtual User CreateBy { get; set; } = default!;
     }

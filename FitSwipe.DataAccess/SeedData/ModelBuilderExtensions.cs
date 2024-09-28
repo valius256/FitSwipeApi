@@ -446,6 +446,7 @@ namespace FitSwipe.DataAccess.SeedData
                     Id = Guid.NewGuid(),
                     Name = "Cùng giới",
                     TagType = TagType.PTTaste,
+                    SpecialTag = SpecialTag.SameGender,
                     CreateById = "123abc",
                 },
                 new Tag
@@ -453,6 +454,7 @@ namespace FitSwipe.DataAccess.SeedData
                     Id = Guid.NewGuid(),
                     Name = "Khác giới",
                     TagType = TagType.PTTaste,
+                    SpecialTag = SpecialTag.DifferentGender,
                     CreateById = "123abc",
                 },
                new Tag
@@ -465,7 +467,7 @@ namespace FitSwipe.DataAccess.SeedData
                new Tag
                {
                    Id = Guid.NewGuid(),
-                   Name = "Giá rẻ",
+                   Name = "Cung cấp giá cả phải chăng",
                    TagType = TagType.PTTaste,
                    CreateById = "123abc",
                },
@@ -473,6 +475,7 @@ namespace FitSwipe.DataAccess.SeedData
                {
                    Id = Guid.NewGuid(),
                    Name = "Gần",
+                   SpecialTag = SpecialTag.Close,
                    TagType = TagType.PTTaste,
                    CreateById = "123abc",
                },
