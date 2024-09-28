@@ -11,6 +11,7 @@ namespace FitSwipe.Shared.Dtos.Tags
         public TagType TagType { get; set; }
         public string? TagImage { get; set; }
         public string CreateById { get; set; } = string.Empty;
+        public SpecialTag? SpecialTag { get; set; }
         public DateTime CreatedDate { get; set; } = DateTime.Now;
         public DateTime? UpdatedDate { get; set; }
         public DateTime? DeletedDate { get; set; }
