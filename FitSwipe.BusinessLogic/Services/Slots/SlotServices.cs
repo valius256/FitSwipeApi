@@ -4,6 +4,7 @@ using FitSwipe.DataAccess.Model.Entity;
 using FitSwipe.DataAccess.Model.Paging;
 using FitSwipe.DataAccess.Repository.Intefaces;
 using FitSwipe.Shared.Dtos.Slots;
+using FitSwipe.Shared.Enum;
 using FitSwipe.Shared.Exceptions;
 using Mapster;
 
@@ -30,17 +31,17 @@ namespace FitSwipe.BusinessLogic.Services.Slots
             // check user create is PT or not
             if (currPTEntity.Role != Shared.Enum.Role.PT)
             {
-                throw new ModelException("PT", "Bạn không phải PT");
+                throw new ModelException("PT", "You are not PT");
             }
 
             // check slot time is dupplicate or not
             if (await IsSlotTimeDupplicatedForPT(model.StartTime, model.EndTime, currentUserId))
             {
-                throw new ModelException("Slot", " Thời gian Slot bị trùng lặp");
+                throw new ModelException("Slot", " Time of Slot is Dupplicated");
             }
             if (currPTEntity.FireBaseId is null)
             {
-                throw new ModelException("PT", "PT Không tìm thấy");
+                throw new ModelException("PT", "PT Not found");
             }
 
             var newSlot = model.Adapt<Slot>();
@@ -48,17 +49,17 @@ namespace FitSwipe.BusinessLogic.Services.Slots
             var resultSLot = await _slotRepository.AddAsync(newSlot);
             if (resultSLot == null)
             {
-                throw new ModelException("Slot", "Slot thêm mới đã lỗi vui lòng nhập lại");
+                throw new ModelException("Slot", "error when adding slot");
             }
             return resultSLot.Adapt<GetSlotDetailDtos>();
         }
 
         public async Task<GetSlotDetailDtos> GetSlotByIdAsync(Guid slotId)
         {
-            var slot = await _slotRepository.FindOneAsync(s => s.Id == slotId);
+            var slot = await _slotRepository.GetSlotDetailDtos(slotId);
             if (slot is null)
             {
-                return null;
+                throw new BadRequestException("Slot is not exist");
             }
 
             var slotDetailDtos = slot.Adapt<GetSlotDetailDtos>();
@@ -134,6 +135,29 @@ namespace FitSwipe.BusinessLogic.Services.Slots
             slot.Rating = updateSlotRatingDto.Rating;
             slot.Feedback = updateSlotRatingDto.Feedback;
             await _slotRepository.UpdateAsync(slot.Adapt<Slot>());
+        }
+
+        public async Task DeleteSlotAsync(Guid slotId, string currentUserFirebaseId)
+        {
+            var slot = await _slotRepository.FindOneWithNoTrackingAsync(s => s.Id == slotId);
+            if (slot is null)
+            {
+                throw new DataNotFoundException("Slot is not found");
+            }
+
+            if (slot.CreateById != currentUserFirebaseId)
+            {
+                throw new ForbiddenException("You don't have permission to do this function!");
+            }
+
+            var listOfStatusToDelete = new List<SlotStatus>() { SlotStatus.Unbooked, SlotStatus.Pending, SlotStatus.NotStarted };
+            if (!listOfStatusToDelete.Contains(slot.Status.Value))
+            {
+                throw new BadRequestException($"Slot must be one of these Status{listOfStatusToDelete.ToList()} ");
+            }
+
+
+            await _slotRepository.DeleteAsync(slotId);
         }
     }
 }

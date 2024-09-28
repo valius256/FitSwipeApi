@@ -11,12 +11,12 @@ namespace FitSwipe.Shared.Dtos.Users
         public string? Password { get; set; }
         public Gender Gender { get; set; }
         public DateTime DateOfBirth { get; set; }
-        public string Bio { get; set; }
+        public required string Bio { get; set; }
         public Role Role { get; set; }
-        public string City { get; set; }
-        public string District { get; set; }
-        public string Ward { get; set; }
-        public string Street { get; set; }
+        public required string City { get; set; }
+        public required string District { get; set; }
+        public required string Ward { get; set; }
+        public required string Street { get; set; }
 
     }
 }
