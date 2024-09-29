@@ -4,6 +4,7 @@ using FitSwipe.DataAccess.Model.Entity;
 using FitSwipe.DataAccess.Model.Paging;
 using FitSwipe.DataAccess.Repository.Intefaces;
 using FitSwipe.Shared.Dtos.Slots;
+using FitSwipe.Shared.Enum;
 using FitSwipe.Shared.Exceptions;
 using Mapster;
 
@@ -26,22 +27,19 @@ namespace FitSwipe.BusinessLogic.Services.Slots
 
         public async Task<GetSlotDto> CreateFreeSlotForPTAsync(CreateSlotDtos model, string currentUserId)
         {
+
             //NOTE: Nên giới hạn độ dài của slot
             var currPTEntity = await _userServices.GetUserByIdRequiredAsync(currentUserId);
             // check user create is PT or not
-            if (currPTEntity.Role != Shared.Enum.Role.PT)
+            if (currPTEntity.Role != Role.PT)
             {
-                throw new ModelException("PT", "Bạn không phải PT");
+                throw new ModelException("PT", "You are not PT");
             }
 
             // check slot time is dupplicate or not
             if (await IsSlotTimeDupplicatedForPT(model.StartTime, model.EndTime, currentUserId))
             {
-                throw new ModelException("Slot", " Thời gian Slot bị trùng lặp");
-            }
-            if (currPTEntity.FireBaseId is null)
-            {
-                throw new ModelException("PT", "PT Không tìm thấy");
+                throw new ModelException("Slot", " Time of Slot is Dupplicated");
             }
 
             //var newSlot = model.Adapt<Slot>();
@@ -50,13 +48,13 @@ namespace FitSwipe.BusinessLogic.Services.Slots
                 StartTime = DateTime.SpecifyKind(model.StartTime, DateTimeKind.Utc),
                 EndTime = DateTime.SpecifyKind(model.EndTime, DateTimeKind.Utc),
                 CreateById = currPTEntity.FireBaseId,
-                Type = Shared.Enum.SlotType.Free,
-                Status = Shared.Enum.SlotStatus.Unbooked
+                Type = SlotType.Free,
+                Status =SlotStatus.Unbooked
             };
             var resultSLot = await _slotRepository.AddAsync(newSlot);
             if (resultSLot == null)
             {
-                throw new ModelException("Slot", "Slot thêm mới đã lỗi vui lòng nhập lại");
+                throw new ModelException("Slot", "error when adding slot");
             }
             return resultSLot.Adapt<GetSlotDto>();
         }
@@ -66,7 +64,7 @@ namespace FitSwipe.BusinessLogic.Services.Slots
             var slot = await _slotRepository.GetSlotByIdAsync(slotId);
             if (slot is null)
             {
-                throw new DataNotFoundException("Slot is not found");
+                throw new DataNotFoundException("Slot is not exist");
             }
 
             var slotDetailDtos = slot.Adapt<GetSlotDetailDtos>();
@@ -97,7 +95,7 @@ namespace FitSwipe.BusinessLogic.Services.Slots
                 throw new DataNotFoundException("Slot not found");
             }
 
-            var listOfSlotOfCurrentUser = await _slotRepository.FindAsync(s => s.Training.TraineeId == customerId);
+            var listOfSlotOfCurrentUser = await _slotRepository.FindAsync(s => s.Training != null && s.Training.TraineeId == customerId);
 
             foreach (var customerSlot in listOfSlotOfCurrentUser)
             {
@@ -142,6 +140,29 @@ namespace FitSwipe.BusinessLogic.Services.Slots
             slot.Rating = updateSlotRatingDto.Rating;
             slot.Feedback = updateSlotRatingDto.Feedback;
             await _slotRepository.UpdateAsync(slot.Adapt<Slot>());
+        }
+
+        public async Task DeleteSlotAsync(Guid slotId, string currentUserFirebaseId)
+        {
+            var slot = await _slotRepository.FindOneWithNoTrackingAsync(s => s.Id == slotId);
+            if (slot is null)
+            {
+                throw new DataNotFoundException("Slot is not found");
+            }
+
+            if (slot.CreateById != currentUserFirebaseId)
+            {
+                throw new ForbiddenException("You don't have permission to do this function!");
+            }
+
+            var listOfStatusToDelete = new List<SlotStatus>() { SlotStatus.Unbooked, SlotStatus.Pending, SlotStatus.NotStarted };
+            if (!listOfStatusToDelete.Contains(slot.Status))
+            {
+                throw new BadRequestException($"Slot must be one of these Status{listOfStatusToDelete.ToList()} ");
+            }
+
+
+            await _slotRepository.DeleteAsync(slotId);
         }
     }
 }

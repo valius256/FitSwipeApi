@@ -7,7 +7,7 @@ namespace FitSwipe.BusinessLogic.Interfaces.Users
 {
     public interface IUserServices
     {
-        Task<User> AddUserAsync(User user);
+        Task<User?> AddUserAsync(User user);
         Task<GetProfileUserDto> GetProfileUserAsync(string userFirebaseId);
         Task<List<User>> GetAllUserAsync();
         Task<User?> GetUserByEmailAsync(string email);

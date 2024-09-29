@@ -3,6 +3,7 @@ using FitSwipe.BusinessLogic.Interfaces.Auth;
 using FitSwipe.BusinessLogic.Interfaces.Sender;
 using FitSwipe.BusinessLogic.Interfaces.Users;
 using FitSwipe.BusinessLogic.Models.Users;
+using FitSwipe.DataAccess.Model;
 using FitSwipe.DataAccess.Model.Entity;
 using FitSwipe.DataAccess.Model.Enum;
 using FitSwipe.Shared.Dtos.Auth;
@@ -10,6 +11,7 @@ using FitSwipe.Shared.Dtos.Users;
 using FitSwipe.Shared.Enum;
 using FitSwipe.Shared.Exceptions;
 using Mapster;
+using Microsoft.Extensions.Options;
 using System.Net.Http.Json;
 using static FitSwipe.BusinessLogic.Services.Auths.JwtProviderServices;
 
@@ -21,15 +23,15 @@ namespace FitSwipe.BusinessLogic.Services.Auths
         private readonly IEmailServices _emailServices;
         private readonly HttpClient _httpClient;
         private readonly IUserServices _userServices;
+        private readonly FirebaseUpload _firebaseUpload;
 
 
-        public FirebaseAuthServices(IEmailServices emailServices, HttpClient httpClient, IUserServices userServices)
+        public FirebaseAuthServices(IEmailServices emailServices, HttpClient httpClient, IUserServices userServices, IOptions<FirebaseUpload> firebaseUpload)
         {
             _emailServices = emailServices;
             _httpClient = httpClient;
             _userServices = userServices;
-
-
+            _firebaseUpload = firebaseUpload.Value;
         }
 
         public async Task<string> ForgotPasswordAsync(string email)
@@ -55,8 +57,6 @@ namespace FitSwipe.BusinessLogic.Services.Auths
 
         public async Task<bool> GenerateVerificationEmailAsync(string email)
         {
-
-
             var link = await FirebaseAuth.DefaultInstance.GenerateEmailVerificationLinkAsync(email);
 
             var toAddress = new List<string> { email };
@@ -139,7 +139,8 @@ namespace FitSwipe.BusinessLogic.Services.Auths
             // Populate additional fields for the User entity
             userEntity.FireBaseId = registerAuthModel.UserFirebaseId;
             userEntity.Role = registerDtos.Role;
-            userEntity.UserName = registerDtos.Email;
+            userEntity.Email = registerDtos.Email;
+            userEntity.UserName = registerDtos.Name;
             userEntity.Status = UserStatus.Active;
 
             // Add the User entity to the database
@@ -158,7 +159,7 @@ namespace FitSwipe.BusinessLogic.Services.Auths
 
 
             var userResponseModel = new GetUserProfileDtos()
-            {
+            {         
                 Email = registerDtos.Email,
                 Password = registerDtos.Password,
                 Role = registerDtos.Role,
@@ -191,7 +192,7 @@ namespace FitSwipe.BusinessLogic.Services.Auths
                     returnSecureToken = true
                 };
 
-                var url = $"https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=AIzaSyCO7BUe_jNgpY-EL8LM_XW0pzlkfvyFSns";
+                var url = $"https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key={_firebaseUpload.SignInPasswordKey}";
 
                 var response = await _httpClient.PostAsJsonAsync(url, request);
                 if (!response.IsSuccessStatusCode)

@@ -122,9 +122,6 @@ namespace FitSwipe.BusinessLogic.Services.Users
             return userEntitty;
         }
 
-
-
-
         public async Task<GetProfileUserDto> GetProfileUserAsync(string userFirebaseId)
         {
             var userEntity = await _userRepository.FindOneAsync(u => u.FireBaseId == userFirebaseId);
@@ -140,22 +137,27 @@ namespace FitSwipe.BusinessLogic.Services.Users
         public async Task SetupProfileAsync(string userId, SetupProfileDto setupProfileDto)
         {
             var user = await GetUserByIdRequiredAsync(userId);
-            user.Adapt(setupProfileDto);
-            await _userRepository.UpdateAsync(user);
+            var updatedUser = setupProfileDto.Adapt(user);
+            if (setupProfileDto.DateOfBirth.HasValue)
+            {
+                user.DateOfBirth = DateTime.SpecifyKind(setupProfileDto.DateOfBirth.Value, DateTimeKind.Utc);
+            }
+            await _userRepository.UpdateAsync(updatedUser);
         }
 
-        public async Task<User> AddUserAsync(User user)
+        public async Task<User?> AddUserAsync(User user)
         {
             var userInDb = await _userRepository.FindOneAsync(u => u.FireBaseId == user.FireBaseId);
-            if (user == null)
+            if (user != null)
             {
-                throw new DataNotFoundException("User not found");
+                user.Id = Guid.NewGuid();
+                await _userRepository.AddAsync(user);
+                return user;
             }
             else
             {
-                await _userRepository.AddAsync(userInDb);
+                throw new BadRequestException("FirebaseId had existed");
             }
-            return user;
         }
     }
 }

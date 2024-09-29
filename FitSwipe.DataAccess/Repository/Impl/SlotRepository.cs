@@ -16,6 +16,8 @@ namespace FitSwipe.DataAccess.Repository.Impl
             _context = context;
         }
 
+        //public async Task<Slot> GetSlotDetailDtos(Guid slotId) => await _context.Slots.Include(s => s.Videos).FirstOrDefaultAsync(x => x.Id == slotId);
+
         public async Task<PagedResult<Slot>> GetSlots(PagingModel<QuerySlotDto> pagingModel)
         {
             var query = _context.Slots
@@ -57,11 +59,11 @@ namespace FitSwipe.DataAccess.Repository.Impl
                 }
                 if (pagingModel.Filter.PaymentStatus.Count > 0)
                 {
-                    query = query.Where(s => pagingModel.Filter.PaymentStatus.Contains((Shared.Enum.PaymentStatus)s.PaymentStatus));
+                    query = query.Where(s => s.PaymentStatus != null && pagingModel.Filter.PaymentStatus.Contains(s.PaymentStatus.Value));
                 }
                 if (pagingModel.Filter.Status.Count > 0)
                 {
-                    query = query.Where(s => pagingModel.Filter.Status.Contains((Shared.Enum.SlotStatus)s.Status));
+                    query = query.Where(s =>  pagingModel.Filter.Status.Contains(s.Status));
                 }
 
             }

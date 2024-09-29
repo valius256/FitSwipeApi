@@ -10,7 +10,7 @@ namespace FitSwipe.DataAccess.Model.Entity
         public Guid? TrainingId { get; set; }
         public string CreateById { get; set; }
         public SlotType? Type { get; set; } //Phân biệt slot này là slot rảnh hay slot đã đặt
-        public SlotStatus? Status { get; set; } // Trạng thái bắt đầu hay kết thúc của 1 slot
+        public SlotStatus Status { get; set; } // Trạng thái bắt đầu hay kết thúc của 1 slot
         public PaymentStatus? PaymentStatus { get; set; }
         public double? Rating { get; set; }
         public string? Feedback { get; set; }

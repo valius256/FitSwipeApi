@@ -48,6 +48,8 @@ public partial class FirebaseUpload
     public string ProjectId { get; set; }
     [JsonPropertyName("ServicesAccountPath")]
     public string ServicesAccountPath { get; set; }
+    [JsonPropertyName("SignInPasswordKey")]
+    public string SignInPasswordKey { get; set; }
 
 }
 

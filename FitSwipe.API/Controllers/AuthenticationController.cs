@@ -23,7 +23,7 @@ namespace FitSwipe.API.Controllers
         [HttpPost("register")]
         public async Task<IActionResult> RegisterUser([FromBody] RegisterRequestDtos registerRequestModel)
         {
-            var response = await _authServices.RegisterUserWithFirebaseAsync(registerRequestModel);
+            var response = await _authServices.RegisterUser(registerRequestModel);
             return Ok(response);
         }
 

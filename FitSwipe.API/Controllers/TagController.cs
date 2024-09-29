@@ -1,17 +1,19 @@
 ﻿using FitSwipe.BusinessLogic.Interfaces.Tags;
+using FitSwipe.DataAccess.Model.Entity;
 using FitSwipe.Shared.Dtos.Tags;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace FitSwipe.API.Controllers
 {
     [ApiController]
     [Route("api/tags")]
-    public class TagController : ControllerBase
+    public class TagController : BaseController<TagController>
     {
         private readonly IUserTagService _userTagService;
         private readonly ITagService _tagService;
 
-        public TagController(IUserTagService userTagService, ITagService tagService)
+        public TagController(IUserTagService userTagService, ITagService tagService, ILogger<TagController> logger) : base(logger)
         {
             _userTagService = userTagService;
             _tagService = tagService;
@@ -31,10 +33,11 @@ namespace FitSwipe.API.Controllers
         {
             return await _userTagService.GetCommonTags(getCommonUserTagDto.FirstUserId, getCommonUserTagDto.SecondUserId);
         }
+        [Authorize]
         [HttpPut("upsert-user-tags")]
         public async Task<IActionResult> UpsertUserTags([FromBody] UpsertUserTagDto upsertUserTagDto)
         {
-            await _userTagService.UpsertUserTags(upsertUserTagDto.UserId, upsertUserTagDto);
+            await _userTagService.UpsertUserTags(CurrentUserFirebaseId, upsertUserTagDto);
             return Ok();
         }
     }

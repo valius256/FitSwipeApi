@@ -18,7 +18,7 @@ namespace FitSwipe.API.Controllers
         }
 
         [Authorize]
-        [HttpPost("create-payment-for-slot")]
+        [HttpPost("create")]
         public async Task<IActionResult> CreatePaymentForSlotAsync([FromBody] PaySlotDtos model)
         {
             var result = await _paymentServices.CreatePaymentForSlotAsync(model, HttpContext, CurrentUserFirebaseId);
