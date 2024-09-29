@@ -42,7 +42,7 @@ namespace FitSwipe.API.Controllers
         /// <exception cref="BadRequestException"></exception>
         [HttpPost("create")]
         [Authorize]
-        public async Task<ActionResult<GetSlotDto>> CreateSlotAsync([FromBody] CreateSlotDtos model)
+        public async Task<ActionResult<List<GetSlotDto>>> CreateSlotAsync([FromBody] List<CreateSlotDtos> model)
         {
             var result = await _slotServices.CreateFreeSlotForPTAsync(model, CurrentUserFirebaseId);
             return Ok(result);

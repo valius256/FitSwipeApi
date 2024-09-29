@@ -25,7 +25,7 @@ namespace FitSwipe.BusinessLogic.Services.Slots
             return (await _slotRepository.GetSlots(pagingModel)).Adapt<PagedResult<GetSlotDto>>();
         }
 
-        public async Task<GetSlotDto> CreateFreeSlotForPTAsync(CreateSlotDtos model, string currentUserId)
+        public async Task<List<GetSlotDto>> CreateFreeSlotForPTAsync(List<CreateSlotDtos> model, string currentUserId)
         {
 
             //NOTE: Nên giới hạn độ dài của slot
@@ -36,27 +36,33 @@ namespace FitSwipe.BusinessLogic.Services.Slots
                 throw new ModelException("PT", "You are not PT");
             }
 
-            // check slot time is dupplicate or not
-            if (await IsSlotTimeDupplicatedForPT(model.StartTime, model.EndTime, currentUserId))
-            {
-                throw new ModelException("Slot", " Time of Slot is Dupplicated");
-            }
-
             //var newSlot = model.Adapt<Slot>();
-            var newSlot = new Slot()
+            var slots = new List<Slot>();
+            foreach (var slot in model)
             {
-                StartTime = DateTime.SpecifyKind(model.StartTime, DateTimeKind.Utc),
-                EndTime = DateTime.SpecifyKind(model.EndTime, DateTimeKind.Utc),
-                CreateById = currPTEntity.FireBaseId,
-                Type = SlotType.Free,
-                Status =SlotStatus.Unbooked
-            };
-            var resultSLot = await _slotRepository.AddAsync(newSlot);
+                // check slot time is dupplicate or not
+                if (await IsSlotTimeDupplicatedForPT(slot.StartTime, slot.EndTime, currentUserId))
+                {
+                    throw new ModelException("Slot", " Time of Slot is Dupplicated");
+                }
+                var newSlot = new Slot()
+                {
+                    //trừ 7 tiếng theo giờ Việt nam
+                    StartTime = DateTime.SpecifyKind(slot.StartTime.AddHours(-7), DateTimeKind.Utc),
+                    EndTime = DateTime.SpecifyKind(slot.EndTime.AddHours(-7), DateTimeKind.Utc),
+                    CreateById = currPTEntity.FireBaseId,
+                    Type = SlotType.Free,
+                    Status = SlotStatus.Unbooked
+                };
+                slots.Add(newSlot);
+            }
+           
+            var resultSLot = await _slotRepository.AddRangeAsync(slots);
             if (resultSLot == null)
             {
                 throw new ModelException("Slot", "error when adding slot");
             }
-            return resultSLot.Adapt<GetSlotDto>();
+            return resultSLot.Adapt<List<GetSlotDto>>();
         }
 
         public async Task<GetSlotDetailDtos> GetSlotByIdAsync(Guid slotId)
