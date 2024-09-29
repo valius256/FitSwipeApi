@@ -24,13 +24,9 @@ namespace FitSwipe.API.Controllers
         }
 
         [HttpGet("get-slot-by-id")]
-        public async Task<IActionResult> GetSlotByIdAsync(Guid slotId)
+        public async Task<ActionResult<GetSlotDetailDtos>> GetSlotByIdAsync(Guid slotId)
         {
             var slotDetailDtos = await _slotServices.GetSlotByIdAsync(slotId);
-            if (slotDetailDtos is null)
-            {
-                return NotFound();
-            }
             return Ok(slotDetailDtos);
         }
 
@@ -46,9 +42,9 @@ namespace FitSwipe.API.Controllers
         /// <exception cref="BadRequestException"></exception>
         [HttpPost("create-slot")]
         [Authorize]
-        public async Task<IActionResult> CreateSlotAsync([FromBody] CreateSlotDtos model)
+        public async Task<ActionResult<GetSlotDto>> CreateSlotAsync([FromBody] CreateSlotDtos model)
         {
-            var result = await _slotServices.CreateSlotAsync(model, CurrentUserFirebaseId);
+            var result = await _slotServices.CreateFreeSlotForPTAsync(model, CurrentUserFirebaseId);
             return Ok(result);
         }
 

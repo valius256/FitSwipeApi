@@ -28,8 +28,8 @@ namespace FitSwipe.API.Controllers
                 return BadRequest("Can't get user from HttpContext");
             using (var stream = file.OpenReadStream())
             {
-                var videoUrl = await _firebaseUploadServices.UploadVideoAsync(userFirebaseId, file.FileName, stream);
-                return Ok(videoUrl);
+                var fileUrl = await _firebaseUploadServices.UploadVideoAsync(userFirebaseId, file.FileName, stream);
+                return Ok(new { fileUrl });
             }
         }
 

@@ -4,6 +4,7 @@ using FitSwipe.DataAccess.Model.Entity;
 using FitSwipe.DataAccess.Model.Paging;
 using FitSwipe.DataAccess.Repository.Intefaces;
 using FitSwipe.Shared.Dtos.Slots;
+using Microsoft.EntityFrameworkCore;
 
 namespace FitSwipe.DataAccess.Repository.Impl
 {
@@ -68,6 +69,16 @@ namespace FitSwipe.DataAccess.Repository.Impl
             int limit = pagingModel.Limit > 0 ? pagingModel.Limit : 10;
             int page = pagingModel.Page > 0 ? pagingModel.Page : 1;
             return await query.ToNewPagingAsync(page, limit);
+        }
+
+        public async Task<Slot?> GetSlotByIdAsync(Guid guid)
+        {
+            return await _context.Slots
+                .Include(s => s.CreateBy)
+                .Include(s => s.Training)
+                .Include(s => s.TransactionSlots)
+                .Include(s => s.Videos)
+                .FirstOrDefaultAsync();
         }
 
     }

@@ -24,8 +24,9 @@ namespace FitSwipe.BusinessLogic.Services.Slots
             return (await _slotRepository.GetSlots(pagingModel)).Adapt<PagedResult<GetSlotDto>>();
         }
 
-        public async Task<GetSlotDetailDtos> CreateSlotAsync(CreateSlotDtos model, string currentUserId)
+        public async Task<GetSlotDto> CreateFreeSlotForPTAsync(CreateSlotDtos model, string currentUserId)
         {
+            //NOTE: Nên giới hạn độ dài của slot
             var currPTEntity = await _userServices.GetUserByIdRequiredAsync(currentUserId);
             // check user create is PT or not
             if (currPTEntity.Role != Shared.Enum.Role.PT)
@@ -43,22 +44,29 @@ namespace FitSwipe.BusinessLogic.Services.Slots
                 throw new ModelException("PT", "PT Không tìm thấy");
             }
 
-            var newSlot = model.Adapt<Slot>();
-            newSlot.CreateById = currPTEntity.FireBaseId;
+            //var newSlot = model.Adapt<Slot>();
+            var newSlot = new Slot()
+            {
+                StartTime = DateTime.SpecifyKind(model.StartTime, DateTimeKind.Utc),
+                EndTime = DateTime.SpecifyKind(model.EndTime, DateTimeKind.Utc),
+                CreateById = currPTEntity.FireBaseId,
+                Type = Shared.Enum.SlotType.Free,
+                Status = Shared.Enum.SlotStatus.Unbooked
+            };
             var resultSLot = await _slotRepository.AddAsync(newSlot);
             if (resultSLot == null)
             {
                 throw new ModelException("Slot", "Slot thêm mới đã lỗi vui lòng nhập lại");
             }
-            return resultSLot.Adapt<GetSlotDetailDtos>();
+            return resultSLot.Adapt<GetSlotDto>();
         }
 
         public async Task<GetSlotDetailDtos> GetSlotByIdAsync(Guid slotId)
         {
-            var slot = await _slotRepository.FindOneAsync(s => s.Id == slotId);
+            var slot = await _slotRepository.GetSlotByIdAsync(slotId);
             if (slot is null)
             {
-                return null;
+                throw new DataNotFoundException("Slot is not found");
             }
 
             var slotDetailDtos = slot.Adapt<GetSlotDetailDtos>();
