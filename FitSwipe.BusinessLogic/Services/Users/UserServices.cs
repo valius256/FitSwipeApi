@@ -145,18 +145,19 @@ namespace FitSwipe.BusinessLogic.Services.Users
             await _userRepository.UpdateAsync(updatedUser);
         }
 
-        public async Task<User> AddUserAsync(User user)
+        public async Task<User?> AddUserAsync(User user)
         {
             var userInDb = await _userRepository.FindOneAsync(u => u.FireBaseId == user.FireBaseId);
-            if (user == null)
+            if (user != null)
             {
-                throw new DataNotFoundException("User not found");
+                user.Id = Guid.NewGuid();
+                await _userRepository.AddAsync(user);
+                return user;
             }
             else
             {
-                await _userRepository.AddAsync(userInDb);
+                throw new BadRequestException("FirebaseId had existed");
             }
-            return user;
         }
     }
 }
