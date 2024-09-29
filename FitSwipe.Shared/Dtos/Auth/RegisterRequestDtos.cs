@@ -6,13 +6,11 @@ namespace FitSwipe.Shared.Dtos.Auth
     public class RegisterRequestDtos
     {
         [Required]
-        public string FirstName { get; set; }
-        [Required]
-        public string LastName { get; set; }
+        public required string Name { get; set; }
 
         [Required(ErrorMessage = "Email is required.")]
         // [RegularExpression(@"^[^@\s]+@[^@\s]+\.[^@\s]+$", ErrorMessage = "Invalid email format.")]
-        public string Email { get; set; }
+        public required string Email { get; set; }
 
         [Required(ErrorMessage = "Password is required.")]
         public string? Password { get; set; }

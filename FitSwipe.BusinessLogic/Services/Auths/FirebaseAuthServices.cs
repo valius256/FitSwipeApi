@@ -57,8 +57,6 @@ namespace FitSwipe.BusinessLogic.Services.Auths
 
         public async Task<bool> GenerateVerificationEmailAsync(string email)
         {
-
-
             var link = await FirebaseAuth.DefaultInstance.GenerateEmailVerificationLinkAsync(email);
 
             var toAddress = new List<string> { email };
@@ -141,7 +139,8 @@ namespace FitSwipe.BusinessLogic.Services.Auths
             // Populate additional fields for the User entity
             userEntity.FireBaseId = registerAuthModel.UserFirebaseId;
             userEntity.Role = registerDtos.Role;
-            userEntity.UserName = registerDtos.Email;
+            userEntity.Email = registerDtos.Email;
+            userEntity.UserName = registerDtos.Name;
             userEntity.Status = UserStatus.Active;
 
             // Add the User entity to the database
@@ -160,7 +159,7 @@ namespace FitSwipe.BusinessLogic.Services.Auths
 
 
             var userResponseModel = new GetUserProfileDtos()
-            {
+            {         
                 Email = registerDtos.Email,
                 Password = registerDtos.Password,
                 Role = registerDtos.Role,
