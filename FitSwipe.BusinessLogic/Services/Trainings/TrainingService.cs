@@ -46,7 +46,12 @@ namespace FitSwipe.BusinessLogic.Services.Trainings
 
         public async Task<GetTrainingDetailDto> GetDetailById(Guid id)
         {
-            return (await _trainingRepository.GetTrainingById(id)).Adapt<GetTrainingDetailDto>();
+            var training = await _trainingRepository.GetTrainingById(id);
+            if (training == null)
+            {
+                throw new DataNotFoundException("Training not found");
+            }
+            return training.Adapt<GetTrainingDetailDto>();
         }
         public async Task<GetTrainingDetailDto> GetDetailById(string userId, Guid id)
         {

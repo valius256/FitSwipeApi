@@ -1,4 +1,4 @@
-﻿using FitSwipe.BusinessLogic.Interfaces.Slot;
+﻿using FitSwipe.BusinessLogic.Interfaces.Slots;
 using FitSwipe.DataAccess.Model.Entity;
 using FitSwipe.DataAccess.Repository.Intefaces;
 using FitSwipe.Shared.Dtos.Slots;

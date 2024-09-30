@@ -1,5 +1,5 @@
 ﻿using FitSwipe.BusinessLogic.Interfaces.Payments;
-using FitSwipe.BusinessLogic.Interfaces.Slot;
+using FitSwipe.BusinessLogic.Interfaces.Slots;
 using FitSwipe.BusinessLogic.Interfaces.Transactions;
 using FitSwipe.BusinessLogic.Interfaces.Users;
 using FitSwipe.BusinessLogic.Library;
@@ -48,12 +48,12 @@ namespace FitSwipe.BusinessLogic.Services.Payments
                 {
                     throw new ModelException("Slot", $"Slot {slotId} không tồn tại");
                 }
-
-                var isSlotValid = await _slotServices.ValidateSlotForCustomer(slotId, user.FireBaseId);
-                if (!isSlotValid)
-                {
-                    throw new ModelException("Slot", $"Slot {slotId} không hợp lệ do trùng lịch với 1 slot khác");
-                }
+                //NOT NECCESSARY (YET)
+                //var isSlotValid = await _slotServices.ValidateSlotForCustomer(slotDetailDtos.StartTime, slotDetailDtos.EndTime, user.FireBaseId);
+                //if (!isSlotValid)
+                //{
+                //    throw new ModelException("Slot", $"Slot {slotId} không hợp lệ do trùng lịch với 1 slot khác");
+                //}
 
                 var ptOfSlot = await _userServices.GetProfileUserAsync(slotDetailDtos.CreateById.ToString());
 
