@@ -17,7 +17,7 @@ namespace FitSwipe.DataAccess.Repository
         Task<IEnumerable<TEntity>> AddRangeAsync(IEnumerable<TEntity> entities);
         Task UpdateRangeAsync(IEnumerable<TEntity> entities);
         Task DeleteRangeAsync(IEnumerable<TEntity> entities);
-
+        Task<IEnumerable<TEntity>> FindWithNoTrackingAsync(Expression<Func<TEntity, bool>> expression);
         Task<TEntity?> FindOneWithNoTrackingAsync(Expression<Func<TEntity, bool>> expression);
 
         Task<bool> AnyAsync(Expression<Func<TEntity, bool>> expression);

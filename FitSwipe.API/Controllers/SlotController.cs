@@ -1,5 +1,4 @@
-﻿
-using FitSwipe.BusinessLogic.Interfaces.Slot;
+﻿using FitSwipe.BusinessLogic.Interfaces.Slots;
 using FitSwipe.DataAccess.Model.Paging;
 using FitSwipe.Shared.Dtos.Slots;
 using FitSwipe.Shared.Exceptions;
@@ -47,7 +46,13 @@ namespace FitSwipe.API.Controllers
             var result = await _slotServices.CreateFreeSlotForPTAsync(model, CurrentUserFirebaseId);
             return Ok(result);
         }
-
+        [HttpPost("{trainingId}/create")]
+        [Authorize]
+        public async Task<ActionResult<List<GetSlotDto>>> CreateTrainingSlotAsync([FromRoute] Guid trainingId, [FromBody] List<CreateTrainingSlotDto> model)
+        {
+            var result = await _slotServices.CreateTrainingSlot(model, trainingId, CurrentUserFirebaseId);
+            return Ok(result);
+        }
         [HttpPut("rating")]
         [Authorize]
         public async Task<IActionResult> UpdateRating([FromBody] UpdateSlotRatingDto updateSlotRatingDto)
@@ -55,7 +60,13 @@ namespace FitSwipe.API.Controllers
             await _slotServices.UpdateSlotRating(CurrentUserFirebaseId, updateSlotRatingDto);
             return Ok();
         }
-
+        [HttpPut("time")]
+        [Authorize]
+        public async Task<IActionResult> UpdateTime([FromBody] UpdateSlotTimeDto updateSlotTimeDto)
+        {
+            await _slotServices.UpdateSlotTime(updateSlotTimeDto, CurrentUserFirebaseId);
+            return Ok();
+        }
         [HttpDelete("{id}")]
         [Authorize]
         public async Task<IActionResult> DeleteSlotAsync(Guid id)

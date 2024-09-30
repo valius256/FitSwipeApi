@@ -1,6 +1,6 @@
 ﻿using FitSwipe.Shared.Dtos.Slots;
 
-namespace FitSwipe.BusinessLogic.Interfaces.Slot
+namespace FitSwipe.BusinessLogic.Interfaces.Slots
 {
     public interface ISlotVideoServices
     {

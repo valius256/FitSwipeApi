@@ -80,8 +80,17 @@ namespace FitSwipe.DataAccess.Repository.Impl
                 .Include(s => s.Training)
                 .Include(s => s.TransactionSlots)
                 .Include(s => s.Videos)
-                .FirstOrDefaultAsync();
+                .AsNoTracking()
+                .FirstOrDefaultAsync(s => s.Id == guid);
         }
 
+        public async Task<List<Slot>> GetSlotsOfTrainee(string traineeId)
+        {
+            return await _context.Slots
+                .Include(s => s.Training)
+                .Where(s => s.Training != null && s.Training.TraineeId == traineeId)
+                .AsNoTracking()
+                .ToListAsync();
+        }
     }
 }

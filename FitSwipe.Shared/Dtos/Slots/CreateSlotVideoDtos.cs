@@ -8,7 +8,7 @@ namespace FitSwipe.Shared.Dtos.Slots
         [Required]
         public Guid SlotId { get; set; }
         [Required]
-        public string StringUrl { get; set; }
+        public string StringUrl { get; set; } = string.Empty;
         [AllowNull]
         public string ThumbnailUrl { get; set; }
         [AllowNull]

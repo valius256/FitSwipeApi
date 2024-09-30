@@ -2,7 +2,7 @@
 using FitSwipe.BusinessLogic.Interfaces.Auth;
 using FitSwipe.BusinessLogic.Interfaces.Payments;
 using FitSwipe.BusinessLogic.Interfaces.Sender;
-using FitSwipe.BusinessLogic.Interfaces.Slot;
+using FitSwipe.BusinessLogic.Interfaces.Slots;
 using FitSwipe.BusinessLogic.Interfaces.Tags;
 using FitSwipe.BusinessLogic.Interfaces.Trainings;
 using FitSwipe.BusinessLogic.Interfaces.Transactions;

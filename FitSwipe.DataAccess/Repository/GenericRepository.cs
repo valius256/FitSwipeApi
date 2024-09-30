@@ -35,7 +35,10 @@ namespace FitSwipe.DataAccess.Repository
         {
             return await _context.Set<TEntity>().Where(expression).ToListAsync();
         }
-
+        public async Task<IEnumerable<TEntity>> FindWithNoTrackingAsync(Expression<Func<TEntity, bool>> expression)
+        {
+            return await _context.Set<TEntity>().Where(expression).AsNoTracking().ToListAsync();
+        }
         public async Task<TEntity> AddAsync(TEntity entity)
         {
             await _context.AddAsync(entity);
@@ -72,6 +75,7 @@ namespace FitSwipe.DataAccess.Repository
 
         public async Task UpdateAsync(TEntity entity)
         {
+            //_context.Entry(entity).State = EntityState.Detached;
             _context.Update(entity);
             await SaveChangesWithTransactionAsync();
         }
