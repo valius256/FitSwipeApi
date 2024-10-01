@@ -1,5 +1,6 @@
 ﻿using FitSwipe.DataAccess.Model.Paging;
 using FitSwipe.Shared.Dtos.Trainings;
+using FitSwipe.Shared.Enum;
 
 namespace FitSwipe.BusinessLogic.Interfaces.Trainings
 {
@@ -10,5 +11,6 @@ namespace FitSwipe.BusinessLogic.Interfaces.Trainings
         Task<GetTrainingDetailDto> GetDetailById(string userId, Guid id);
         Task<GetTrainingDetailDto> GetDetailById(Guid id);
 
+        Task UpdateTrainingStatus(Guid trainingId, TrainingStatus trainingStatus, string? userId);
     }
 }

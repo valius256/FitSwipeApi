@@ -1,6 +1,7 @@
 ﻿using FitSwipe.DataAccess.Model.Entity;
 using FitSwipe.DataAccess.Model.Paging;
 using FitSwipe.Shared.Dtos.Slots;
+using FitSwipe.Shared.Dtos.Trainings;
 
 namespace FitSwipe.BusinessLogic.Interfaces.Slots
 {
@@ -14,5 +15,7 @@ namespace FitSwipe.BusinessLogic.Interfaces.Slots
         Task UpdateSlotRating(string userId, UpdateSlotRatingDto updateSlotRatingDto);
         Task UpdateSlotTime(UpdateSlotTimeDto updateSlotTimeDto, string userId);
         Task DeleteSlotAsync(Guid slotId, string currentUserFirebaseId);
+
+        Task ApproveTrainingSlots(ApproveTrainingDto approveTrainingDto, string currentUserId);
     }
 }

@@ -1,4 +1,5 @@
-﻿using FitSwipe.BusinessLogic.Interfaces.Trainings;
+﻿using FitSwipe.BusinessLogic.Interfaces.Slots;
+using FitSwipe.BusinessLogic.Interfaces.Trainings;
 using FitSwipe.DataAccess.Model.Entity;
 using FitSwipe.DataAccess.Model.Paging;
 using FitSwipe.Shared.Dtos.Trainings;
@@ -12,9 +13,11 @@ namespace FitSwipe.API.Controllers
     public class TrainingController : BaseController<Training>
     {
         private readonly ITrainingService _trainingService;
-        public TrainingController(ILogger<Training> logger, ITrainingService trainingService) : base(logger)
+        private readonly ISlotServices _slotServices;
+        public TrainingController(ILogger<Training> logger, ITrainingService trainingService, ISlotServices slotServices) : base(logger)
         {
             _trainingService = trainingService;
+            _slotServices = slotServices;
         }
         [Authorize]
         [HttpGet]
@@ -36,6 +39,20 @@ namespace FitSwipe.API.Controllers
         public async Task<ActionResult<GetTrainingDto>> CreateTraining([FromBody] CreateTrainingDto createTrainingDto)
         {
             return await _trainingService.CreateTraining(CurrentUserFirebaseId, createTrainingDto);
+        }
+        [Authorize]
+        [HttpPatch("approving")]
+        public async Task<IActionResult> ApproveTraining([FromBody] ApproveTrainingDto approveTrainingDto)
+        {
+            await _slotServices.ApproveTrainingSlots(approveTrainingDto, CurrentUserFirebaseId);
+            return Ok();
+        }
+        [Authorize]
+        [HttpPatch("{id}/rejecting")]
+        public async Task<IActionResult> RejectTraining([FromRoute] Guid id)
+        {
+            await _trainingService.UpdateTrainingStatus(id, Shared.Enum.TrainingStatus.Rejected, CurrentUserFirebaseId);
+            return Ok();
         }
     }
 }
