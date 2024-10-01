@@ -24,6 +24,7 @@ namespace FitSwipe.DataAccess.Repository.Impl
                 .Include(t => t.Trainee)
                 .Include(t => t.Slots)
                 .Include(t => t.FeedbackImages)
+                .AsNoTracking()
                 .FirstOrDefaultAsync(t => t.Id == id);
         }
 

@@ -5,6 +5,7 @@ using FitSwipe.DataAccess.Model.Entity;
 using FitSwipe.DataAccess.Model.Paging;
 using FitSwipe.DataAccess.Repository.Intefaces;
 using FitSwipe.Shared.Dtos.Slots;
+using FitSwipe.Shared.Dtos.Trainings;
 using FitSwipe.Shared.Enum;
 using FitSwipe.Shared.Exceptions;
 using Mapster;
@@ -310,6 +311,82 @@ namespace FitSwipe.BusinessLogic.Services.Slots
 
 
             await _slotRepository.DeleteAsync(slotId);
+        }
+
+        public async Task ApproveTrainingSlots(ApproveTrainingDto approveTrainingDto, string currentUserId)
+        {
+            var user = await _userServices.GetUserByIdRequiredAsync(currentUserId);
+            var training = await _trainingService.GetDetailById(approveTrainingDto.TrainingId);
+            if (training.PTId != currentUserId)
+            {
+                throw new ForbiddenException("You don't have permission to do this");
+            }
+            if (training.Status != TrainingStatus.Pending && training.Status != TrainingStatus.Rejected)
+            {
+                throw new BadRequestException("Training must be in pending or rejected status");
+            }
+            var freeSlots = await _slotRepository.FindWithNoTrackingAsync(s => s.Status == SlotStatus.Unbooked && s.CreateById == currentUserId);
+            var updatingSlots = new List<Slot>();
+            var deletingFreeSlots = new List<Slot>();
+            var addingFreeSlots = new List<Slot>();
+            foreach (var slot in training.Slots)
+            {
+                bool isAnySlotOutside = true;
+                foreach (var freeSlot in freeSlots)
+                {
+                    if (slot.StartTime >= freeSlot.StartTime && slot.EndTime <= freeSlot.EndTime)
+                    {
+                        //This free slot will be divide into smaller slots
+                        var freeSlotUpperRemain = new Slot
+                        {
+                            Id = Guid.NewGuid(),
+                            EndTime = DateTime.SpecifyKind(slot.StartTime.AddMinutes(-(approveTrainingDto.MinuteDistance ?? 5)), DateTimeKind.Utc),
+                            StartTime = freeSlot.StartTime,
+                            Status = freeSlot.Status,
+                            Type = freeSlot.Type,
+                            CreateById = freeSlot.CreateById
+                        };
+                        var freeSlotLowerRemain = new Slot
+                        {
+                            Id = Guid.NewGuid(),
+                            EndTime = freeSlot.EndTime,
+                            StartTime = DateTime.SpecifyKind(slot.EndTime.AddMinutes(approveTrainingDto.MinuteDistance ?? 5), DateTimeKind.Utc),
+                            Status = freeSlot.Status,
+                            Type = freeSlot.Type,
+                            CreateById = freeSlot.CreateById
+                        };
+
+                        if ((freeSlotUpperRemain.EndTime - freeSlotUpperRemain.StartTime).TotalMinutes >= 15)
+                        {
+                            addingFreeSlots.Add(freeSlotUpperRemain);
+                        }
+                        if ((freeSlotLowerRemain.EndTime - freeSlotLowerRemain.StartTime).TotalMinutes >= 15)
+                        {
+                            addingFreeSlots.Add(freeSlotLowerRemain);
+                        }
+
+                        deletingFreeSlots.Add(freeSlot);
+                        //This slot has valid time frame
+                        isAnySlotOutside = false;
+                        break;
+                    }
+                }
+                if (isAnySlotOutside)
+                {
+                    throw new BadRequestException("Some of the slot are not in your current free time");
+                }
+                var simpleSlot = await _slotRepository.FindOneWithNoTrackingAsync(s => s.Id == slot.Id);
+                simpleSlot!.Status = SlotStatus.NotStarted;
+                updatingSlots.Add(simpleSlot);
+            }
+            //Update the main slots
+            await _slotRepository.UpdateRangeAsync(updatingSlots);
+            //Add the new divided slots
+            await _slotRepository.AddRangeAsync(addingFreeSlots);
+            //Delete the old base slots
+            await _slotRepository.DeleteRangeAsync(deletingFreeSlots);
+            //Update the training
+            await _trainingService.UpdateTrainingStatus(approveTrainingDto.TrainingId, TrainingStatus.NotStarted, currentUserId);
         }
     }
 }

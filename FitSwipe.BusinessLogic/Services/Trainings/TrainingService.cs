@@ -84,5 +84,44 @@ namespace FitSwipe.BusinessLogic.Services.Trainings
             }
             return (await _trainingRepository.GetTrainings(queryTrainingDto)).Adapt<PagedResult<GetTrainingWithTraineeAndPT>>();
         }
+
+        public async Task UpdateTrainingStatus(Guid trainingId, TrainingStatus trainingStatus, string? userId)
+        {
+            var training = await _trainingRepository.GetByIdAsync(trainingId);
+            if (training is null)
+            {
+                throw new DataNotFoundException("The training is not found");
+            }
+            if (userId != null && training.PTId != userId)
+            {
+                throw new ForbiddenException("You don't have permission to do this function");
+            }
+            if (training.Status == TrainingStatus.Pending && (trainingStatus != TrainingStatus.Rejected && trainingStatus != TrainingStatus.NotStarted))
+            {
+                throw new BadRequestException("Invalid transistion");
+            }
+            if (training.Status == TrainingStatus.NotStarted && (trainingStatus != TrainingStatus.Disabled && trainingStatus != TrainingStatus.OnGoing))
+            {
+                throw new BadRequestException("Invalid transistion");
+            }
+            if (training.Status == TrainingStatus.OnGoing && (trainingStatus != TrainingStatus.Finished))
+            {
+                throw new BadRequestException("Invalid transistion");
+            }
+            if (training.Status == TrainingStatus.Finished)
+            {
+                throw new BadRequestException("Invalid transistion");
+            }
+            if (training.Status == TrainingStatus.Disabled && (trainingStatus != TrainingStatus.NotStarted))
+            {
+                throw new BadRequestException("Invalid transistion");
+            }
+            if (training.Status == TrainingStatus.Matched && (trainingStatus != TrainingStatus.Pending))
+            {
+                throw new BadRequestException("Invalid transistion");
+            }
+            training.Status = trainingStatus;
+            await _trainingRepository.UpdateAsync(training);
+        }
     }
 }
