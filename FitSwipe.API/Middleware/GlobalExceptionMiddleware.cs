@@ -81,8 +81,9 @@ public class ExceptionHandlingMiddleware
             case FirebaseAdmin.FirebaseException firebaseAuthExceptionWithEmail:
                 status = HttpStatusCode.BadGateway;
                 title = "Firebase Auth Exception Auth Error";
-                errors.Add(new ValidationErrorModel(firebaseAuthExceptionWithEmail.Message));
+                errors.Add(new ValidationErrorModel(firebaseAuthExceptionWithEmail.Message, firebaseAuthExceptionWithEmail.Data.ToString(), firebaseAuthExceptionWithEmail.ErrorCode.ToString()));
                 break;
+
             case NullReferenceException nullReferenceException:
                 status = HttpStatusCode.NotFound;
                 title = "Null Reference Exception";
@@ -110,6 +111,9 @@ public class ExceptionHandlingMiddleware
         return (status, response);
     }
 
+
+
+
     private async Task HandleExceptionAsync(HttpContext context, Exception exception)
     {
         (HttpStatusCode status, ApiErrorActionResult response) = GenerateErrorResponse(exception);
@@ -121,6 +125,8 @@ public class ExceptionHandlingMiddleware
         {
             _logger.LogError(exception, nameof(HttpStatusCode.InternalServerError));
         }
+
+
 
         await context.Response.WriteAsync(response.SerializeObject());
     }

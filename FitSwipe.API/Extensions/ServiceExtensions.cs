@@ -47,6 +47,7 @@ namespace FitSwipe.API.Extensions
             services.AddScoped<ITrainingRepository, TrainingRepository>();
             services.AddScoped<ITransactionRepository, TransactionRepository>();
             services.AddScoped<ISlotVideoRepository, SlotVideoRepository>();
+            services.AddScoped<IFeedbackImageRepository, FeedbackImageRepository>();
 
             services.AddProblemDetails();
             services.AddLogging();
@@ -67,6 +68,8 @@ namespace FitSwipe.API.Extensions
             services.AddScoped<ISlotVideoServices, SlotVideoServices>();
             services.AddScoped<IFirebaseUploadDowloadServices, FirebaseUploadDowloadServices>();
             services.AddScoped<ITrainingService, TrainingService>();
+            services.AddScoped<IFeedbackImageSevices, FeedbackImageSevices>();
+
 
             services.AddTransient<IEmailServices, EmailServices>();
             services.AddScoped<IJwtProviderServices, JwtProviderServices>();
