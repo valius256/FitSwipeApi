@@ -45,12 +45,29 @@ namespace FitSwipe.API.Controllers
             await _userServices.UpdatePTDegreeAsync(CurrentUserFirebaseId, updateImageUrlDto);
             return Ok();
         }
+
         [Authorize]
         [HttpPatch("set-up")]
         public async Task<IActionResult> SetupProfile([FromBody] SetupProfileDto setupProfileDto)
         {
             await _userServices.SetupProfileAsync(CurrentUserFirebaseId, setupProfileDto);
             return Ok();
+        }
+
+        [Authorize]
+        [HttpPatch("update-avatar")]
+        public async Task<IActionResult> UpdateUserAvatar([FromBody] UpdateUserAvatarDtos updateUserAvatarDtos)
+        {
+            await _userServices.UpdateAvatarImage(CurrentUserFirebaseId, updateUserAvatarDtos);
+            return Ok();
+        }
+
+        [Authorize]
+        [HttpGet("profile")]
+        public async Task<GetProfileUserDto> GetProfile()
+        {
+            return await _userServices.GetProfileUserAsync(CurrentUserFirebaseId);
+
         }
     }
 }

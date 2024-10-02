@@ -9,6 +9,7 @@ using FitSwipe.Shared.Dtos.UploadDowloads;
 using FitSwipe.Shared.Dtos.Users;
 using FitSwipe.Shared.Exceptions;
 using Mapster;
+using Microsoft.EntityFrameworkCore;
 
 namespace FitSwipe.BusinessLogic.Services.Users
 {
@@ -99,7 +100,8 @@ namespace FitSwipe.BusinessLogic.Services.Users
                         user = FetchUserRecordToUserEntity(recordToFetch);
                         await _userRepository.AddAsync(user);
                     }
-                } catch (FirebaseAuthException)
+                }
+                catch (FirebaseAuthException)
                 {
                     throw new DataNotFoundException("User not found");
                 }
@@ -158,6 +160,19 @@ namespace FitSwipe.BusinessLogic.Services.Users
             {
                 throw new BadRequestException("FirebaseId had existed");
             }
+        }
+
+        public async Task UpdateAvatarImage(string userId, UpdateUserAvatarDtos updateUserAvatarDtos)
+        {
+            var currUser = await GetUserByIdRequiredAsync(userId);
+            if (currUser != null)
+            {
+                throw new DataNotFoundException("User not found");
+            }
+
+            var result = await _userRepository.Where(l => l.FireBaseId == userId)
+                .ExecuteUpdateAsync(setter => setter.SetProperty(b => b.AvatarUrl, updateUserAvatarDtos.ImageAvatarUrl));
+
         }
     }
 }

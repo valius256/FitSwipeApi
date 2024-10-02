@@ -30,6 +30,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using Swashbuckle.AspNetCore.Filters;
+using System.Configuration;
 
 namespace FitSwipe.API.Extensions
 {
@@ -148,6 +149,10 @@ namespace FitSwipe.API.Extensions
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                 .AddJwtBearer(options =>
                 {
+                    if (firebaseSettings is null)
+                    {
+                        throw new SettingsPropertyNotFoundException("Firebase settings not found");
+                    }
                     options.Authority = $"https://session.firebase.google.com/{firebaseSettings.ProjectId}";
 
                     options.TokenValidationParameters = new TokenValidationParameters
