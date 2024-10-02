@@ -54,5 +54,13 @@ namespace FitSwipe.API.Controllers
             await _trainingService.UpdateTrainingStatus(id, Shared.Enum.TrainingStatus.Rejected, CurrentUserFirebaseId);
             return Ok();
         }
+
+        [Authorize]
+        [HttpPost("rating")]
+        public async Task<ActionResult> FeedbackTraning([FromBody] FeedbackTrainingDto feedbackTrainingDto)
+        {
+            await _trainingService.FeedbackTraining(CurrentUserFirebaseId, feedbackTrainingDto);
+            return Ok();
+        }
     }
 }

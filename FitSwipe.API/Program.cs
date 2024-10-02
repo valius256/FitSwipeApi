@@ -71,6 +71,7 @@ if (app.Environment.IsDevelopment())
     //app.UseSwaggerUI();
     app.UseSwagger(options => { options.RouteTemplate = "openapi/{documentName}.json"; });
     app.MapScalarApiReference();
+
 }
 
 using (var scope = app.Services.CreateScope())

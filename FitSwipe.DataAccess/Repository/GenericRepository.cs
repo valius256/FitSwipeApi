@@ -228,19 +228,22 @@ namespace FitSwipe.DataAccess.Repository
         {
             int result = -1;
 
-            //System.DataAccess.IsolationLevel.Snapshot
-            using (var dbContextTransaction = await _context.Database.BeginTransactionAsync())
+            // Mở transaction
+            await using (var dbContextTransaction = await _context.Database.BeginTransactionAsync())
             {
                 try
                 {
                     result = await _context.SaveChangesAsync();
-                    dbContextTransaction.Commit();
+
+                    await dbContextTransaction.CommitAsync();
                 }
-                catch (Exception)
+                catch (Exception ex)
                 {
-                    //Log Exception Handling message                      
+                    // Ghi log lỗi
+                    Console.WriteLine($"Error during transaction: {ex.Message}");
+
+                    await dbContextTransaction.RollbackAsync();
                     result = -1;
-                    dbContextTransaction.Rollback();
                 }
             }
 
