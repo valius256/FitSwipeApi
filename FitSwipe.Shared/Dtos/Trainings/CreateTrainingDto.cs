@@ -7,7 +7,7 @@ namespace FitSwipe.Shared.Dtos.Trainings
     public class CreateTrainingDto
     {
         [Required]
-        public required string TrainneId { get; set; }
+        public required string PTId { get; set; }
         public TrainingStatus Status { get; set; } = TrainingStatus.Matched;
     }
 }

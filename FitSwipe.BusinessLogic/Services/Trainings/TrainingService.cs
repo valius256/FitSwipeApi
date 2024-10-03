@@ -31,12 +31,12 @@ namespace FitSwipe.BusinessLogic.Services.Trainings
         public async Task<GetTrainingDto> CreateTraining(string userId, CreateTrainingDto createTrainingDto)
         {
             var user = await _userServices.GetUserByIdRequiredAsync(userId);
-            if (user.Role != Role.PT)
+            if (user.Role != Role.Trainee)
             {
                 throw new BadRequestException("Only PT can use this feature");
             }
 
-            await _userServices.GetUserByIdRequiredAsync(createTrainingDto.TrainneId);
+            await _userServices.GetUserByIdRequiredAsync(createTrainingDto.PTId);
 
             if (createTrainingDto.Status != TrainingStatus.Matched && createTrainingDto.Status != TrainingStatus.NotStarted)
             {
@@ -45,8 +45,8 @@ namespace FitSwipe.BusinessLogic.Services.Trainings
 
             // add properties to training entity
             var training = createTrainingDto.Adapt<Training>();
-            training.TraineeId = createTrainingDto.TrainneId;
-            training.PTId = userId;
+            training.PTId = createTrainingDto.PTId;
+            training.TraineeId = userId;
 
 
             // add training to database

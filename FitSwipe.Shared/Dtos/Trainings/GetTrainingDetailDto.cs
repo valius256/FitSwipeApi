@@ -13,6 +13,8 @@ namespace FitSwipe.Shared.Dtos.Trainings
         public TrainingStatus Status { get; set; }
         public string? Feedback { get; set; }
         public double? Rating { get; set; }
+        public DateTime CreatedDate { get; set; } = DateTime.UtcNow;
+        public DateTime? UpdatedDate { get; set; }
         public GetUserDto Trainee { get; set; } = default!;
         public GetUserDto PT { get; set; } = default!;
         public ICollection<GetSlotDto> Slots { get; set; } = new List<GetSlotDto>();
