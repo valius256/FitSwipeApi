@@ -27,6 +27,11 @@ namespace FitSwipe.Shared.Dtos.Users
         public DateTime? UpdatedDate { get; set; }
         public DateTime? DeletedDate { get; set; }
         public RecordStatus RecordStatus { get; set; }
+        //PT Exclusive
+        public PTStatus? PTStatus { get; set; }
+        public string? Description { get; set; }
+        public double? PTExperienceYear { get; set; }
+        public double? PTRating { get; set; }
         public List<GetTagDto> Tags { get; set; } = new List<GetTagDto>();
     }
 }

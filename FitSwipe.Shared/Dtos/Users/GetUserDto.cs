@@ -1,6 +1,7 @@
 ﻿
 
 using FitSwipe.Shared.Enum;
+using System.Diagnostics.CodeAnalysis;
 
 namespace FitSwipe.Shared.Dtos.Users
 {

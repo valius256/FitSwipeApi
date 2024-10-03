@@ -48,6 +48,8 @@ namespace FitSwipe.DataAccess.Model.Entity
         [AllowNull]
         public double? PTExperienceYear { get; set; }
         [AllowNull]
+        public double? PTRating { get; set; }
+        [AllowNull]
         public string? PTDegreeImageUrl { get; set; }
         [AllowNull]
         public DateTime? SubscriptionPurchasedDate { get; set; }

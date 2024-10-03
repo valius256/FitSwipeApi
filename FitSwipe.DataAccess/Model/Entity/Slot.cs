@@ -14,6 +14,8 @@ namespace FitSwipe.DataAccess.Model.Entity
         public PaymentStatus? PaymentStatus { get; set; }
         public double? Rating { get; set; }
         public string? Feedback { get; set; }
+        public string? Content { get; set; }
+        public string? Location { get; set; }
         public virtual Training? Training { get; set; } = default!;
         public virtual User CreateBy { get; set; } = default!;
 

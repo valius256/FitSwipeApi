@@ -3,6 +3,7 @@ using System;
 using FitSwipe.DataAccess.Model;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace FitSwipe.DataAccess.Migrations
 {
     [DbContext(typeof(FitSwipeDbContext))]
-    partial class FitSwipeDbContextModelSnapshot : ModelSnapshot
+    [Migration("20241002125809_More seed-data")]
+    partial class Moreseeddata
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -68,9 +71,9 @@ namespace FitSwipe.DataAccess.Migrations
                     b.HasData(
                         new
                         {
-                            Id = new Guid("5c895ba7-bc67-42e2-ba2b-cad9b87e982a"),
+                            Id = new Guid("4d222663-cdd6-4d27-a639-7318527a5747"),
                             Body = "Chào mừng bạn đến với FitWipe! Kính gửi [Name], vui lòng xác nhận địa chỉ email của bạn bằng cách nhấn vào đường link sau: <a href=\"[VerificationLink]\">Xác nhận Email</a>.<br><br>Cảm ơn bạn đã tham gia cùng chúng tôi!<br><br>Đội ngũ FitWipe",
-                            CreatedDate = new DateTime(2024, 10, 2, 17, 19, 13, 395, DateTimeKind.Utc).AddTicks(9727),
+                            CreatedDate = new DateTime(2024, 10, 2, 12, 58, 8, 771, DateTimeKind.Utc).AddTicks(9186),
                             Description = "Email này được gửi để xác nhận đăng ký tài khoản FitWipe.",
                             Name = "Register_Mail",
                             Params = "[Name], [VerificationLink]",
@@ -80,9 +83,9 @@ namespace FitSwipe.DataAccess.Migrations
                         },
                         new
                         {
-                            Id = new Guid("5911b672-54f8-4412-86b9-d4f08b54ef7b"),
+                            Id = new Guid("8200b207-320e-4009-9013-408ed7689bfe"),
                             Body = "Chúng tôi đã nhận được yêu cầu đặt lại mật khẩu cho tài khoản của bạn tại FitWipe. Kính gửi [Name], vui lòng đặt lại mật khẩu của bạn bằng cách nhấn vào đường link sau: <a href=\"[ResetPasswordLink]\">Đặt lại mật khẩu</a>.<br><br>Nếu bạn không yêu cầu việc này, vui lòng bỏ qua email này.<br><br>Đội ngũ FitWipe",
-                            CreatedDate = new DateTime(2024, 10, 2, 17, 19, 13, 395, DateTimeKind.Utc).AddTicks(9755),
+                            CreatedDate = new DateTime(2024, 10, 2, 12, 58, 8, 771, DateTimeKind.Utc).AddTicks(9201),
                             Description = "Email này được gửi khi người dùng yêu cầu đặt lại mật khẩu cho tài khoản FitWipe.",
                             Name = "Forgot_Password",
                             Params = "[Name], [ResetPasswordLink]",
@@ -347,9 +350,9 @@ namespace FitSwipe.DataAccess.Migrations
                     b.HasData(
                         new
                         {
-                            Id = new Guid("e4fb55b9-c0b7-430d-a7ed-abe87e904f9f"),
+                            Id = new Guid("7c2437e3-7c04-48b5-bee4-df8ef183bb28"),
                             CreateById = "123abc",
-                            CreatedDate = new DateTime(2024, 10, 2, 17, 19, 13, 395, DateTimeKind.Utc).AddTicks(9278),
+                            CreatedDate = new DateTime(2024, 10, 2, 12, 58, 8, 771, DateTimeKind.Utc).AddTicks(8928),
                             Name = "Bóng đá",
                             RecordStatus = 0,
                             TagImage = "https://cdn.tuoitre.vn/ttct//2020/12/13/16078750289060-lich-thi-dau-bong-da-hom-nay-0211.jpg",
@@ -357,9 +360,9 @@ namespace FitSwipe.DataAccess.Migrations
                         },
                         new
                         {
-                            Id = new Guid("245b080a-2d2a-4594-adc8-056d5ec38960"),
+                            Id = new Guid("fbc4934e-d7d0-40a8-a463-b832768945af"),
                             CreateById = "123abc",
-                            CreatedDate = new DateTime(2024, 10, 2, 17, 19, 13, 395, DateTimeKind.Utc).AddTicks(9284),
+                            CreatedDate = new DateTime(2024, 10, 2, 12, 58, 8, 771, DateTimeKind.Utc).AddTicks(8982),
                             Name = "Bơi lội",
                             RecordStatus = 0,
                             TagImage = "https://file.hstatic.net/1000391576/file/boi_loi_7d4d69c53ac1494eabb2a446d4d503a0_grande.jpg",
@@ -367,9 +370,9 @@ namespace FitSwipe.DataAccess.Migrations
                         },
                         new
                         {
-                            Id = new Guid("ad3f6c4a-4002-4ac9-aedf-51f7d80995ce"),
+                            Id = new Guid("502fc407-33c7-4131-b072-28f232103e4c"),
                             CreateById = "123abc",
-                            CreatedDate = new DateTime(2024, 10, 2, 17, 19, 13, 395, DateTimeKind.Utc).AddTicks(9291),
+                            CreatedDate = new DateTime(2024, 10, 2, 12, 58, 8, 771, DateTimeKind.Utc).AddTicks(8985),
                             Name = "Cầu Lông",
                             RecordStatus = 0,
                             TagImage = "https://vecgroup.vn/images/products/2021/08/24/large/qua-cau-long_1629778779.jpg",
@@ -377,9 +380,9 @@ namespace FitSwipe.DataAccess.Migrations
                         },
                         new
                         {
-                            Id = new Guid("85048918-6b61-454a-810b-e98f83c80ebe"),
+                            Id = new Guid("b58b0973-c8f8-46ef-9f3a-bc18cb1675b7"),
                             CreateById = "123abc",
-                            CreatedDate = new DateTime(2024, 10, 2, 17, 19, 13, 395, DateTimeKind.Utc).AddTicks(9294),
+                            CreatedDate = new DateTime(2024, 10, 2, 12, 58, 8, 771, DateTimeKind.Utc).AddTicks(8986),
                             Name = "Bóng chuyền",
                             RecordStatus = 0,
                             TagImage = "https://file.hstatic.net/200000333667/article/image.jpg_4b1e1c8ce20f4c32824f275f34ff30af_1024x1024.jpg",
@@ -387,9 +390,9 @@ namespace FitSwipe.DataAccess.Migrations
                         },
                         new
                         {
-                            Id = new Guid("53b1b595-3484-4e9c-b489-22856308044f"),
+                            Id = new Guid("9713930e-eb53-4f10-a2f9-826de2391553"),
                             CreateById = "123abc",
-                            CreatedDate = new DateTime(2024, 10, 2, 17, 19, 13, 395, DateTimeKind.Utc).AddTicks(9298),
+                            CreatedDate = new DateTime(2024, 10, 2, 12, 58, 8, 771, DateTimeKind.Utc).AddTicks(8988),
                             Name = "Bóng rổ",
                             RecordStatus = 0,
                             TagImage = "https://thethaothienlong.vn/wp-content/uploads/2022/04/Kich-thuoc-qua-bong-ro-1.jpg",
@@ -397,9 +400,9 @@ namespace FitSwipe.DataAccess.Migrations
                         },
                         new
                         {
-                            Id = new Guid("c349fe52-60ee-4f30-9df3-18511985eefc"),
+                            Id = new Guid("4281e1ac-1e01-4427-89da-5fed7e508134"),
                             CreateById = "123abc",
-                            CreatedDate = new DateTime(2024, 10, 2, 17, 19, 13, 395, DateTimeKind.Utc).AddTicks(9300),
+                            CreatedDate = new DateTime(2024, 10, 2, 12, 58, 8, 771, DateTimeKind.Utc).AddTicks(8990),
                             Name = "Thể thao nói chung",
                             RecordStatus = 0,
                             TagImage = "https://llv.edu.vn/media/2018/09/iStock-949190756-800x440.jpg",
@@ -407,9 +410,9 @@ namespace FitSwipe.DataAccess.Migrations
                         },
                         new
                         {
-                            Id = new Guid("1a0592bd-15db-4bbd-9029-d01af7faa4a3"),
+                            Id = new Guid("e7654a7f-2c98-4d4e-a9f2-f44de9d4ca5d"),
                             CreateById = "123abc",
-                            CreatedDate = new DateTime(2024, 10, 2, 17, 19, 13, 395, DateTimeKind.Utc).AddTicks(9304),
+                            CreatedDate = new DateTime(2024, 10, 2, 12, 58, 8, 771, DateTimeKind.Utc).AddTicks(8991),
                             Name = "Bida",
                             RecordStatus = 0,
                             TagImage = "https://billiardshoanthuy.vn/wp-content/uploads/2021/05/phu-kien-ban-bida-2.jpg",
@@ -417,9 +420,9 @@ namespace FitSwipe.DataAccess.Migrations
                         },
                         new
                         {
-                            Id = new Guid("66b45df5-4fe5-49ae-99ca-9f24cb611f39"),
+                            Id = new Guid("9ada5b53-df39-4c05-999c-c2b72c0c2197"),
                             CreateById = "123abc",
-                            CreatedDate = new DateTime(2024, 10, 2, 17, 19, 13, 395, DateTimeKind.Utc).AddTicks(9307),
+                            CreatedDate = new DateTime(2024, 10, 2, 12, 58, 8, 771, DateTimeKind.Utc).AddTicks(8993),
                             Name = "Tập Gym",
                             RecordStatus = 0,
                             TagImage = "https://tiki.vn/blog/wp-content/uploads/2023/07/elite-fitness-1024x583.jpg",
@@ -427,9 +430,9 @@ namespace FitSwipe.DataAccess.Migrations
                         },
                         new
                         {
-                            Id = new Guid("c52fa24c-1f20-4e9d-83ec-cfb48e964650"),
+                            Id = new Guid("4265e2cc-ada7-455b-97aa-9099fb08898b"),
                             CreateById = "123abc",
-                            CreatedDate = new DateTime(2024, 10, 2, 17, 19, 13, 395, DateTimeKind.Utc).AddTicks(9309),
+                            CreatedDate = new DateTime(2024, 10, 2, 12, 58, 8, 771, DateTimeKind.Utc).AddTicks(8995),
                             Name = "Đi, chạy bộ",
                             RecordStatus = 0,
                             TagImage = "https://pos.nvncdn.com/be3294-43017/art/artCT/20230228_9uObLfWys7Q0IXe4.jpg",
@@ -437,9 +440,9 @@ namespace FitSwipe.DataAccess.Migrations
                         },
                         new
                         {
-                            Id = new Guid("5b3fdb23-caaa-4ecb-b468-9da40626caa7"),
+                            Id = new Guid("1419f9dd-cdc4-4cd0-83d3-0751e8819c98"),
                             CreateById = "123abc",
-                            CreatedDate = new DateTime(2024, 10, 2, 17, 19, 13, 395, DateTimeKind.Utc).AddTicks(9312),
+                            CreatedDate = new DateTime(2024, 10, 2, 12, 58, 8, 771, DateTimeKind.Utc).AddTicks(8998),
                             Name = "Phim ảnh",
                             RecordStatus = 0,
                             TagImage = "https://lawnet.vn/uploads/image/2023/10/17/015815855.jpg",
@@ -447,9 +450,9 @@ namespace FitSwipe.DataAccess.Migrations
                         },
                         new
                         {
-                            Id = new Guid("8f6c7353-6d07-4257-9e00-93624cc0e7e3"),
+                            Id = new Guid("898e1305-9c4a-4eaa-8c1f-4f8f84eb087f"),
                             CreateById = "123abc",
-                            CreatedDate = new DateTime(2024, 10, 2, 17, 19, 13, 395, DateTimeKind.Utc).AddTicks(9318),
+                            CreatedDate = new DateTime(2024, 10, 2, 12, 58, 8, 771, DateTimeKind.Utc).AddTicks(8999),
                             Name = "Truyện tranh",
                             RecordStatus = 0,
                             TagImage = "https://taschen.makaira.media/taschen/image/upload/f_webp,w_1200/v1673462260/products-live/a3d446fb0046b587eb0ed76edca3f4d6.jpg",
@@ -457,9 +460,9 @@ namespace FitSwipe.DataAccess.Migrations
                         },
                         new
                         {
-                            Id = new Guid("6e8d5465-d70f-4c63-b54f-8c3bdb5241e8"),
+                            Id = new Guid("d3a93747-f7e2-4ff8-be85-e4b8ec957b1c"),
                             CreateById = "123abc",
-                            CreatedDate = new DateTime(2024, 10, 2, 17, 19, 13, 395, DateTimeKind.Utc).AddTicks(9321),
+                            CreatedDate = new DateTime(2024, 10, 2, 12, 58, 8, 771, DateTimeKind.Utc).AddTicks(9001),
                             Name = "Du lịch",
                             RecordStatus = 0,
                             TagImage = "https://dynamic-media-cdn.tripadvisor.com/media/photo-o/18/4f/7d/fc/caption.jpg?w=1200&h=1200&s=1",
@@ -467,9 +470,9 @@ namespace FitSwipe.DataAccess.Migrations
                         },
                         new
                         {
-                            Id = new Guid("a2734f25-4ad2-4753-8155-d26e86bc0915"),
+                            Id = new Guid("bdd29ba3-56bb-4309-9176-b01688821fc1"),
                             CreateById = "123abc",
-                            CreatedDate = new DateTime(2024, 10, 2, 17, 19, 13, 395, DateTimeKind.Utc).AddTicks(9323),
+                            CreatedDate = new DateTime(2024, 10, 2, 12, 58, 8, 771, DateTimeKind.Utc).AddTicks(9002),
                             Name = "Thể thao trí tuệ",
                             RecordStatus = 0,
                             TagImage = "https://upload.wikimedia.org/wikipedia/commons/thumb/6/6f/ChessSet.jpg/640px-ChessSet.jpg",
@@ -477,9 +480,9 @@ namespace FitSwipe.DataAccess.Migrations
                         },
                         new
                         {
-                            Id = new Guid("18d16372-aaa8-4aab-84a7-9559b3bdd2e2"),
+                            Id = new Guid("bff84c4b-63fa-473c-ac6a-39397ac82b59"),
                             CreateById = "123abc",
-                            CreatedDate = new DateTime(2024, 10, 2, 17, 19, 13, 395, DateTimeKind.Utc).AddTicks(9326),
+                            CreatedDate = new DateTime(2024, 10, 2, 12, 58, 8, 771, DateTimeKind.Utc).AddTicks(9003),
                             Name = "Đọc sách",
                             RecordStatus = 0,
                             TagImage = "https://images.theconversation.com/files/45159/original/rptgtpxd-1396254731.jpg?ixlib=rb-4.1.0&q=45&auto=format&w=1356&h=668&fit=crop",
@@ -487,9 +490,9 @@ namespace FitSwipe.DataAccess.Migrations
                         },
                         new
                         {
-                            Id = new Guid("788eddd6-e24e-43d5-bc0e-8f703ea0fec1"),
+                            Id = new Guid("534a662c-27e8-4ac2-bd25-ffc32a359217"),
                             CreateById = "123abc",
-                            CreatedDate = new DateTime(2024, 10, 2, 17, 19, 13, 395, DateTimeKind.Utc).AddTicks(9329),
+                            CreatedDate = new DateTime(2024, 10, 2, 12, 58, 8, 771, DateTimeKind.Utc).AddTicks(9005),
                             Name = "Khoa học",
                             RecordStatus = 0,
                             TagImage = "https://www.training.com.au/wp-content/uploads/science-stem-feature.png",
@@ -497,9 +500,9 @@ namespace FitSwipe.DataAccess.Migrations
                         },
                         new
                         {
-                            Id = new Guid("2ac5ef91-7a4a-4300-a9e1-64f21a50b5e6"),
+                            Id = new Guid("60ac450f-3092-4c51-9f6c-34d81135784e"),
                             CreateById = "123abc",
-                            CreatedDate = new DateTime(2024, 10, 2, 17, 19, 13, 395, DateTimeKind.Utc).AddTicks(9332),
+                            CreatedDate = new DateTime(2024, 10, 2, 12, 58, 8, 771, DateTimeKind.Utc).AddTicks(9006),
                             Name = "Game",
                             RecordStatus = 0,
                             TagImage = "https://genk.mediacdn.vn/139269124445442048/2022/7/28/tmb-1658998970448906989995.jpg",
@@ -507,9 +510,9 @@ namespace FitSwipe.DataAccess.Migrations
                         },
                         new
                         {
-                            Id = new Guid("3d6c7462-c521-4a3e-be33-e620aa7cfc37"),
+                            Id = new Guid("b3c2692c-4f42-41ed-aa1e-f85e50505eee"),
                             CreateById = "123abc",
-                            CreatedDate = new DateTime(2024, 10, 2, 17, 19, 13, 395, DateTimeKind.Utc).AddTicks(9335),
+                            CreatedDate = new DateTime(2024, 10, 2, 12, 58, 8, 771, DateTimeKind.Utc).AddTicks(9009),
                             Name = "Nhiếp ảnh",
                             RecordStatus = 0,
                             TagImage = "https://aaftonline.com/blog/wp-content/uploads/2024/01/What-are-the-Benefits-of-Photography-Complete-Overview.png",
@@ -517,9 +520,9 @@ namespace FitSwipe.DataAccess.Migrations
                         },
                         new
                         {
-                            Id = new Guid("707d4989-8963-4c60-821c-801e20081071"),
+                            Id = new Guid("10ccf78a-8ec0-412b-97c2-662638191b1e"),
                             CreateById = "123abc",
-                            CreatedDate = new DateTime(2024, 10, 2, 17, 19, 13, 395, DateTimeKind.Utc).AddTicks(9338),
+                            CreatedDate = new DateTime(2024, 10, 2, 12, 58, 8, 771, DateTimeKind.Utc).AddTicks(9011),
                             Name = "Hội họa",
                             RecordStatus = 0,
                             TagImage = "https://upload.wikimedia.org/wikipedia/commons/thumb/e/ea/Van_Gogh_-_Starry_Night_-_Google_Art_Project.jpg/1200px-Van_Gogh_-_Starry_Night_-_Google_Art_Project.jpg",
@@ -527,9 +530,9 @@ namespace FitSwipe.DataAccess.Migrations
                         },
                         new
                         {
-                            Id = new Guid("891da9b9-9708-4467-ba2c-19ba97ff976b"),
+                            Id = new Guid("faa4b885-e150-481e-a6e7-8886d0f93e44"),
                             CreateById = "123abc",
-                            CreatedDate = new DateTime(2024, 10, 2, 17, 19, 13, 395, DateTimeKind.Utc).AddTicks(9343),
+                            CreatedDate = new DateTime(2024, 10, 2, 12, 58, 8, 771, DateTimeKind.Utc).AddTicks(9013),
                             Name = "Nghe nhạc",
                             RecordStatus = 0,
                             TagImage = "https://static.vecteezy.com/system/resources/thumbnails/037/044/052/small_2x/ai-generated-studio-shot-of-black-headphones-over-music-note-explosion-background-with-empty-space-for-text-photo.jpg",
@@ -537,9 +540,9 @@ namespace FitSwipe.DataAccess.Migrations
                         },
                         new
                         {
-                            Id = new Guid("89bc2bb3-e053-4a0c-8115-639ee27de8bd"),
+                            Id = new Guid("b711a2c9-e7d6-412c-8a2c-bef183546309"),
                             CreateById = "123abc",
-                            CreatedDate = new DateTime(2024, 10, 2, 17, 19, 13, 395, DateTimeKind.Utc).AddTicks(9346),
+                            CreatedDate = new DateTime(2024, 10, 2, 12, 58, 8, 771, DateTimeKind.Utc).AddTicks(9014),
                             Name = "Chơi nhạc cụ",
                             RecordStatus = 0,
                             TagImage = "https://t3.ftcdn.net/jpg/01/34/38/92/360_F_134389281_5Jak3tbsoDggHIfIKKwJ8L7064ACIMNE.jpg",
@@ -547,9 +550,9 @@ namespace FitSwipe.DataAccess.Migrations
                         },
                         new
                         {
-                            Id = new Guid("cd2278aa-ea39-4a43-8e8b-7a7a3c5be42b"),
+                            Id = new Guid("a3aaa9d9-bdca-4c4c-954d-170d5c8f7a81"),
                             CreateById = "123abc",
-                            CreatedDate = new DateTime(2024, 10, 2, 17, 19, 13, 395, DateTimeKind.Utc).AddTicks(9350),
+                            CreatedDate = new DateTime(2024, 10, 2, 12, 58, 8, 771, DateTimeKind.Utc).AddTicks(9015),
                             Name = "Tán gẫu",
                             RecordStatus = 0,
                             TagImage = "https://transcode-v2.app.engoo.com/image/fetch/f_auto,c_lfill,w_300,dpr_3/https://assets.app.engoo.com/images/rGTEEA2fm66YMzeJz2UbwkKOW62bZVlqKOKZrXlMN7g.jpeg",
@@ -557,9 +560,9 @@ namespace FitSwipe.DataAccess.Migrations
                         },
                         new
                         {
-                            Id = new Guid("91a840b3-875b-48d8-bb23-3cd81d3c1ed7"),
+                            Id = new Guid("9d6f15c3-6155-44f4-ad56-de2958e27c25"),
                             CreateById = "123abc",
-                            CreatedDate = new DateTime(2024, 10, 2, 17, 19, 13, 395, DateTimeKind.Utc).AddTicks(9353),
+                            CreatedDate = new DateTime(2024, 10, 2, 12, 58, 8, 771, DateTimeKind.Utc).AddTicks(9017),
                             Name = "Công nghệ",
                             RecordStatus = 0,
                             TagImage = "https://www.simplilearn.com/ice9/free_resources_article_thumb/Technology_Trends.jpg",
@@ -567,9 +570,9 @@ namespace FitSwipe.DataAccess.Migrations
                         },
                         new
                         {
-                            Id = new Guid("097278be-7ebe-46b5-ba42-df99e4399ce8"),
+                            Id = new Guid("d3679c29-3251-47ec-bd6f-7a7b861a90f9"),
                             CreateById = "123abc",
-                            CreatedDate = new DateTime(2024, 10, 2, 17, 19, 13, 395, DateTimeKind.Utc).AddTicks(9355),
+                            CreatedDate = new DateTime(2024, 10, 2, 12, 58, 8, 771, DateTimeKind.Utc).AddTicks(9018),
                             Name = "Lịch Sử",
                             RecordStatus = 0,
                             TagImage = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRWz_tIgvQXPAaSmvYa7CqZo_biaRK9D_O8uA&s",
@@ -577,9 +580,9 @@ namespace FitSwipe.DataAccess.Migrations
                         },
                         new
                         {
-                            Id = new Guid("6c63e9a2-e20a-4abe-a2fc-53dde07de027"),
+                            Id = new Guid("7933b2c4-cc49-49c2-8b29-1b0c61bc0b31"),
                             CreateById = "123abc",
-                            CreatedDate = new DateTime(2024, 10, 2, 17, 19, 13, 395, DateTimeKind.Utc).AddTicks(9358),
+                            CreatedDate = new DateTime(2024, 10, 2, 12, 58, 8, 771, DateTimeKind.Utc).AddTicks(9020),
                             Name = "Địa lý",
                             RecordStatus = 0,
                             TagImage = "https://www.aag.org/wp-content/uploads/2021/12/shutterstock_1111879247.jpg",
@@ -587,9 +590,9 @@ namespace FitSwipe.DataAccess.Migrations
                         },
                         new
                         {
-                            Id = new Guid("43d20cfb-d4f9-4ed0-8dbf-a1506a3f8f1f"),
+                            Id = new Guid("a4082a9f-569c-40fc-8ab9-8ce1a61141e7"),
                             CreateById = "123abc",
-                            CreatedDate = new DateTime(2024, 10, 2, 17, 19, 13, 395, DateTimeKind.Utc).AddTicks(9360),
+                            CreatedDate = new DateTime(2024, 10, 2, 12, 58, 8, 771, DateTimeKind.Utc).AddTicks(9021),
                             Name = "Triết học",
                             RecordStatus = 0,
                             TagImage = "https://www.rollingstone.com/wp-content/uploads/2024/01/unlocking_the_power_why_you_should_consider_hiring_philosophy_graduates-.jpg",
@@ -597,9 +600,9 @@ namespace FitSwipe.DataAccess.Migrations
                         },
                         new
                         {
-                            Id = new Guid("d2e3c5a5-6334-44af-89b8-82a06dc82017"),
+                            Id = new Guid("f8efa17c-7c40-4090-bd4c-12cdb2eb57fa"),
                             CreateById = "123abc",
-                            CreatedDate = new DateTime(2024, 10, 2, 17, 19, 13, 395, DateTimeKind.Utc).AddTicks(9363),
+                            CreatedDate = new DateTime(2024, 10, 2, 12, 58, 8, 771, DateTimeKind.Utc).AddTicks(9024),
                             Name = "Sống Ảo",
                             RecordStatus = 0,
                             TagImage = "https://imagev3.vietnamplus.vn/w1000/Uploaded/2024/hotnnz/2024_08_13/song-ao3-6646.jpg.webp",
@@ -607,9 +610,9 @@ namespace FitSwipe.DataAccess.Migrations
                         },
                         new
                         {
-                            Id = new Guid("80841fae-05a9-4fb8-a589-8b5cc0c6b818"),
+                            Id = new Guid("a3b16ebb-d032-4f88-99b0-0b496cd372d8"),
                             CreateById = "123abc",
-                            CreatedDate = new DateTime(2024, 10, 2, 17, 19, 13, 395, DateTimeKind.Utc).AddTicks(9368),
+                            CreatedDate = new DateTime(2024, 10, 2, 12, 58, 8, 771, DateTimeKind.Utc).AddTicks(9025),
                             Name = "Quản lý cân nặng",
                             RecordStatus = 0,
                             TagImage = "https://thanhnien.mediacdn.vn/Uploaded/minhnguyet/2022_05_10/an-kieng-9141.jpg",
@@ -617,9 +620,9 @@ namespace FitSwipe.DataAccess.Migrations
                         },
                         new
                         {
-                            Id = new Guid("ce9f99c4-206e-4b08-8728-09686b2d5a83"),
+                            Id = new Guid("9ad8f365-0dbc-4853-905f-02992fa3b818"),
                             CreateById = "123abc",
-                            CreatedDate = new DateTime(2024, 10, 2, 17, 19, 13, 395, DateTimeKind.Utc).AddTicks(9371),
+                            CreatedDate = new DateTime(2024, 10, 2, 12, 58, 8, 771, DateTimeKind.Utc).AddTicks(9027),
                             Name = "Phát triển cơ bắp",
                             RecordStatus = 0,
                             TagImage = "https://www.dmoose.com/cdn/shop/articles/feature-image_87a28752-6da3-4be8-8814-d5221236136d.jpg?v=1676644951",
@@ -627,9 +630,9 @@ namespace FitSwipe.DataAccess.Migrations
                         },
                         new
                         {
-                            Id = new Guid("69d1e547-57c1-4a73-afac-6b7ee82a50db"),
+                            Id = new Guid("ce32aa3e-3b02-4b37-8200-439456563e70"),
                             CreateById = "123abc",
-                            CreatedDate = new DateTime(2024, 10, 2, 17, 19, 13, 395, DateTimeKind.Utc).AddTicks(9374),
+                            CreatedDate = new DateTime(2024, 10, 2, 12, 58, 8, 771, DateTimeKind.Utc).AddTicks(9028),
                             Name = "Có body chuẩn chỉnh",
                             RecordStatus = 0,
                             TagImage = "https://cdn.nhathuoclongchau.com.vn/unsafe/800x0/https://cms-prod.s3-sgn09.fptcloud.com/fitness_la_gi_loi_ich_va_phuong_phap_tap_luyen_fitness_1_3c4e094223.png",
@@ -637,9 +640,9 @@ namespace FitSwipe.DataAccess.Migrations
                         },
                         new
                         {
-                            Id = new Guid("75598f28-49e8-4fb6-97ae-21bbead8ecd9"),
+                            Id = new Guid("ad211a7c-727e-4fee-8eb3-c4691f8bd1a4"),
                             CreateById = "123abc",
-                            CreatedDate = new DateTime(2024, 10, 2, 17, 19, 13, 395, DateTimeKind.Utc).AddTicks(9376),
+                            CreatedDate = new DateTime(2024, 10, 2, 12, 58, 8, 771, DateTimeKind.Utc).AddTicks(9029),
                             Name = "Phòng tránh bệnh",
                             RecordStatus = 0,
                             TagImage = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQv509Yw7GUN5twNNk4G5Pvu1TBqFmhrL_3UQ&s",
@@ -647,9 +650,9 @@ namespace FitSwipe.DataAccess.Migrations
                         },
                         new
                         {
-                            Id = new Guid("3f82fb98-c502-4f6f-ab51-052228cb5da4"),
+                            Id = new Guid("f22748f5-71f9-4823-a1c9-4cda239b1fb2"),
                             CreateById = "123abc",
-                            CreatedDate = new DateTime(2024, 10, 2, 17, 19, 13, 395, DateTimeKind.Utc).AddTicks(9379),
+                            CreatedDate = new DateTime(2024, 10, 2, 12, 58, 8, 771, DateTimeKind.Utc).AddTicks(9031),
                             Name = "Cải thiện tình trạng bệnh",
                             RecordStatus = 0,
                             TagImage = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQv509Yw7GUN5twNNk4G5Pvu1TBqFmhrL_3UQ&s",
@@ -657,9 +660,9 @@ namespace FitSwipe.DataAccess.Migrations
                         },
                         new
                         {
-                            Id = new Guid("1f73e933-4036-4e9f-bd6f-17a545fc6fca"),
+                            Id = new Guid("1f416dd7-0574-4ca5-9c90-d5e25887fa31"),
                             CreateById = "123abc",
-                            CreatedDate = new DateTime(2024, 10, 2, 17, 19, 13, 395, DateTimeKind.Utc).AddTicks(9381),
+                            CreatedDate = new DateTime(2024, 10, 2, 12, 58, 8, 771, DateTimeKind.Utc).AddTicks(9032),
                             Name = "Tăng cảm giác hạnh phúc, giảm căng thẳng",
                             RecordStatus = 0,
                             TagImage = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT8ZXc_bemAYbupxmGz0pZGy4L1Zr6hGVsYdA&s",
@@ -667,9 +670,9 @@ namespace FitSwipe.DataAccess.Migrations
                         },
                         new
                         {
-                            Id = new Guid("ea12e995-abc2-43d4-88e1-b2eed75ef27a"),
+                            Id = new Guid("c20c44f1-1cbb-4131-bb40-6c2b013b1d6f"),
                             CreateById = "123abc",
-                            CreatedDate = new DateTime(2024, 10, 2, 17, 19, 13, 395, DateTimeKind.Utc).AddTicks(9384),
+                            CreatedDate = new DateTime(2024, 10, 2, 12, 58, 8, 771, DateTimeKind.Utc).AddTicks(9034),
                             Name = "Cải thiện sự dẻo dai",
                             RecordStatus = 0,
                             TagImage = "https://cdn.shopify.com/s/files/1/0453/0381/files/fullsizeoutput_2d4_1024x1024.jpg?v=1662646979",
@@ -677,9 +680,9 @@ namespace FitSwipe.DataAccess.Migrations
                         },
                         new
                         {
-                            Id = new Guid("4c7230b9-8535-4e0a-88cf-92ec16257006"),
+                            Id = new Guid("359fd7d1-b677-4466-9a95-6b38fbf31d93"),
                             CreateById = "123abc",
-                            CreatedDate = new DateTime(2024, 10, 2, 17, 19, 13, 395, DateTimeKind.Utc).AddTicks(9426),
+                            CreatedDate = new DateTime(2024, 10, 2, 12, 58, 8, 771, DateTimeKind.Utc).AddTicks(9038),
                             Name = "Cải thiện sức bền",
                             RecordStatus = 0,
                             TagImage = "https://vinmec-prod.s3.amazonaws.com/images/20210524_085806_814180_chay-bo-bao-nhieu-cal.max-800x800.jpg",
@@ -687,9 +690,9 @@ namespace FitSwipe.DataAccess.Migrations
                         },
                         new
                         {
-                            Id = new Guid("02a358b6-a1fb-4c2a-bce9-b4a12b458813"),
+                            Id = new Guid("e10e6946-7b2d-490a-bd06-593211ad4c41"),
                             CreateById = "123abc",
-                            CreatedDate = new DateTime(2024, 10, 2, 17, 19, 13, 395, DateTimeKind.Utc).AddTicks(9433),
+                            CreatedDate = new DateTime(2024, 10, 2, 12, 58, 8, 771, DateTimeKind.Utc).AddTicks(9040),
                             Name = "Cải thiện sức khỏe tổng quát",
                             RecordStatus = 0,
                             TagImage = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcThCjFemkP0h0IZYpu31k-xGK9IvigaysteqA&s",
@@ -697,9 +700,9 @@ namespace FitSwipe.DataAccess.Migrations
                         },
                         new
                         {
-                            Id = new Guid("320a98a0-d222-438b-a93c-1c380ac5615d"),
+                            Id = new Guid("baf752b8-c11e-4f9a-986a-95522cd0ef1c"),
                             CreateById = "123abc",
-                            CreatedDate = new DateTime(2024, 10, 2, 17, 19, 13, 395, DateTimeKind.Utc).AddTicks(9436),
+                            CreatedDate = new DateTime(2024, 10, 2, 12, 58, 8, 771, DateTimeKind.Utc).AddTicks(9041),
                             Name = "Yoga / Pilates",
                             RecordStatus = 0,
                             TagImage = "https://thamtapyoga.vn/wp-content/uploads/2024/01/3-2.jpeg",
@@ -707,9 +710,9 @@ namespace FitSwipe.DataAccess.Migrations
                         },
                         new
                         {
-                            Id = new Guid("18ab40a7-a6f2-4eb6-8dc1-8f9d682513bd"),
+                            Id = new Guid("0a55b36a-6724-4dee-988f-61100b2800a4"),
                             CreateById = "123abc",
-                            CreatedDate = new DateTime(2024, 10, 2, 17, 19, 13, 395, DateTimeKind.Utc).AddTicks(9439),
+                            CreatedDate = new DateTime(2024, 10, 2, 12, 58, 8, 771, DateTimeKind.Utc).AddTicks(9043),
                             Name = "Calisthenic",
                             RecordStatus = 0,
                             TagImage = "https://cdn.nhathuoclongchau.com.vn/unsafe/800x0/https://cms-prod.s3-sgn09.fptcloud.com/giai_dap_thac_mac_calisthenics_khac_gi_gym_1_8d5dd4026b.jpg",
@@ -717,9 +720,9 @@ namespace FitSwipe.DataAccess.Migrations
                         },
                         new
                         {
-                            Id = new Guid("744a62a2-4e14-4a0f-9e9b-5f3a511da39a"),
+                            Id = new Guid("e12be1c1-fb6d-4582-8c24-679ab9660202"),
                             CreateById = "123abc",
-                            CreatedDate = new DateTime(2024, 10, 2, 17, 19, 13, 395, DateTimeKind.Utc).AddTicks(9442),
+                            CreatedDate = new DateTime(2024, 10, 2, 12, 58, 8, 771, DateTimeKind.Utc).AddTicks(9044),
                             Name = "Tập sức mạnh",
                             RecordStatus = 0,
                             TagImage = "https://www.thethaothientruong.vn/uploads/2020/Powerlifting-la-gi.jpg",
@@ -727,9 +730,9 @@ namespace FitSwipe.DataAccess.Migrations
                         },
                         new
                         {
-                            Id = new Guid("d6485d91-a034-4ea9-8213-9147f924f16c"),
+                            Id = new Guid("51242843-b319-41f3-8c0b-2c19527d4a80"),
                             CreateById = "123abc",
-                            CreatedDate = new DateTime(2024, 10, 2, 17, 19, 13, 395, DateTimeKind.Utc).AddTicks(9445),
+                            CreatedDate = new DateTime(2024, 10, 2, 12, 58, 8, 771, DateTimeKind.Utc).AddTicks(9045),
                             Name = "Cardio",
                             RecordStatus = 0,
                             TagImage = "https://file.hstatic.net/1000308068/file/tap-cardio-vao-luc-nao-la-hieu-qua-nhat_cb884317c05d4df980138121ee113112_grande.jpg",
@@ -737,9 +740,9 @@ namespace FitSwipe.DataAccess.Migrations
                         },
                         new
                         {
-                            Id = new Guid("7e6cc9ad-98b6-4c43-b4b0-cd6741cc2399"),
+                            Id = new Guid("713957b5-28a9-4629-9f44-25f1e0e397c4"),
                             CreateById = "123abc",
-                            CreatedDate = new DateTime(2024, 10, 2, 17, 19, 13, 395, DateTimeKind.Utc).AddTicks(9447),
+                            CreatedDate = new DateTime(2024, 10, 2, 12, 58, 8, 771, DateTimeKind.Utc).AddTicks(9047),
                             Name = "HIIT",
                             RecordStatus = 0,
                             TagImage = "https://hips.hearstapps.com/hmg-prod/images/athletes-doing-push-ups-with-dumbbells-on-floor-royalty-free-image-1638463573.jpg",
@@ -747,9 +750,9 @@ namespace FitSwipe.DataAccess.Migrations
                         },
                         new
                         {
-                            Id = new Guid("87181132-07be-4afb-8413-9847fac37b0e"),
+                            Id = new Guid("bac36144-8194-4b91-bace-252238ea49eb"),
                             CreateById = "123abc",
-                            CreatedDate = new DateTime(2024, 10, 2, 17, 19, 13, 395, DateTimeKind.Utc).AddTicks(9450),
+                            CreatedDate = new DateTime(2024, 10, 2, 12, 58, 8, 771, DateTimeKind.Utc).AddTicks(9048),
                             Name = "Kickfit",
                             RecordStatus = 0,
                             TagImage = "https://storage.googleapis.com/leep_app_website/2020/11/Kick-fit-khong-phai-la-kick-boxing.jpg",
@@ -757,9 +760,9 @@ namespace FitSwipe.DataAccess.Migrations
                         },
                         new
                         {
-                            Id = new Guid("3068f395-42da-4a02-a2c0-40ddb8cf4115"),
+                            Id = new Guid("d5cff4a7-293e-47a0-964f-87ab630bd0ea"),
                             CreateById = "123abc",
-                            CreatedDate = new DateTime(2024, 10, 2, 17, 19, 13, 395, DateTimeKind.Utc).AddTicks(9453),
+                            CreatedDate = new DateTime(2024, 10, 2, 12, 58, 8, 771, DateTimeKind.Utc).AddTicks(9050),
                             Name = "Tập ép dẻo",
                             RecordStatus = 0,
                             TagImage = "https://prod-everyoneactive-wp.s3.eu-west-2.amazonaws.com/wp-content/uploads/2020/03/23151503/flexibility-at-home.jpg",
@@ -767,9 +770,9 @@ namespace FitSwipe.DataAccess.Migrations
                         },
                         new
                         {
-                            Id = new Guid("d7153127-8ab8-478e-af1a-e75eabad1ed2"),
+                            Id = new Guid("2ab03b2d-9719-47d3-ac0e-42dfae1c2bcc"),
                             CreateById = "123abc",
-                            CreatedDate = new DateTime(2024, 10, 2, 17, 19, 13, 395, DateTimeKind.Utc).AddTicks(9458),
+                            CreatedDate = new DateTime(2024, 10, 2, 12, 58, 8, 771, DateTimeKind.Utc).AddTicks(9052),
                             Name = "Thể dục nhịp điệu, theo nhạc",
                             RecordStatus = 0,
                             TagImage = "https://i.vietgiaitri.com/2018/10/9/the-duc-nhip-dieu-b2ab9f.jpg",
@@ -777,9 +780,9 @@ namespace FitSwipe.DataAccess.Migrations
                         },
                         new
                         {
-                            Id = new Guid("372e941b-f4d5-4951-9587-6693f5dd1895"),
+                            Id = new Guid("72ab2e02-54ef-4e1d-a6e3-32d5cd47cce4"),
                             CreateById = "123abc",
-                            CreatedDate = new DateTime(2024, 10, 2, 17, 19, 13, 395, DateTimeKind.Utc).AddTicks(9461),
+                            CreatedDate = new DateTime(2024, 10, 2, 12, 58, 8, 771, DateTimeKind.Utc).AddTicks(9053),
                             Name = "Cùng giới",
                             RecordStatus = 0,
                             SpecialTag = 1,
@@ -787,9 +790,9 @@ namespace FitSwipe.DataAccess.Migrations
                         },
                         new
                         {
-                            Id = new Guid("f1981d58-c56c-483e-8995-5713658fb8ea"),
+                            Id = new Guid("459d5ce9-1b28-411d-bf97-41f4f51dcb88"),
                             CreateById = "123abc",
-                            CreatedDate = new DateTime(2024, 10, 2, 17, 19, 13, 395, DateTimeKind.Utc).AddTicks(9466),
+                            CreatedDate = new DateTime(2024, 10, 2, 12, 58, 8, 771, DateTimeKind.Utc).AddTicks(9056),
                             Name = "Khác giới",
                             RecordStatus = 0,
                             SpecialTag = 0,
@@ -797,27 +800,27 @@ namespace FitSwipe.DataAccess.Migrations
                         },
                         new
                         {
-                            Id = new Guid("e35476f7-4f48-403c-83a7-538cfdc88f78"),
+                            Id = new Guid("50d1d2f7-bef5-401b-bf74-4ebccc75a4f5"),
                             CreateById = "123abc",
-                            CreatedDate = new DateTime(2024, 10, 2, 17, 19, 13, 395, DateTimeKind.Utc).AddTicks(9469),
+                            CreatedDate = new DateTime(2024, 10, 2, 12, 58, 8, 771, DateTimeKind.Utc).AddTicks(9058),
                             Name = "Ngoại hình đẹp",
                             RecordStatus = 0,
                             TagType = 3
                         },
                         new
                         {
-                            Id = new Guid("06aec7ad-3198-4ac9-b584-b37da96736e6"),
+                            Id = new Guid("89b3f17f-eb3b-4802-9fb2-694390b174f0"),
                             CreateById = "123abc",
-                            CreatedDate = new DateTime(2024, 10, 2, 17, 19, 13, 395, DateTimeKind.Utc).AddTicks(9471),
+                            CreatedDate = new DateTime(2024, 10, 2, 12, 58, 8, 771, DateTimeKind.Utc).AddTicks(9059),
                             Name = "Cung cấp giá cả phải chăng",
                             RecordStatus = 0,
                             TagType = 3
                         },
                         new
                         {
-                            Id = new Guid("373744b9-6113-49d9-b444-244ef40ee0e6"),
+                            Id = new Guid("852cc1cf-df2e-4121-955c-45a4abc11c0d"),
                             CreateById = "123abc",
-                            CreatedDate = new DateTime(2024, 10, 2, 17, 19, 13, 395, DateTimeKind.Utc).AddTicks(9473),
+                            CreatedDate = new DateTime(2024, 10, 2, 12, 58, 8, 771, DateTimeKind.Utc).AddTicks(9060),
                             Name = "Gần",
                             RecordStatus = 0,
                             SpecialTag = 2,
@@ -825,243 +828,243 @@ namespace FitSwipe.DataAccess.Migrations
                         },
                         new
                         {
-                            Id = new Guid("e98e931e-faa3-4485-aad4-79cd69c2d84f"),
+                            Id = new Guid("10f150d1-fd71-49c5-853e-c6f9effef006"),
                             CreateById = "123abc",
-                            CreatedDate = new DateTime(2024, 10, 2, 17, 19, 13, 395, DateTimeKind.Utc).AddTicks(9476),
+                            CreatedDate = new DateTime(2024, 10, 2, 12, 58, 8, 771, DateTimeKind.Utc).AddTicks(9062),
                             Name = "Tâm huyết với học viên",
                             RecordStatus = 0,
                             TagType = 3
                         },
                         new
                         {
-                            Id = new Guid("227d340e-fb3c-4c44-b464-f51c0cf098d4"),
+                            Id = new Guid("3f96abc2-fe8e-4979-b97a-be10cc738d69"),
                             CreateById = "123abc",
-                            CreatedDate = new DateTime(2024, 10, 2, 17, 19, 13, 395, DateTimeKind.Utc).AddTicks(9479),
+                            CreatedDate = new DateTime(2024, 10, 2, 12, 58, 8, 771, DateTimeKind.Utc).AddTicks(9064),
                             Name = "Có trách nhiệm",
                             RecordStatus = 0,
                             TagType = 3
                         },
                         new
                         {
-                            Id = new Guid("3a6287a3-52e9-4c6b-8d39-9e99c4b63c02"),
+                            Id = new Guid("7b2a3c7e-ecf0-4f74-9991-bf27b9cfe111"),
                             CreateById = "123abc",
-                            CreatedDate = new DateTime(2024, 10, 2, 17, 19, 13, 395, DateTimeKind.Utc).AddTicks(9484),
+                            CreatedDate = new DateTime(2024, 10, 2, 12, 58, 8, 771, DateTimeKind.Utc).AddTicks(9098),
                             Name = "Có kinh nghiệm",
                             RecordStatus = 0,
                             TagType = 3
                         },
                         new
                         {
-                            Id = new Guid("38189688-da95-41d4-a61f-b4f3c3aab849"),
+                            Id = new Guid("5b9217df-a281-478d-a2f5-636dcf72e37b"),
                             CreateById = "123abc",
-                            CreatedDate = new DateTime(2024, 10, 2, 17, 19, 13, 395, DateTimeKind.Utc).AddTicks(9487),
+                            CreatedDate = new DateTime(2024, 10, 2, 12, 58, 8, 771, DateTimeKind.Utc).AddTicks(9100),
                             Name = "Không nặng nề với học viên",
                             RecordStatus = 0,
                             TagType = 3
                         },
                         new
                         {
-                            Id = new Guid("8c7dc9cf-a491-40ea-9018-7ef59fc7bb61"),
+                            Id = new Guid("0cdeed83-8255-4604-9a9e-f9c9bded2d69"),
                             CreateById = "123abc",
-                            CreatedDate = new DateTime(2024, 10, 2, 17, 19, 13, 395, DateTimeKind.Utc).AddTicks(9489),
+                            CreatedDate = new DateTime(2024, 10, 2, 12, 58, 8, 771, DateTimeKind.Utc).AddTicks(9102),
                             Name = "Giàu kiến thức",
                             RecordStatus = 0,
                             TagType = 3
                         },
                         new
                         {
-                            Id = new Guid("d3f781fe-7ea8-4efc-969f-78b97cfc959a"),
+                            Id = new Guid("fd60bde3-a149-44e0-8a35-51d626ad19a4"),
                             CreateById = "123abc",
-                            CreatedDate = new DateTime(2024, 10, 2, 17, 19, 13, 395, DateTimeKind.Utc).AddTicks(9492),
+                            CreatedDate = new DateTime(2024, 10, 2, 12, 58, 8, 771, DateTimeKind.Utc).AddTicks(9103),
                             Name = "Luôn sẵn sàng tư vấn ngoài giờ",
                             RecordStatus = 0,
                             TagType = 3
                         },
                         new
                         {
-                            Id = new Guid("80e66a20-4b0d-4571-bcde-3e262c31ee42"),
+                            Id = new Guid("c839cb64-10f2-4c48-af1a-05812679ef77"),
                             CreateById = "123abc",
-                            CreatedDate = new DateTime(2024, 10, 2, 17, 19, 13, 395, DateTimeKind.Utc).AddTicks(9494),
+                            CreatedDate = new DateTime(2024, 10, 2, 12, 58, 8, 771, DateTimeKind.Utc).AddTicks(9105),
                             Name = "Biết truyền cảm hứng, tạo động lực",
                             RecordStatus = 0,
                             TagType = 3
                         },
                         new
                         {
-                            Id = new Guid("46337243-38a3-4532-a826-6ff3c6feb1eb"),
+                            Id = new Guid("4533834e-c2ac-40e6-9b68-6d9c87555782"),
                             CreateById = "123abc",
-                            CreatedDate = new DateTime(2024, 10, 2, 17, 19, 13, 395, DateTimeKind.Utc).AddTicks(9498),
+                            CreatedDate = new DateTime(2024, 10, 2, 12, 58, 8, 771, DateTimeKind.Utc).AddTicks(9106),
                             Name = "Đảm bảo mục tiêu cho học viên",
                             RecordStatus = 0,
                             TagType = 3
                         },
                         new
                         {
-                            Id = new Guid("cf4db104-674d-4167-ae2e-80fc3de5d38e"),
+                            Id = new Guid("5fec8c08-536b-4297-83d7-1fc855e118af"),
                             CreateById = "123abc",
-                            CreatedDate = new DateTime(2024, 10, 2, 17, 19, 13, 395, DateTimeKind.Utc).AddTicks(9500),
+                            CreatedDate = new DateTime(2024, 10, 2, 12, 58, 8, 771, DateTimeKind.Utc).AddTicks(9108),
                             Name = "Kiên trì",
                             RecordStatus = 0,
                             TagType = 4
                         },
                         new
                         {
-                            Id = new Guid("163bbcd0-335f-47e4-b7b1-e2aff36aa259"),
+                            Id = new Guid("15c7ae90-0f99-425f-b68a-55a71f7f7e5c"),
                             CreateById = "123abc",
-                            CreatedDate = new DateTime(2024, 10, 2, 17, 19, 13, 395, DateTimeKind.Utc).AddTicks(9503),
+                            CreatedDate = new DateTime(2024, 10, 2, 12, 58, 8, 771, DateTimeKind.Utc).AddTicks(9110),
                             Name = "Siêng năng",
                             RecordStatus = 0,
                             TagType = 4
                         },
                         new
                         {
-                            Id = new Guid("cf5ff747-363c-47e2-8d47-590adc328e76"),
+                            Id = new Guid("4d025b36-2508-453e-a489-e77d957cbea3"),
                             CreateById = "123abc",
-                            CreatedDate = new DateTime(2024, 10, 2, 17, 19, 13, 395, DateTimeKind.Utc).AddTicks(9508),
+                            CreatedDate = new DateTime(2024, 10, 2, 12, 58, 8, 771, DateTimeKind.Utc).AddTicks(9112),
                             Name = "Vui tính, hài hước",
                             RecordStatus = 0,
                             TagType = 4
                         },
                         new
                         {
-                            Id = new Guid("3511c9b0-c9b7-4926-9e02-a8c8df696a0e"),
+                            Id = new Guid("e1c89aa7-4e6d-4f43-8b04-f268cdd1d0a5"),
                             CreateById = "123abc",
-                            CreatedDate = new DateTime(2024, 10, 2, 17, 19, 13, 395, DateTimeKind.Utc).AddTicks(9510),
+                            CreatedDate = new DateTime(2024, 10, 2, 12, 58, 8, 771, DateTimeKind.Utc).AddTicks(9113),
                             Name = "Hòa đồng",
                             RecordStatus = 0,
                             TagType = 4
                         },
                         new
                         {
-                            Id = new Guid("faef9c5b-76f0-4954-a16c-c01935f8bc29"),
+                            Id = new Guid("bf952303-dc7b-4793-9f24-d22bf39abd6e"),
                             CreateById = "123abc",
-                            CreatedDate = new DateTime(2024, 10, 2, 17, 19, 13, 395, DateTimeKind.Utc).AddTicks(9513),
+                            CreatedDate = new DateTime(2024, 10, 2, 12, 58, 8, 771, DateTimeKind.Utc).AddTicks(9114),
                             Name = "Năng động",
                             RecordStatus = 0,
                             TagType = 4
                         },
                         new
                         {
-                            Id = new Guid("d08253b5-8fa4-407e-b44e-7df5e7b1f6ac"),
+                            Id = new Guid("b82eb77c-8176-486e-b1f8-093689bae3d3"),
                             CreateById = "123abc",
-                            CreatedDate = new DateTime(2024, 10, 2, 17, 19, 13, 395, DateTimeKind.Utc).AddTicks(9515),
+                            CreatedDate = new DateTime(2024, 10, 2, 12, 58, 8, 771, DateTimeKind.Utc).AddTicks(9115),
                             Name = "Dễ gần",
                             RecordStatus = 0,
                             TagType = 4
                         },
                         new
                         {
-                            Id = new Guid("1ebed850-7ce2-40d6-b6d7-3c9181e00963"),
+                            Id = new Guid("51f59bde-22fe-44bf-9626-80c0c05c94f4"),
                             CreateById = "123abc",
-                            CreatedDate = new DateTime(2024, 10, 2, 17, 19, 13, 395, DateTimeKind.Utc).AddTicks(9517),
+                            CreatedDate = new DateTime(2024, 10, 2, 12, 58, 8, 771, DateTimeKind.Utc).AddTicks(9117),
                             Name = "Thi thoảng bất thường",
                             RecordStatus = 0,
                             TagType = 4
                         },
                         new
                         {
-                            Id = new Guid("e25f6770-c284-42e2-89a2-356653970918"),
+                            Id = new Guid("7a2f5587-118f-4aa4-93bb-f9f46b85ffd0"),
                             CreateById = "123abc",
-                            CreatedDate = new DateTime(2024, 10, 2, 17, 19, 13, 395, DateTimeKind.Utc).AddTicks(9520),
+                            CreatedDate = new DateTime(2024, 10, 2, 12, 58, 8, 771, DateTimeKind.Utc).AddTicks(9118),
                             Name = "Lạnh lùng, ít nói",
                             RecordStatus = 0,
                             TagType = 4
                         },
                         new
                         {
-                            Id = new Guid("bac9fa65-0907-44ea-8a19-b9ce382c09f0"),
+                            Id = new Guid("8741c577-0b21-4944-9e38-d8ce96b48b9e"),
                             CreateById = "123abc",
-                            CreatedDate = new DateTime(2024, 10, 2, 17, 19, 13, 395, DateTimeKind.Utc).AddTicks(9522),
+                            CreatedDate = new DateTime(2024, 10, 2, 12, 58, 8, 771, DateTimeKind.Utc).AddTicks(9119),
                             Name = "Nhút nhát",
                             RecordStatus = 0,
                             TagType = 4
                         },
                         new
                         {
-                            Id = new Guid("77df8b3a-4305-459c-a544-26076c0f3bd9"),
+                            Id = new Guid("4e778b7c-71cf-4b78-ae12-c080173554ce"),
                             CreateById = "123abc",
-                            CreatedDate = new DateTime(2024, 10, 2, 17, 19, 13, 395, DateTimeKind.Utc).AddTicks(9525),
+                            CreatedDate = new DateTime(2024, 10, 2, 12, 58, 8, 771, DateTimeKind.Utc).AddTicks(9122),
                             Name = "Nhạy cảm",
                             RecordStatus = 0,
                             TagType = 4
                         },
                         new
                         {
-                            Id = new Guid("0ba25be0-7fe0-451c-b56e-2ea70f417760"),
+                            Id = new Guid("0c1b8083-8501-49d3-adda-32c9eafccdf3"),
                             CreateById = "123abc",
-                            CreatedDate = new DateTime(2024, 10, 2, 17, 19, 13, 395, DateTimeKind.Utc).AddTicks(9529),
+                            CreatedDate = new DateTime(2024, 10, 2, 12, 58, 8, 771, DateTimeKind.Utc).AddTicks(9124),
                             Name = "Dễ nản",
                             RecordStatus = 0,
                             TagType = 4
                         },
                         new
                         {
-                            Id = new Guid("960b9abb-fd81-43f7-8010-556b17530e25"),
+                            Id = new Guid("cf47b4e2-7f8f-4d3c-aa6e-841ee2f9d04c"),
                             CreateById = "123abc",
-                            CreatedDate = new DateTime(2024, 10, 2, 17, 19, 13, 395, DateTimeKind.Utc).AddTicks(9532),
+                            CreatedDate = new DateTime(2024, 10, 2, 12, 58, 8, 771, DateTimeKind.Utc).AddTicks(9125),
                             Name = "Hay bị lười",
                             RecordStatus = 0,
                             TagType = 4
                         },
                         new
                         {
-                            Id = new Guid("ec62331c-48e5-4de1-a307-30015c6e583a"),
+                            Id = new Guid("341486ff-388a-4fe6-ad82-c3f1cbf1707b"),
                             CreateById = "123abc",
-                            CreatedDate = new DateTime(2024, 10, 2, 17, 19, 13, 395, DateTimeKind.Utc).AddTicks(9534),
+                            CreatedDate = new DateTime(2024, 10, 2, 12, 58, 8, 771, DateTimeKind.Utc).AddTicks(9126),
                             Name = "Sẵn sàng học hỏi",
                             RecordStatus = 0,
                             TagType = 4
                         },
                         new
                         {
-                            Id = new Guid("43e4fda4-dd6c-4853-af47-4b3c42de0c1c"),
+                            Id = new Guid("55fbd02d-6ada-4db9-8c95-594b58499774"),
                             CreateById = "123abc",
-                            CreatedDate = new DateTime(2024, 10, 2, 17, 19, 13, 395, DateTimeKind.Utc).AddTicks(9536),
+                            CreatedDate = new DateTime(2024, 10, 2, 12, 58, 8, 771, DateTimeKind.Utc).AddTicks(9127),
                             Name = "Hiền lành",
                             RecordStatus = 0,
                             TagType = 4
                         },
                         new
                         {
-                            Id = new Guid("088bba8a-409e-4a07-9dd0-b47489e6f496"),
+                            Id = new Guid("a7e7dec8-23df-4b23-9955-59e4387da4b1"),
                             CreateById = "123abc",
-                            CreatedDate = new DateTime(2024, 10, 2, 17, 19, 13, 395, DateTimeKind.Utc).AddTicks(9539),
+                            CreatedDate = new DateTime(2024, 10, 2, 12, 58, 8, 771, DateTimeKind.Utc).AddTicks(9129),
                             Name = "Rảnh rỗi",
                             RecordStatus = 0,
                             TagType = 4
                         },
                         new
                         {
-                            Id = new Guid("9a03ec94-deab-4ed6-b4fc-5f2e11dba1b6"),
+                            Id = new Guid("a12605f1-f2ca-4fcc-97aa-fce26516d99a"),
                             CreateById = "123abc",
-                            CreatedDate = new DateTime(2024, 10, 2, 17, 19, 13, 395, DateTimeKind.Utc).AddTicks(9541),
+                            CreatedDate = new DateTime(2024, 10, 2, 12, 58, 8, 771, DateTimeKind.Utc).AddTicks(9130),
                             Name = "Cầu toàn",
                             RecordStatus = 0,
                             TagType = 4
                         },
                         new
                         {
-                            Id = new Guid("6a28185f-e0cc-4ec4-81d9-f3f68fed2349"),
+                            Id = new Guid("6a404cb0-ded4-4fbe-b8e4-bebd9e1c1cea"),
                             CreateById = "123abc",
-                            CreatedDate = new DateTime(2024, 10, 2, 17, 19, 13, 395, DateTimeKind.Utc).AddTicks(9544),
+                            CreatedDate = new DateTime(2024, 10, 2, 12, 58, 8, 771, DateTimeKind.Utc).AddTicks(9131),
                             Name = "Thoải mái",
                             RecordStatus = 0,
                             TagType = 4
                         },
                         new
                         {
-                            Id = new Guid("bd667558-7e79-469d-86df-35c3d592665d"),
+                            Id = new Guid("5defc1ab-b478-478b-8200-ec9e8aecf063"),
                             CreateById = "123abc",
-                            CreatedDate = new DateTime(2024, 10, 2, 17, 19, 13, 395, DateTimeKind.Utc).AddTicks(9546),
+                            CreatedDate = new DateTime(2024, 10, 2, 12, 58, 8, 771, DateTimeKind.Utc).AddTicks(9134),
                             Name = "Dễ bị khó chịu",
                             RecordStatus = 0,
                             TagType = 4
                         },
                         new
                         {
-                            Id = new Guid("2baf74fa-2028-49ee-a940-2857994acfb1"),
+                            Id = new Guid("4467e761-8019-4553-a341-d566a947481d"),
                             CreateById = "123abc",
-                            CreatedDate = new DateTime(2024, 10, 2, 17, 19, 13, 395, DateTimeKind.Utc).AddTicks(9550),
+                            CreatedDate = new DateTime(2024, 10, 2, 12, 58, 8, 771, DateTimeKind.Utc).AddTicks(9135),
                             Name = "Độc thân lâu năm",
                             RecordStatus = 0,
                             TagType = 4
@@ -1243,9 +1246,6 @@ namespace FitSwipe.DataAccess.Migrations
                     b.Property<double?>("PTExperienceYear")
                         .HasColumnType("double precision");
 
-                    b.Property<double?>("PTRating")
-                        .HasColumnType("double precision");
-
                     b.Property<int?>("PTStatus")
                         .HasColumnType("integer");
 
@@ -1309,13 +1309,13 @@ namespace FitSwipe.DataAccess.Migrations
                             Balance = 1000,
                             Bio = "Fitness enthusiast and certified personal trainer.",
                             City = "New York",
-                            CreatedDate = new DateTime(2024, 10, 2, 17, 19, 13, 395, DateTimeKind.Utc).AddTicks(8866),
+                            CreatedDate = new DateTime(2024, 10, 2, 12, 58, 8, 771, DateTimeKind.Utc).AddTicks(8702),
                             DateOfBirth = new DateTime(1990, 5, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             District = "Manhattan",
                             Email = "john.doe@example.com",
                             Gender = 0,
                             Height = 180.30000000000001,
-                            Id = new Guid("31dbffb2-2139-4d92-96e9-e519f3b838d4"),
+                            Id = new Guid("95942e36-3b5d-4a11-8fc7-94668a78cd4b"),
                             Job = "Student",
                             Password = "hashedpassword1",
                             Phone = "1234567890",
@@ -1335,13 +1335,13 @@ namespace FitSwipe.DataAccess.Migrations
                             Balance = 1500,
                             Bio = "Yoga instructor with a passion for holistic health.",
                             City = "Los Angeles",
-                            CreatedDate = new DateTime(2024, 10, 2, 17, 19, 13, 395, DateTimeKind.Utc).AddTicks(8928),
+                            CreatedDate = new DateTime(2024, 10, 2, 12, 58, 8, 771, DateTimeKind.Utc).AddTicks(8746),
                             DateOfBirth = new DateTime(1985, 8, 20, 0, 0, 0, 0, DateTimeKind.Utc),
                             District = "Beverly Hills",
                             Email = "jane.smith@example.com",
                             Gender = 1,
                             Height = 170.19999999999999,
-                            Id = new Guid("a887e5d3-f651-4c00-802b-97377eaf0ba0"),
+                            Id = new Guid("9a330236-762b-4388-b2ee-1fcd13323ede"),
                             Job = "Yoga Instructor",
                             PTExperienceYear = 3.5,
                             PTStatus = 1,
@@ -1366,13 +1366,13 @@ namespace FitSwipe.DataAccess.Migrations
                             Balance = 2000,
                             Bio = "Aspiring bodybuilder and nutrition expert.",
                             City = "Chicago",
-                            CreatedDate = new DateTime(2024, 10, 2, 17, 19, 13, 395, DateTimeKind.Utc).AddTicks(8947),
+                            CreatedDate = new DateTime(2024, 10, 2, 12, 58, 8, 771, DateTimeKind.Utc).AddTicks(8760),
                             DateOfBirth = new DateTime(1992, 3, 10, 0, 0, 0, 0, DateTimeKind.Utc),
                             District = "Lincoln Park",
                             Email = "alex.jones@example.com",
                             Gender = 0,
                             Height = 185.40000000000001,
-                            Id = new Guid("29f2efa8-1938-4566-9912-e69f18651667"),
+                            Id = new Guid("5695900a-a998-453a-a2a3-99b28dd05a38"),
                             Job = "Nutritionist",
                             PTExperienceYear = 2.0,
                             PTStatus = 1,
@@ -1394,13 +1394,13 @@ namespace FitSwipe.DataAccess.Migrations
                             Balance = 3500,
                             Bio = "Certified yoga instructor and personal trainer with 5 years of experience.",
                             City = "New York",
-                            CreatedDate = new DateTime(2024, 10, 2, 17, 19, 13, 395, DateTimeKind.Utc).AddTicks(8958),
+                            CreatedDate = new DateTime(2024, 10, 2, 12, 58, 8, 771, DateTimeKind.Utc).AddTicks(8776),
                             DateOfBirth = new DateTime(1988, 7, 15, 0, 0, 0, 0, DateTimeKind.Utc),
                             District = "Manhattan",
                             Email = "sarah.smith@example.com",
                             Gender = 0,
                             Height = 170.19999999999999,
-                            Id = new Guid("5d84ecec-e9a4-4f8c-9c40-1384e54a3830"),
+                            Id = new Guid("084ca32e-04cc-4465-ba14-96ee38037a77"),
                             Job = "Yoga Instructor",
                             PTExperienceYear = 5.0,
                             PTStatus = 1,
@@ -1422,13 +1422,13 @@ namespace FitSwipe.DataAccess.Migrations
                             Balance = 2800,
                             Bio = "CrossFit enthusiast and certified personal trainer specializing in HIIT workouts.",
                             City = "Los Angeles",
-                            CreatedDate = new DateTime(2024, 10, 2, 17, 19, 13, 395, DateTimeKind.Utc).AddTicks(8983),
+                            CreatedDate = new DateTime(2024, 10, 2, 12, 58, 8, 771, DateTimeKind.Utc).AddTicks(8781),
                             DateOfBirth = new DateTime(1995, 11, 22, 0, 0, 0, 0, DateTimeKind.Utc),
                             District = "Santa Monica",
                             Email = "mike.johnson@example.com",
                             Gender = 0,
                             Height = 180.0,
-                            Id = new Guid("941b0ada-4fde-4e0d-bd5e-45242577a9b3"),
+                            Id = new Guid("4d78820e-9137-4756-90e0-a2a0a615c42f"),
                             Job = "CrossFit Trainer",
                             PTExperienceYear = 3.5,
                             PTStatus = 1,
@@ -1450,13 +1450,13 @@ namespace FitSwipe.DataAccess.Migrations
                             Balance = 4200,
                             Bio = "Sports nutritionist and strength training coach with a focus on women's fitness.",
                             City = "Seattle",
-                            CreatedDate = new DateTime(2024, 10, 2, 17, 19, 13, 395, DateTimeKind.Utc).AddTicks(8992),
+                            CreatedDate = new DateTime(2024, 10, 2, 12, 58, 8, 771, DateTimeKind.Utc).AddTicks(8786),
                             DateOfBirth = new DateTime(1990, 5, 8, 0, 0, 0, 0, DateTimeKind.Utc),
                             District = "Capitol Hill",
                             Email = "emma.davis@example.com",
                             Gender = 1,
                             Height = 165.5,
-                            Id = new Guid("6c68ef29-619f-4ecf-9e4b-d075265b1e8e"),
+                            Id = new Guid("57b432da-b170-4c77-9aa8-db46e9add976"),
                             Job = "Strength Coach",
                             PTExperienceYear = 7.0,
                             PTStatus = 1,
@@ -1478,13 +1478,13 @@ namespace FitSwipe.DataAccess.Migrations
                             Balance = 3800,
                             Bio = "Former professional soccer player turned fitness coach. Specializes in sports-specific training.",
                             City = "Miami",
-                            CreatedDate = new DateTime(2024, 10, 2, 17, 19, 13, 395, DateTimeKind.Utc).AddTicks(9001),
+                            CreatedDate = new DateTime(2024, 10, 2, 12, 58, 8, 771, DateTimeKind.Utc).AddTicks(8795),
                             DateOfBirth = new DateTime(1987, 9, 30, 0, 0, 0, 0, DateTimeKind.Utc),
                             District = "South Beach",
                             Email = "carlos.rodriguez@example.com",
                             Gender = 0,
                             Height = 175.30000000000001,
-                            Id = new Guid("9f1f7459-e909-4584-924d-73e082458181"),
+                            Id = new Guid("bbf9a758-875b-4ba3-93d6-23b9657cd3ef"),
                             Job = "Sports Performance Coach",
                             PTExperienceYear = 6.5,
                             PTStatus = 1,
@@ -1506,13 +1506,13 @@ namespace FitSwipe.DataAccess.Migrations
                             Balance = 3200,
                             Bio = "Pilates instructor and rehabilitation specialist. Focused on posture correction and core strength.",
                             City = "San Francisco",
-                            CreatedDate = new DateTime(2024, 10, 2, 17, 19, 13, 395, DateTimeKind.Utc).AddTicks(9009),
+                            CreatedDate = new DateTime(2024, 10, 2, 12, 58, 8, 771, DateTimeKind.Utc).AddTicks(8799),
                             DateOfBirth = new DateTime(1993, 2, 14, 0, 0, 0, 0, DateTimeKind.Utc),
                             District = "Marina",
                             Email = "lisa.chen@example.com",
                             Gender = 1,
                             Height = 162.0,
-                            Id = new Guid("94b9aa1e-0645-47c1-9b25-7f1b46fcff46"),
+                            Id = new Guid("7f813e50-a525-4853-8d95-68d5c2ab83a5"),
                             Job = "Pilates Instructor",
                             PTExperienceYear = 4.0,
                             PTStatus = 1,
@@ -1534,13 +1534,13 @@ namespace FitSwipe.DataAccess.Migrations
                             Balance = 4500,
                             Bio = "Bodybuilding champion and powerlifting coach. Specializes in muscle gain and strength training.",
                             City = "Houston",
-                            CreatedDate = new DateTime(2024, 10, 2, 17, 19, 13, 395, DateTimeKind.Utc).AddTicks(9082),
+                            CreatedDate = new DateTime(2024, 10, 2, 12, 58, 8, 771, DateTimeKind.Utc).AddTicks(8804),
                             DateOfBirth = new DateTime(1985, 8, 5, 0, 0, 0, 0, DateTimeKind.Utc),
                             District = "Midtown",
                             Email = "marcus.brown@example.com",
                             Gender = 0,
                             Height = 188.0,
-                            Id = new Guid("887e086f-87d5-40ff-8971-354b12dfbe5f"),
+                            Id = new Guid("4eb3f97f-8afb-477d-a701-b0863812f538"),
                             Job = "Strength and Conditioning Coach",
                             PTExperienceYear = 10.0,
                             PTStatus = 1,
@@ -1562,13 +1562,13 @@ namespace FitSwipe.DataAccess.Migrations
                             Balance = 3900,
                             Bio = "Certified nutritionist and functional fitness trainer. Specializes in weight management and holistic health.",
                             City = "Boston",
-                            CreatedDate = new DateTime(2024, 10, 2, 17, 19, 13, 395, DateTimeKind.Utc).AddTicks(9092),
+                            CreatedDate = new DateTime(2024, 10, 2, 12, 58, 8, 771, DateTimeKind.Utc).AddTicks(8808),
                             DateOfBirth = new DateTime(1991, 12, 18, 0, 0, 0, 0, DateTimeKind.Utc),
                             District = "Back Bay",
                             Email = "will.taylor@example.com",
                             Gender = 0,
                             Height = 168.5,
-                            Id = new Guid("4e6cdddd-de1d-47ac-931b-826623678488"),
+                            Id = new Guid("ee7620cb-0dd8-4759-a4c7-11d932e85bc3"),
                             Job = "Functional Fitness Trainer",
                             PTExperienceYear = 3.5,
                             PTStatus = 1,
