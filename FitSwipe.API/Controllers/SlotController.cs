@@ -95,5 +95,7 @@ namespace FitSwipe.API.Controllers
             return Ok(createSlotVideoDtos);
         }
 
+        
+
     }
 }

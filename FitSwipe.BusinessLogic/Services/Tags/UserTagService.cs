@@ -78,7 +78,7 @@ namespace FitSwipe.BusinessLogic.Services.Tags
         {
             await _userServices.GetUserByIdRequiredAsync(userId);
             var userTags = await GetsTagByUserId(userId);
-            var result = await _userServices.GetMatchedUserPagedWithTagsOrderedAsync(userTags.Select(ut => ut.Id).ToList(), page, limit);
+            var result = await _userServices.GetMatchedUserPagedWithTagsOrderedAsync(userTags.Select(ut => ut.Id).ToList(), userId, page, limit);
             return result;
         }
     }

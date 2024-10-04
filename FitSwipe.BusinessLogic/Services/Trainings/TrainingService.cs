@@ -33,11 +33,15 @@ namespace FitSwipe.BusinessLogic.Services.Trainings
             var user = await _userServices.GetUserByIdRequiredAsync(userId);
             if (user.Role != Role.Trainee)
             {
-                throw new BadRequestException("Only PT can use this feature");
+                throw new BadRequestException("Only Trainee can use this feature");
             }
 
             await _userServices.GetUserByIdRequiredAsync(createTrainingDto.PTId);
-
+            var existingTraining = await _trainingRepository.FindOneAsync(t => t.PTId == createTrainingDto.PTId && t.TraineeId == userId);
+            if (existingTraining != null && existingTraining.Status != TrainingStatus.Finished)
+            {
+                throw new BadRequestException("There is already an ongoing training for this PT");
+            }
             if (createTrainingDto.Status != TrainingStatus.Matched && createTrainingDto.Status != TrainingStatus.NotStarted)
             {
                 throw new BadRequestException("Training status must either be Matched or NotStarted");
@@ -147,7 +151,7 @@ namespace FitSwipe.BusinessLogic.Services.Trainings
             {
                 throw new ForbiddenException("You don't have permission to do this function");
             }
-            if (training.Status == TrainingStatus.Pending && (trainingStatus != TrainingStatus.Rejected && trainingStatus != TrainingStatus.NotStarted))
+            if (training.Status == TrainingStatus.Pending && (trainingStatus != TrainingStatus.Rejected && trainingStatus != TrainingStatus.NotStarted && trainingStatus != TrainingStatus.Matched))
             {
                 throw new BadRequestException("Invalid transistion");
             }
@@ -173,6 +177,28 @@ namespace FitSwipe.BusinessLogic.Services.Trainings
             }
             training.Status = trainingStatus;
             await _trainingRepository.UpdateAsync(training);
+        }
+
+        public async Task DeleteTraining(Guid id, string userId)
+        {
+            var training = await GetDetailById(id);
+            if (training == null)
+            {
+                throw new DataNotFoundException("Training not found");
+            }
+            if (training.TraineeId != userId)
+            {
+                throw new ForbiddenException("You dont have permission to do this");
+            }
+            if (training.Status != TrainingStatus.Matched)
+            {
+                throw new BadRequestException("Training must be in Matched status to be deleted");
+            }
+            if (training.Slots.Count > 0)
+            {
+                throw new BadRequestException("This training already contains slots. Please use 'Cancel Training Slots' endpoint instead");
+            }
+            await _trainingRepository.DeleteAsync(id);
         }
     }
 }
