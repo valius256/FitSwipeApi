@@ -14,7 +14,7 @@ namespace FitSwipe.BusinessLogic.Interfaces.Users
         Task<User> GetUserByIdRequiredAsync(string id);
         Task<PagedResult<GetUserDto>> GetUserPagedAsync(PagingModel<QueryUserDto> pagingModel);
         Task<PagedResult<GetUserWithTagDto>> GetUserPagedWithTagsAsync(PagingModel<QueryUserDto> pagingModel);
-        Task<PagedResult<GetUserWithTagDto>> GetMatchedUserPagedWithTagsOrderedAsync(List<Guid> tagIds, int page, int limit);
+        Task<PagedResult<GetUserWithTagDto>> GetMatchedUserPagedWithTagsOrderedAsync(List<Guid> tagIds, string userId, int page, int limit);
         Task UpdatePTDegreeAsync(string userId, UpdateImageUrlDto updateImageUrlDto);
         Task SetupProfileAsync(string userId, SetupProfileDto setupProfileDto);
         Task UpdateAvatarImage(string userId, UpdateUserAvatarDtos updateUserAvatarDtos);

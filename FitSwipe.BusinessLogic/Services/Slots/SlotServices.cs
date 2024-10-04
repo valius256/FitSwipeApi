@@ -388,5 +388,25 @@ namespace FitSwipe.BusinessLogic.Services.Slots
             //Update the training
             await _trainingService.UpdateTrainingStatus(approveTrainingDto.TrainingId, TrainingStatus.NotStarted, currentUserId);
         }
+
+        public async Task CancelTrainingSlots(Guid trainingId, string userId)
+        {
+            var training = await _trainingService.GetDetailById(trainingId);
+            if (training.Status != TrainingStatus.Matched)
+            {
+                throw new BadRequestException("This training must be in Matched status to be modified");
+            }
+            foreach (var slot in training.Slots)
+            {
+                await _slotRepository.DeleteAsync(slot.Id);
+            }
+            if (training.Status == TrainingStatus.Pending)
+            {
+                await _trainingService.UpdateTrainingStatus(trainingId, TrainingStatus.Matched, userId);
+            } else
+            {
+                await _trainingService.DeleteTraining(trainingId, userId);
+            }
+        }
     }
 }

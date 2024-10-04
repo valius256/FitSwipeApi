@@ -44,14 +44,15 @@ namespace FitSwipe.DataAccess.Repository.Impl
             return await query.ToNewPagingAsync(page, limit);
         }
 
-        public async Task<PagedResult<User>> GetMatchedPTOrdered(List<Guid> tagIds, int page, int limit)
+        public async Task<PagedResult<User>> GetMatchedPTOrdered(List<Guid> tagIds, string userId, int page, int limit)
         {
             var query = _context.Users
+                .Include(u => u.TrainingsInstructing)
                 .Include(u => u.UserTags)
                     .ThenInclude(ut => ut.Tag)
                 .OrderByDescending(u =>
                     u.UserTags.Where(ut => tagIds.Contains(ut.TagId)).ToList().Count)
-                .Where(u => u.Role == Shared.Enum.Role.PT)
+                .Where(u => u.Role == Shared.Enum.Role.PT && u.TrainingsInstructing.Any(t => t.TraineeId == userId))
                 .AsQueryable();
 
             limit = limit > 0 ? limit : 10;

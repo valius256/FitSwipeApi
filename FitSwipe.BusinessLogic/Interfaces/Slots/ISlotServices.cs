@@ -17,5 +17,6 @@ namespace FitSwipe.BusinessLogic.Interfaces.Slots
         Task DeleteSlotAsync(Guid slotId, string currentUserFirebaseId);
 
         Task ApproveTrainingSlots(ApproveTrainingDto approveTrainingDto, string currentUserId);
+        Task CancelTrainingSlots(Guid trainingId, string userId);
     }
 }

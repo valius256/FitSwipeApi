@@ -56,9 +56,9 @@ namespace FitSwipe.BusinessLogic.Services.Users
             return await _userRepository.FindOneAsync(l => l.Email == email);
         }
 
-        public async Task<PagedResult<GetUserWithTagDto>> GetMatchedUserPagedWithTagsOrderedAsync(List<Guid> tagIds, int page, int limit)
+        public async Task<PagedResult<GetUserWithTagDto>> GetMatchedUserPagedWithTagsOrderedAsync(List<Guid> tagIds, string userId, int page, int limit)
         {
-            var result = await _userRepository.GetMatchedPTOrdered(tagIds, page, limit);
+            var result = await _userRepository.GetMatchedPTOrdered(tagIds, userId, page, limit);
             var mappedResult = result.Adapt<PagedResult<GetUserWithTagDto>>();
             foreach (var item in mappedResult.Items)
             {
