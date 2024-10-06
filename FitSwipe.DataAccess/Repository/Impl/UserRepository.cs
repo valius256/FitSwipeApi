@@ -52,7 +52,7 @@ namespace FitSwipe.DataAccess.Repository.Impl
                     .ThenInclude(ut => ut.Tag)
                 .OrderByDescending(u =>
                     u.UserTags.Where(ut => tagIds.Contains(ut.TagId)).ToList().Count)
-                .Where(u => u.Role == Shared.Enum.Role.PT && u.TrainingsInstructing.Any(t => t.TraineeId == userId))
+                .Where(u => u.Role == Shared.Enum.Role.PT && !u.TrainingsInstructing.Any(t => t.TraineeId == userId))
                 .AsQueryable();
 
             limit = limit > 0 ? limit : 10;

@@ -8,6 +8,7 @@ namespace FitSwipe.Shared.Dtos.Trainings
 {
     public class GetTrainingDetailDto
     {
+        public Guid Id { get; set; }
         public string TraineeId { get; set; } = string.Empty;
         public string PTId { get; set; } = string.Empty;
         public TrainingStatus Status { get; set; }

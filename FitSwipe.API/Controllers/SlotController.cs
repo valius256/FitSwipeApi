@@ -67,13 +67,7 @@ namespace FitSwipe.API.Controllers
             await _slotServices.UpdateSlotTime(updateSlotTimeDto, CurrentUserFirebaseId);
             return Ok();
         }
-        [HttpDelete("{id}")]
-        [Authorize]
-        public async Task<IActionResult> DeleteSlotAsync(Guid id)
-        {
-            await _slotServices.DeleteSlotAsync(id, CurrentUserFirebaseId);
-            return Ok();
-        }
+
 
         [HttpPost("upload-slotVideo")]
         [Authorize]
@@ -95,7 +89,21 @@ namespace FitSwipe.API.Controllers
             return Ok(createSlotVideoDtos);
         }
 
-        
+        [HttpDelete("{id}")]
+        [Authorize]
+        public async Task<IActionResult> DeleteSlotAsync(Guid id)
+        {
+            await _slotServices.DeleteSlotAsync(id, CurrentUserFirebaseId);
+            return Ok();
+        }
+
+        [HttpDelete]
+        [Authorize]
+        public async Task<IActionResult> DeleteUnbookedSlotInARange([FromQuery] DateOnly start, [FromQuery] DateOnly end)
+        {
+            await _slotServices.DeleteAllUnbookedSlotInARange(start, end, CurrentUserFirebaseId);
+            return Ok();
+        }
 
     }
 }

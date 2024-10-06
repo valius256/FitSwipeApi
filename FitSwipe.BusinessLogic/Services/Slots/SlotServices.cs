@@ -10,6 +10,7 @@ using FitSwipe.Shared.Enum;
 using FitSwipe.Shared.Exceptions;
 using Mapster;
 using Org.BouncyCastle.Math.Field;
+using System.Data.Entity;
 
 namespace FitSwipe.BusinessLogic.Services.Slots
 {
@@ -308,8 +309,6 @@ namespace FitSwipe.BusinessLogic.Services.Slots
             {
                 throw new BadRequestException($"Slot must be one of these Status{listOfStatusToDelete.ToList()} ");
             }
-
-
             await _slotRepository.DeleteAsync(slotId);
         }
 
@@ -407,6 +406,16 @@ namespace FitSwipe.BusinessLogic.Services.Slots
             {
                 await _trainingService.DeleteTraining(trainingId, userId);
             }
+        }
+
+        public async Task DeleteAllUnbookedSlotInARange(DateOnly start, DateOnly end, string userId)
+        {
+            var slots = await _slotRepository.Where(s => s.StartTime >= start.ToDateTime(TimeOnly.MinValue) 
+                && s.EndTime <= end.ToDateTime(TimeOnly.MaxValue)
+                && s.CreateById == userId
+                && s.Status == SlotStatus.Unbooked).ToListAsync();
+
+            await _slotRepository.DeleteRangeAsync(slots);
         }
     }
 }
