@@ -28,7 +28,12 @@ namespace FitSwipe.BusinessLogic.Services.Slots
 
         public async Task<PagedResult<GetSlotDto>> GetSlots(PagingModel<QuerySlotDto> pagingModel)
         {
-            return (await _slotRepository.GetSlots(pagingModel)).Adapt<PagedResult<GetSlotDto>>();
+            var result = (await _slotRepository.GetSlots(pagingModel)).Adapt<PagedResult<GetSlotDto>>();
+            foreach (var slotDto in result.Items)
+            {
+                slotDto.TotalVideo = await _slotRepository.CountSlotVideoAsync(slotDto.Id);
+            }
+            return result;
         }
 
         public async Task<List<GetSlotDto>> CreateFreeSlotForPTAsync(List<CreateSlotDtos> model, string currentUserId)

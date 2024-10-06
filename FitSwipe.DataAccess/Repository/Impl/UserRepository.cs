@@ -15,7 +15,15 @@ namespace FitSwipe.DataAccess.Repository.Impl
         {
             _context = context;
         }
-
+        public async Task<User?> GetUserDetailById(string id)
+        {
+            return await _context.Users
+                .Include(u => u.UserTags).ThenInclude(ut => ut.Tag)
+                .Include(u => u.TagsCreated)
+                .Include(u => u.UserMedias)
+                .Include(u => u.TrainingsInstructing)
+                .FirstOrDefaultAsync(s => s.FireBaseId == id);
+        }
         //public async Task<List<User>> GetUsers(QueryUserDto queryUserDto)
         //{
         //    var query = _context.Users.AsQueryable();

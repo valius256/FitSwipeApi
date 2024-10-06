@@ -9,6 +9,7 @@ namespace FitSwipe.DataAccess.Model.Entity
         public TrainingStatus Status { get; set; }
         public string? Feedback { get; set; }
         public double? Rating { get; set; }
+        public int? PricePerSlot { get; set; }
         public virtual User Trainee { get; set; } = default!;
         public virtual User PT { get; set; } = default!;
         public virtual ICollection<Slot> Slots { get; set; } = new List<Slot>();

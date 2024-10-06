@@ -55,15 +55,22 @@ namespace FitSwipe.BusinessLogic.Services.Payments
                 //    throw new ModelException("Slot", $"Slot {slotId} không hợp lệ do trùng lịch với 1 slot khác");
                 //}
 
-                var ptOfSlot = await _userServices.GetProfileUserAsync(slotDetailDtos.CreateById.ToString());
+                //var ptOfSlot = await _userServices.GetSimpleUser(slotDetailDtos.CreateById.ToString());
 
-                if (ptOfSlot is null || ptOfSlot.PTStatus != PTStatus.Active || ptOfSlot.PricePerHour <= 0 || ptOfSlot.Status != UserStatus.Active)
+                //if (ptOfSlot is null || ptOfSlot.PTStatus != PTStatus.Active || ptOfSlot.PricePerHour <= 0 || ptOfSlot.Status != UserStatus.Active)
+                //{
+                //    throw new ModelException("PT", $"PT cho Slot {slotId} chưa đủ điều kiện dạy");
+                //}
+                if (slotDetailDtos.PaymentStatus != PaymentStatus.NotPaid)
                 {
-                    throw new ModelException("PT", $"PT cho Slot {slotId} chưa đủ điều kiện dạy");
+                    throw new BadRequestException("Invalid payment status");
                 }
-
+                if (slotDetailDtos.Training == null || slotDetailDtos.Training.PricePerSlot == null)
+                {
+                    throw new BadRequestException("Slot is not on a training");
+                }
                 // Calculate cost for the slot and add to total cost
-                var slotCost = (slotDetailDtos.EndTime - slotDetailDtos.StartTime).TotalHours * ptOfSlot.PricePerHour;
+                var slotCost = (slotDetailDtos.EndTime - slotDetailDtos.StartTime).TotalHours * slotDetailDtos.Training.PricePerSlot.Value;
                 totalCost += slotCost;
             }
 

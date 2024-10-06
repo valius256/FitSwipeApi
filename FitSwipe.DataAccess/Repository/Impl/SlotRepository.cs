@@ -25,6 +25,10 @@ namespace FitSwipe.DataAccess.Repository.Impl
 
             if (pagingModel.Filter != null)
             {
+                if (pagingModel.Filter.TraineeId != null)
+                {
+                    query = query.Include(s => s.Training).Where(s => s.Training != null && s.Training.TraineeId == pagingModel.Filter.TraineeId);
+                }
                 if (pagingModel.Filter.CreateById != null)
                 {
                     query = query.Where(s => s.CreateById == pagingModel.Filter.CreateById);
@@ -65,7 +69,6 @@ namespace FitSwipe.DataAccess.Repository.Impl
                 {
                     query = query.Where(s =>  pagingModel.Filter.Status.Contains(s.Status));
                 }
-
             }
 
             int limit = pagingModel.Limit > 0 ? pagingModel.Limit : 10;
@@ -91,6 +94,14 @@ namespace FitSwipe.DataAccess.Repository.Impl
                 .Where(s => s.Training != null && s.Training.TraineeId == traineeId)
                 .AsNoTracking()
                 .ToListAsync();
+        }
+
+        public async Task<int> CountSlotVideoAsync(Guid slotId)
+        {
+            return await _context.Slots
+                         .Where(s => s.Id == slotId)
+                         .SelectMany(s => s.Videos)
+                         .CountAsync();
         }
     }
 }

@@ -7,8 +7,6 @@ namespace FitSwipe.DataAccess.Model.Entity
     public class User : BaseEntity
     {
         public string FireBaseId { get; set; }
-        //public string FisrtName { get; set; }
-        //public string LastName { get; set; }
         public string UserName { get; set; }
         public Gender Gender { get; set; }
         [Required]

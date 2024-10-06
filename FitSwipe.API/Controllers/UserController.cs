@@ -62,12 +62,15 @@ namespace FitSwipe.API.Controllers
             return Ok();
         }
 
-        [Authorize]
-        [HttpGet("profile")]
-        public async Task<GetProfileUserDto> GetProfile()
+        [HttpGet("{id}/simple")]
+        public async Task<GetUserDto> GetSimpleUserById([FromRoute] string id)
         {
-            return await _userServices.GetProfileUserAsync(CurrentUserFirebaseId);
-
+            return await _userServices.GetSimpleUser(id);
+        }
+        [HttpGet("{id}/detail")]
+        public async Task<GetUserDetailDto> GetDetailUserById([FromRoute] string id)
+        {
+            return await _userServices.GetUserDetail(id);
         }
     }
 }
