@@ -1,10 +1,10 @@
 using FitSwipe.API.Extensions;
 using FitSwipe.API.Middleware;
+using FitSwipe.BusinessLogic.Library;
 using FitSwipe.DataAccess.Model;
 using Hangfire;
 using Hangfire.Dashboard;
 using Microsoft.EntityFrameworkCore;
-using Scalar.AspNetCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -41,10 +41,10 @@ builder.Services.AddCors(options =>
 {
     options.AddDefaultPolicy(policy =>
     {
-        policy.WithOrigins("http://localhost:5173") // Replace with your actual origin(s)
+        policy.WithOrigins("http://10.0.2.2") // Replace with your actual origin(s)
             .AllowAnyMethod()
             .AllowAnyHeader()
-            .AllowCredentials();
+        .AllowCredentials();
     });
 });
 
@@ -60,6 +60,9 @@ builder.Services.AddRepositories()
 #pragma warning restore CS0612 // Type or member is obsolete
 
 
+// add signalR
+builder.Services.AddSignalR();
+
 
 
 var app = builder.Build();
@@ -67,10 +70,10 @@ var app = builder.Build();
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
-    //app.UseSwagger();
-    //app.UseSwaggerUI();
-    app.UseSwagger(options => { options.RouteTemplate = "openapi/{documentName}.json"; });
-    app.MapScalarApiReference();
+    app.UseSwagger();
+    app.UseSwaggerUI();
+    //app.UseSwagger(options => { options.RouteTemplate = "openapi/{documentName}.json"; });
+    //app.MapScalarApiReference();
 
 }
 
@@ -110,15 +113,16 @@ app.UseRouting();
 app.UseAuthentication();
 app.UseAuthorization();
 
-app.UseCors();
+
+app.UseCors("AllowAllOrigins");
 app.MapControllers();
 app.MapHangfireDashboard();
+app.MapHub<ChatHub>("/chathub");
 //app.UseEndpoints(endpoints =>
 //{
 
 //    endpoints.MapControllers();
 //    endpoints.MapHangfireDashboard();
 //});
-
 
 app.Run();

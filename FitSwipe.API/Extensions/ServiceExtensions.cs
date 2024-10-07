@@ -1,5 +1,6 @@
 ﻿using FirebaseAdmin;
 using FitSwipe.BusinessLogic.Interfaces.Auth;
+using FitSwipe.BusinessLogic.Interfaces.Chats;
 using FitSwipe.BusinessLogic.Interfaces.Payments;
 using FitSwipe.BusinessLogic.Interfaces.Sender;
 using FitSwipe.BusinessLogic.Interfaces.Slots;
@@ -9,6 +10,7 @@ using FitSwipe.BusinessLogic.Interfaces.Transactions;
 using FitSwipe.BusinessLogic.Interfaces.UploadDowload;
 using FitSwipe.BusinessLogic.Interfaces.Users;
 using FitSwipe.BusinessLogic.Services.Auths;
+using FitSwipe.BusinessLogic.Services.Chats;
 using FitSwipe.BusinessLogic.Services.Payments;
 using FitSwipe.BusinessLogic.Services.Sender;
 using FitSwipe.BusinessLogic.Services.Slots;
@@ -49,7 +51,9 @@ namespace FitSwipe.API.Extensions
             services.AddScoped<ITransactionRepository, TransactionRepository>();
             services.AddScoped<ISlotVideoRepository, SlotVideoRepository>();
             services.AddScoped<IFeedbackImageRepository, FeedbackImageRepository>();
-
+            services.AddScoped<IChatRoomRepository, ChatRoomRepository>();
+            services.AddScoped<IUserChatRoomRepository, UserChatRoomRepository>();
+            services.AddScoped<IMessageRepository, MessageRepository>();
             services.AddProblemDetails();
             services.AddLogging();
 
@@ -70,7 +74,7 @@ namespace FitSwipe.API.Extensions
             services.AddScoped<IFirebaseUploadDowloadServices, FirebaseUploadDowloadServices>();
             services.AddScoped<ITrainingService, TrainingService>();
             services.AddScoped<IFeedbackImageSevices, FeedbackImageSevices>();
-
+            services.AddScoped<IChatServices, ChatServices>();
 
             services.AddTransient<IEmailServices, EmailServices>();
             services.AddScoped<IJwtProviderServices, JwtProviderServices>();
@@ -139,6 +143,7 @@ namespace FitSwipe.API.Extensions
                 });
                 options.OperationFilter<SecurityRequirementsOperationFilter>(); // Handles the authorization button
             });
+
             return services;
         }
 

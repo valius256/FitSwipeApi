@@ -28,6 +28,9 @@ namespace FitSwipe.DataAccess.Model
         public DbSet<EmailTemplate> EmailTemplates { get; set; }
         public DbSet<SlotVideos> SlotVideos { get; set; }
         public DbSet<TransactionSlot> TransactionSlots { get; set; }
+        public DbSet<ChatRoom> ChatRooms { get; set; }
+        public DbSet<UserChatRoom> UserChatRooms { get; set; }
+        public DbSet<Message> Messages { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -43,6 +46,10 @@ namespace FitSwipe.DataAccess.Model
             modelBuilder.ApplyConfiguration(new ReportImageEntityTypeConfiguration());
             modelBuilder.ApplyConfiguration(new TransactionSlotEntityTypeConfiguration());
             modelBuilder.ApplyConfiguration(new SlotVideoEntityTypeConfiguration());
+            modelBuilder.ApplyConfiguration(new ChatRoomEntityTypeConfiguration());
+            modelBuilder.ApplyConfiguration(new UserChatRoomEntityTypeConfiguration());
+            modelBuilder.ApplyConfiguration(new MessageEntityTypeConfiguration());
+
 
             modelBuilder.Seed();
             base.OnModelCreating(modelBuilder);
