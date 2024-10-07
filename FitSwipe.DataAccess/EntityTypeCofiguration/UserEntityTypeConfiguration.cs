@@ -35,12 +35,16 @@ namespace FitSwipe.DataAccess.EntityTypeCofiguration
                 .WithOne(x => x.Target)
                 .HasForeignKey(x => x.TargetId)
                 .OnDelete(DeleteBehavior.Restrict);
-            
+
 
             builder.HasMany(ut => ut.UserTags)
                 .WithOne(u => u.User)
                 .HasForeignKey(ut => ut.UserId)
                 .OnDelete(DeleteBehavior.Restrict);
+
+            builder.HasMany(u => u.UserChatRooms)
+            .WithOne(uc => uc.User)
+            .HasForeignKey(uc => uc.UserFirebaseId);
         }
     }
 }

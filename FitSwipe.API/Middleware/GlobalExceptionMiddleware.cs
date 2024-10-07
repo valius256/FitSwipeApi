@@ -3,6 +3,7 @@ using FitSwipe.Shared.Exceptions;
 using FitSwipe.Shared.Utils;
 using Hangfire;
 using System.Net;
+using System.Net.Sockets;
 using System.Security.Authentication;
 
 namespace FitSwipe.API.Middleware;
@@ -83,7 +84,11 @@ public class ExceptionHandlingMiddleware
                 title = "Firebase Auth Exception Auth Error";
                 errors.Add(new ValidationErrorModel(firebaseAuthExceptionWithEmail.Message, firebaseAuthExceptionWithEmail.Data.ToString(), firebaseAuthExceptionWithEmail.ErrorCode.ToString()));
                 break;
-
+            case SocketException socketException:
+                status = HttpStatusCode.Ambiguous;
+                title = "Socket Exception";
+                errors.Add(new ValidationErrorModel(socketException.Message));
+                break;
             case NullReferenceException nullReferenceException:
                 status = HttpStatusCode.NotFound;
                 title = "Null Reference Exception";

@@ -28,9 +28,9 @@ namespace FitSwipe.BusinessLogic.Services.Payments
             _vnPay = vnPay.Value;
         }
 
-        public async Task<string> CreatePaymentForSlotAsync(PaySlotDtos model, HttpContext context, string CurrentUserFirebaseId)
+        public async Task<string> CreatePaymentForSlotAsync(PaySlotDtos model, HttpContext context, string currentUserFirebaseId)
         {
-            var user = await _userServices.GetUserByIdRequiredAsync(CurrentUserFirebaseId);
+            var user = await _userServices.GetUserByIdRequiredAsync(currentUserFirebaseId);
 
             if (user is null)
             {
@@ -55,7 +55,7 @@ namespace FitSwipe.BusinessLogic.Services.Payments
                 //    throw new ModelException("Slot", $"Slot {slotId} không hợp lệ do trùng lịch với 1 slot khác");
                 //}
 
-                var ptOfSlot = await _userServices.GetProfileUserAsync(slotDetailDtos.CreateById.ToString());
+                var ptOfSlot = await _userServices.GetProfileUserAsync(slotDetailDtos.CreateById);
 
                 if (ptOfSlot is null || ptOfSlot.PTStatus != PTStatus.Active || ptOfSlot.PricePerHour <= 0 || ptOfSlot.Status != UserStatus.Active)
                 {
