@@ -27,7 +27,6 @@ namespace FitSwipe.DataAccess.Repository.Impl
                 .AsNoTracking()
                 .FirstOrDefaultAsync(t => t.Id == id);
         }
-
         public async Task<PagedResult<Training>> GetTrainings(PagingModel<QueryTrainingDto> pagingModel)
         {
             var query = _context.Trainings

@@ -122,6 +122,16 @@ namespace FitSwipe.BusinessLogic.Services.Trainings
             }
             return training;
         }
+        public async Task<GetTrainingDetailDto> GetCurrentTraining(string userId)
+        {
+            var user = await _userServices.GetUserByIdRequiredAsync(userId);
+            var training = await _trainingRepository.FindOneWithNoTrackingAsync(t => t.TraineeId == userId && (t.Status == TrainingStatus.NotStarted || t.Status == TrainingStatus.OnGoing));
+            if (training == null)
+            {
+                throw new DataNotFoundException("No training found");
+            }
+            return await GetDetailById(userId, training.Id);
+        }
         public async Task<PagedResult<GetTrainingWithTraineeAndPT>> GetTrainings(string userId, PagingModel<QueryTrainingDto> queryTrainingDto)
         {
             var user = await _userServices.GetUserByIdRequiredAsync(userId);
@@ -147,10 +157,7 @@ namespace FitSwipe.BusinessLogic.Services.Trainings
             {
                 throw new DataNotFoundException("The training is not found");
             }
-            if (userId != null && training.PTId != userId)
-            {
-                throw new ForbiddenException("You don't have permission to do this function");
-            }
+            
             if (training.Status == TrainingStatus.Pending && (trainingStatus != TrainingStatus.Rejected && trainingStatus != TrainingStatus.NotStarted && trainingStatus != TrainingStatus.Matched))
             {
                 throw new BadRequestException("Invalid transistion");
@@ -174,6 +181,12 @@ namespace FitSwipe.BusinessLogic.Services.Trainings
             if (training.Status == TrainingStatus.Matched && (trainingStatus != TrainingStatus.Pending))
             {
                 throw new BadRequestException("Invalid transistion");
+            }
+
+            if (((trainingStatus == TrainingStatus.NotStarted || trainingStatus == TrainingStatus.Rejected) && userId != null && userId != training.PTId)
+                || ((trainingStatus == TrainingStatus.Pending || trainingStatus == TrainingStatus.Matched) && userId != null && userId != training.TraineeId))
+            {
+                throw new ForbiddenException("You don't have permission to do this function");
             }
             training.Status = trainingStatus;
             await _trainingRepository.UpdateAsync(training);

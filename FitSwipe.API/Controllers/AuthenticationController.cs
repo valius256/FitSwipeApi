@@ -53,9 +53,9 @@ namespace FitSwipe.API.Controllers
 
         [Authorize]
         [HttpGet("who-am-i")]
-        public async Task<GetProfileUserDto> GetProfile()
+        public async Task<GetUserDto> GetProfile()
         {
-            var response = await _userServices.GetProfileUserAsync(CurrentUserFirebaseId);
+            var response = await _userServices.GetSimpleUser(CurrentUserFirebaseId);
             return response;
         }
 

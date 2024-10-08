@@ -9,5 +9,6 @@ namespace FitSwipe.DataAccess.Repository.Intefaces
         Task<PagedResult<Slot>> GetSlots(PagingModel<QuerySlotDto> pagingModel);
         Task<Slot?> GetSlotByIdAsync(Guid slotId);
         Task<List<Slot>> GetSlotsOfTrainee(string traineeId);
+        Task<int> CountSlotVideoAsync(Guid slotId);
     }
 }

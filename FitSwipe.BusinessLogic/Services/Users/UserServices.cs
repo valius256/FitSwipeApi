@@ -124,10 +124,19 @@ namespace FitSwipe.BusinessLogic.Services.Users
             return userEntitty;
         }
 
-        public async Task<GetProfileUserDto> GetProfileUserAsync(string userFirebaseId)
+        public async Task<GetUserDto> GetSimpleUser(string userFirebaseId)
         {
-            var userEntity = await _userRepository.FindOneAsync(u => u.FireBaseId == userFirebaseId);
-            return (userEntity.Adapt<GetProfileUserDto>());
+            var userEntity = await GetUserByIdRequiredAsync(userFirebaseId);
+            return (userEntity.Adapt<GetUserDto>());
+        }
+        public async Task<GetUserDetailDto> GetUserDetail(string userFirebaseId)
+        {
+            var user = await GetUserByIdRequiredAsync(userFirebaseId);
+            var userDetail = await _userRepository.GetUserDetailById(userFirebaseId);
+
+            var mappedUser = (userDetail.Adapt<GetUserDetailDto>());
+            mappedUser.Tags = userDetail!.UserTags.Select(t => t.Tag).Adapt<List<GetTagDto>>();
+            return mappedUser;
         }
 
         public async Task UpdatePTDegreeAsync(string userId, UpdateImageUrlDto updateImageUrlDto)

@@ -7,6 +7,7 @@ namespace FitSwipe.DataAccess.Repository.Intefaces
     public interface IUserRepository : IGenericRepository<User>
     {
         //Task<List<User>> GetUsers(QueryUserDto queryUserDto);
+        Task<User?> GetUserDetailById(string id);
         Task<PagedResult<User>> GetUsersPaged(PagingModel<QueryUserDto> pagingModel);
         Task<PagedResult<User>> GetUsersPagedWithTags(PagingModel<QueryUserDto> pagingModel);
         Task<PagedResult<User>> GetMatchedPTOrdered(List<Guid> tagIds, string userId, int page, int limit);
