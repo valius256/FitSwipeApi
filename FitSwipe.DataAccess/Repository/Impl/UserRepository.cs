@@ -4,6 +4,7 @@ using FitSwipe.DataAccess.Model.Entity;
 using FitSwipe.DataAccess.Model.Paging;
 using FitSwipe.DataAccess.Repository.Intefaces;
 using FitSwipe.Shared.Dtos.Users;
+using FitSwipe.Shared.Enum;
 using Microsoft.EntityFrameworkCore;
 
 namespace FitSwipe.DataAccess.Repository.Impl
@@ -21,7 +22,8 @@ namespace FitSwipe.DataAccess.Repository.Impl
                 .Include(u => u.UserTags).ThenInclude(ut => ut.Tag)
                 .Include(u => u.TagsCreated)
                 .Include(u => u.UserMedias)
-                .Include(u => u.TrainingsInstructing)
+                .Include(u => u.TrainingsInstructing.Where(t => t.Status == TrainingStatus.NotStarted || t.Status == TrainingStatus.OnGoing))
+                .Include(u => u.TrainingsAttending.Where(t => t.Status == TrainingStatus.NotStarted || t.Status == TrainingStatus.OnGoing))
                 .FirstOrDefaultAsync(s => s.FireBaseId == id);
         }
         //public async Task<List<User>> GetUsers(QueryUserDto queryUserDto)

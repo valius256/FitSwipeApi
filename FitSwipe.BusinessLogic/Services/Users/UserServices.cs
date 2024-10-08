@@ -133,7 +133,10 @@ namespace FitSwipe.BusinessLogic.Services.Users
         {
             var user = await GetUserByIdRequiredAsync(userFirebaseId);
             var userDetail = await _userRepository.GetUserDetailById(userFirebaseId);
-            return (userDetail.Adapt<GetUserDetailDto>());
+
+            var mappedUser = (userDetail.Adapt<GetUserDetailDto>());
+            mappedUser.Tags = userDetail!.UserTags.Select(t => t.Tag).Adapt<List<GetTagDto>>();
+            return mappedUser;
         }
 
         public async Task UpdatePTDegreeAsync(string userId, UpdateImageUrlDto updateImageUrlDto)

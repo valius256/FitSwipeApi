@@ -84,10 +84,10 @@ namespace FitSwipe.BusinessLogic.Services.Slots
         public async Task<List<GetSlotDto>> CreateTrainingSlot(List<CreateTrainingSlotDto> request, Guid trainingId, string currentUserId)
         {
             var user = await _userServices.GetUserByIdRequiredAsync(currentUserId);
-            // check user create is PT or not
+            // check user create is Trainee or not
             if (user.Role != Role.Trainee)
             {
-                throw new ModelException("PT", "This feature only support Trainees");
+                throw new ModelException("Trainee", "This feature only support Trainees");
             }
             //Check training
             var training = await _trainingService.GetDetailById(trainingId);
@@ -329,6 +329,11 @@ namespace FitSwipe.BusinessLogic.Services.Slots
             {
                 throw new BadRequestException("Training must be in pending or rejected status");
             }
+            var currentTraining = await _trainingService.GetCurrentTraining(currentUserId);
+            if (currentTraining != null)
+            {
+                throw new BadRequestException("Trainee has already in a on-going training with a PT");
+            }
             var freeSlots = await _slotRepository.FindWithNoTrackingAsync(s => s.Status == SlotStatus.Unbooked && s.CreateById == currentUserId);
             var updatingSlots = new List<Slot>();
             var deletingFreeSlots = new List<Slot>();
@@ -396,9 +401,9 @@ namespace FitSwipe.BusinessLogic.Services.Slots
         public async Task CancelTrainingSlots(Guid trainingId, string userId)
         {
             var training = await _trainingService.GetDetailById(trainingId);
-            if (training.Status != TrainingStatus.Matched)
+            if (training.Status == TrainingStatus.OnGoing || training.Status == TrainingStatus.Finished || training.Status == TrainingStatus.Disabled)
             {
-                throw new BadRequestException("This training must be in Matched status to be modified");
+                throw new BadRequestException("Training status must not be OnGoing, Finished, Disabled to be modified");
             }
             foreach (var slot in training.Slots)
             {

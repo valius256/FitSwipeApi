@@ -45,7 +45,7 @@ namespace FitSwipe.Shared.Dtos.Users
         public DateTime? DeletedDate { get; set; }
         public RecordStatus RecordStatus { get; set; }
         //Navigator
-        public virtual ICollection<GetUserTagWithTagDto> UserTags { get; set; } = new List<GetUserTagWithTagDto>();
+        public virtual ICollection<GetTagDto> Tags { get; set; } = new List<GetTagDto>();
         //public virtual ICollection<GetTagDto> TagsCreated { get; set; } = new List<GetTagDto>();
         public virtual ICollection<GetUserMediaDto> UserMedias { get; set; } = new List<GetUserMediaDto>();
         //public virtual ICollection<Report> ReportsCreated { get; set; } = new List<Report>();

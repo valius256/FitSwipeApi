@@ -33,7 +33,12 @@ namespace FitSwipe.API.Controllers
         {
             return await _trainingService.GetDetailById(CurrentUserFirebaseId, id);
         }
-
+        [Authorize]
+        [HttpGet("current-training")]
+        public async Task<ActionResult<GetTrainingDetailDto>> GetCurrentTraining()
+        {
+            return await _trainingService.GetCurrentTraining(CurrentUserFirebaseId);
+        }
         [Authorize]
         [HttpPost]
         public async Task<ActionResult<GetTrainingDto>> CreateTraining([FromBody] CreateTrainingDto createTrainingDto)
@@ -52,6 +57,13 @@ namespace FitSwipe.API.Controllers
         public async Task<IActionResult> RejectTraining([FromRoute] Guid id)
         {
             await _trainingService.UpdateTrainingStatus(id, Shared.Enum.TrainingStatus.Rejected, CurrentUserFirebaseId);
+            return Ok();
+        }
+        [Authorize]
+        [HttpPatch("{id}/sending")]
+        public async Task<IActionResult> SendTrainingRequest([FromRoute] Guid id)
+        {
+            await _trainingService.UpdateTrainingStatus(id, Shared.Enum.TrainingStatus.Pending, CurrentUserFirebaseId);
             return Ok();
         }
 
