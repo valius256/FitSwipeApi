@@ -1,5 +1,6 @@
 ﻿using FitSwipe.BusinessLogic.Interfaces.Transactions;
 using FitSwipe.DataAccess.Model.Entity;
+using FitSwipe.DataAccess.Model.Paging;
 using FitSwipe.DataAccess.Repository.Intefaces;
 using FitSwipe.Shared.Dtos.Transactions;
 using Mapster;
@@ -18,6 +19,8 @@ namespace FitSwipe.BusinessLogic.Services.Transactions
         public async Task<GetSimpleTransactionDtos> CreateTransactionAsync(CreateTransactionDtos createTransactionDtos)
         {
 
+            var convertTransactionToListString = createTransactionDtos.SlotIds.ConvertAll(x => x.ToString());
+
             var transaction = new Transaction
             {
                 TranscationCode = createTransactionDtos.TranscationCode,
@@ -25,7 +28,7 @@ namespace FitSwipe.BusinessLogic.Services.Transactions
                 Status = Shared.Enum.TransactionStatus.Successed,
                 UserFireBaseId = createTransactionDtos.UserFireBaseId,
                 Amount = createTransactionDtos.Amount,
-                Description = $"Thanh toán cho slot: {createTransactionDtos.SlotIds}"
+                Description = $"Thanh toán cho slot: {convertTransactionToListString}"
             };
 
             // Create TransactionSlots for each SlotId
@@ -34,7 +37,7 @@ namespace FitSwipe.BusinessLogic.Services.Transactions
                 var transactionSlot = new TransactionSlot
                 {
                     SlotId = slotId,
-                    Transaction = transaction // Associate with the transaction
+                    Transaction = transaction
                 };
                 transaction.TransactionSlots.Add(transactionSlot);
             }
@@ -42,6 +45,13 @@ namespace FitSwipe.BusinessLogic.Services.Transactions
             await _transactionRepository.AddAsync(transaction);
             return transaction.Adapt<GetSimpleTransactionDtos>();
         }
+
+        public async Task<PagedResult<GetSimpleTransactionDtos>> GetTransactionsPageAsync(PagingModel<QueryTransactionDtos> pagedRequest, string userFirebaseId)
+        {
+            var pagedResultTransactionEntity = await _transactionRepository.GetTransactionsPageAsync(pagedRequest, userFirebaseId);
+            return pagedResultTransactionEntity.Adapt<PagedResult<GetSimpleTransactionDtos>>();
+        }
+
 
     }
 }
