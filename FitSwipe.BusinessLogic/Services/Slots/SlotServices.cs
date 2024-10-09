@@ -9,7 +9,6 @@ using FitSwipe.Shared.Dtos.Trainings;
 using FitSwipe.Shared.Enum;
 using FitSwipe.Shared.Exceptions;
 using Mapster;
-using Org.BouncyCastle.Math.Field;
 using System.Data.Entity;
 
 namespace FitSwipe.BusinessLogic.Services.Slots
@@ -73,7 +72,7 @@ namespace FitSwipe.BusinessLogic.Services.Slots
                 };
                 slots.Add(newSlot);
             }
-           
+
             var resultSLot = await _slotRepository.AddRangeAsync(slots);
             if (resultSLot == null)
             {
@@ -81,6 +80,7 @@ namespace FitSwipe.BusinessLogic.Services.Slots
             }
             return resultSLot.Adapt<List<GetSlotDto>>();
         }
+
         public async Task<List<GetSlotDto>> CreateTrainingSlot(List<CreateTrainingSlotDto> request, Guid trainingId, string currentUserId)
         {
             var user = await _userServices.GetUserByIdRequiredAsync(currentUserId);
@@ -235,7 +235,7 @@ namespace FitSwipe.BusinessLogic.Services.Slots
             {
                 throw new BadRequestException("Slot's endtime must be in the same date as slot's start time");
             }
-            if (user.Role == Role.Trainee )
+            if (user.Role == Role.Trainee)
             {
                 if (existedSlot.Training == null || (existedSlot.Training.TraineeId != user.FireBaseId))
                 {
@@ -412,7 +412,8 @@ namespace FitSwipe.BusinessLogic.Services.Slots
             if (training.Status == TrainingStatus.Pending)
             {
                 await _trainingService.UpdateTrainingStatus(trainingId, TrainingStatus.Matched, userId);
-            } else
+            }
+            else
             {
                 await _trainingService.DeleteTraining(trainingId, userId);
             }
@@ -420,7 +421,7 @@ namespace FitSwipe.BusinessLogic.Services.Slots
 
         public async Task DeleteAllUnbookedSlotInARange(DateOnly start, DateOnly end, string userId)
         {
-            var slots = await _slotRepository.Where(s => s.StartTime >= start.ToDateTime(TimeOnly.MinValue) 
+            var slots = await _slotRepository.Where(s => s.StartTime >= start.ToDateTime(TimeOnly.MinValue)
                 && s.EndTime <= end.ToDateTime(TimeOnly.MaxValue)
                 && s.CreateById == userId
                 && s.Status == SlotStatus.Unbooked).ToListAsync();

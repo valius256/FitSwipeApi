@@ -41,7 +41,7 @@ namespace FitSwipe.BusinessLogic.Services.Payments
             double totalCost = 0;
 
             // Validate each slot
-            foreach (var slotId in model.SlotIds)
+            foreach (var slotId in model.GetSlotGuids())
             {
                 var slotDetailDtos = await _slotServices.GetSlotByIdAsync(slotId);
                 if (slotDetailDtos is null)
@@ -79,7 +79,7 @@ namespace FitSwipe.BusinessLogic.Services.Payments
             var tick = DateTime.Now.Ticks.ToString();
 
             // Create payment URL for multiple slots
-            var paymentUrl = CreateVnPayRequest(model, context, model.SlotIds, totalCost, lastOrderDescription, false, tick, lastUrl);
+            var paymentUrl = CreateVnPayRequest(model, context, model.GetSlotGuids(), totalCost, lastOrderDescription, false, tick, lastUrl);
             return paymentUrl;
         }
 
