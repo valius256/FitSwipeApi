@@ -30,8 +30,6 @@ namespace FitSwipe.DataAccess.Repository.Impl
         public async Task<PagedResult<Training>> GetTrainings(PagingModel<QueryTrainingDto> pagingModel)
         {
             var query = _context.Trainings
-                .Include(t => t.PT)
-                .Include(t => t.Trainee)
                 .AsQueryable();
 
             if (pagingModel.Filter != null)
@@ -52,7 +50,23 @@ namespace FitSwipe.DataAccess.Repository.Impl
             int limit = pagingModel.Limit > 0 ? pagingModel.Limit : 10;
             int page = pagingModel.Page > 0 ? pagingModel.Page : 1;
 
-            return await query.ToNewPagingAsync(page, limit);
+            return await query.Include(t => t.PT)
+                .Include(t => t.Trainee).ToNewPagingAsync(page, limit);
+
+        }
+        public async Task<GetTrainingOverviewDto?> GetTrainingOverview(Guid id)
+        {
+            return await _context.Trainings
+               .Where(t => t.Id == id)
+               .Include(t => t.Slots)
+               .Select(t => new GetTrainingOverviewDto
+               {
+                   StartTime = t.Slots.OrderBy(s => s.StartTime).Select(s => (DateTime?)s.StartTime).FirstOrDefault(),
+                   EndTime = t.Slots.OrderByDescending(s => s.EndTime).Select(s => (DateTime?)s.EndTime).FirstOrDefault(),
+                   TotalDuration = t.Slots.Sum(s => (int)(s.EndTime - s.StartTime).TotalHours), // Calculate duration in hours
+                   TotalSlots = t.Slots.Count()
+               })
+               .FirstOrDefaultAsync();
 
         }
     }

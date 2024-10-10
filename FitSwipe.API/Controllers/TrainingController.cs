@@ -81,5 +81,12 @@ namespace FitSwipe.API.Controllers
             await _slotServices.CancelTrainingSlots(id, CurrentUserFirebaseId);
             return Ok();
         }
+        [Authorize]
+        [HttpPatch("update-price")]
+        public async Task<IActionResult> UpdateTrainingPriceAndProve([FromBody] UpdateTrainingPriceDto updateTrainingPriceDto)
+        {
+            await _trainingService.UpdateTrainingPriceAndApprove(updateTrainingPriceDto, CurrentUserFirebaseId);
+            return Ok();
+        }
     }
 }

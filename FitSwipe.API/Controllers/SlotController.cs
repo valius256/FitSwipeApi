@@ -69,24 +69,26 @@ namespace FitSwipe.API.Controllers
         }
 
 
-        [HttpPost("upload-slotVideo")]
+        [HttpPost("update-slot-detail")]
         [Authorize]
-        public async Task<IActionResult> UploadSlotVideo([FromBody] SlotVideoDto slotVideoDtoRequest)
+        public async Task<IActionResult> UpdateSlotDetail([FromBody] UpdateSlotDetailDto slotVideoDtoRequest)
         {
-            var currSlot = await _slotServices.GetSlotByIdAsync(slotVideoDtoRequest.SlotId);
+            await _slotServices.UpdateSlotDetail(slotVideoDtoRequest,CurrentUserId);
+            //var currSlot = await _slotServices.GetSlotByIdAsync(slotVideoDtoRequest.SlotId);
 
-            if (currSlot.CreateById != CurrentUserFirebaseId)
-            {
-                return BadRequest("You are not the owner of this slot so you cannot upload for this slot");
-            }
+            //if (currSlot.CreateById != CurrentUserFirebaseId)
+            //{
+            //    return BadRequest("You are not the owner of this slot so you cannot upload for this slot");
+            //}
 
-            var createSlotVideoDtos = await _slotVideoServices.AddSlotVideoAsync(slotVideoDtoRequest);
+            //var createSlotVideoDtos = await _slotVideoServices.AddSlotVideoAsync(slotVideoDtoRequest);
 
-            if (createSlotVideoDtos is null)
-            {
-                return BadRequest("Can't upload video");
-            };
-            return Ok(createSlotVideoDtos);
+            //if (createSlotVideoDtos is null)
+            //{
+            //    return BadRequest("Can't upload video");
+            //};
+            //return Ok(createSlotVideoDtos);
+            return Ok();
         }
 
         [HttpDelete("{id}")]

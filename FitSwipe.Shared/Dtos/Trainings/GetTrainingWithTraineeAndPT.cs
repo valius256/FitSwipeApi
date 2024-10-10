@@ -16,6 +16,7 @@ namespace FitSwipe.Shared.Dtos.Trainings
         public DateTime? UpdatedDate { get; set; }
         public GetUserDto Trainee { get; set; } = default!;
         public GetUserDto PT { get; set; } = default!;
+        public GetTrainingOverviewDto? TrainingOverview { get; set; } = new GetTrainingOverviewDto();
 
     }
 }

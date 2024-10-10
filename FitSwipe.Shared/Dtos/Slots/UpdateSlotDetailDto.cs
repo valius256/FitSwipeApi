@@ -3,15 +3,12 @@ using System.Diagnostics.CodeAnalysis;
 
 namespace FitSwipe.Shared.Dtos.Slots
 {
-    public class SlotVideoDto
+    public class UpdateSlotDetailDto
     {
         [Required]
         public Guid SlotId { get; set; }
         [Required]
-        public string StringUrl { get; set; }
-        [AllowNull]
-        public string ThumbnailUrl { get; set; }
-        [AllowNull]
-        public string Description { get; set; }
+        public List<CreateSlotVideoDtos> SlotVideos { get; set; } = [];
+        public string? Location { get; set; }
     }
 }

@@ -8,5 +8,6 @@ namespace FitSwipe.DataAccess.Repository.Intefaces
     {
         Task<PagedResult<Training>> GetTrainings(PagingModel<QueryTrainingDto> training);
         Task<Training?> GetTrainingById(Guid id);
+        Task<GetTrainingOverviewDto?> GetTrainingOverview(Guid id);
     }
 }
