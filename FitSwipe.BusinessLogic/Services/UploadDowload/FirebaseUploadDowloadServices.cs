@@ -138,7 +138,6 @@ namespace FitSwipe.BusinessLogic.Services.UploadDowload
             return downloadLinksList;
         }
 
-
         private async Task<string> UploadMediaToFirebaseStorage(string uid, string fileName, Stream fileStream, string contentType)
         {
             try

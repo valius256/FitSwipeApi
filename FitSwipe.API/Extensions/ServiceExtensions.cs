@@ -149,7 +149,7 @@ namespace FitSwipe.API.Extensions
 
         public static IServiceCollection AddFirebaseAuthentication(this IServiceCollection services, IConfiguration configuration)
         {
-            var firebaseSettings = configuration.GetSection(nameof(Appsettings.FireBase)).Get<FireBase>()!;
+            var firebaseSettings = configuration.GetSection(nameof(Appsettings.FireBase)).Get<FireBase>();
 
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                 .AddJwtBearer(options =>

@@ -9,6 +9,7 @@ using FitSwipe.Shared.Dtos.Trainings;
 using FitSwipe.Shared.Enum;
 using FitSwipe.Shared.Exceptions;
 using Mapster;
+using System.Runtime.InteropServices;
 
 namespace FitSwipe.BusinessLogic.Services.Trainings
 {
@@ -147,7 +148,12 @@ namespace FitSwipe.BusinessLogic.Services.Trainings
             {
                 queryTrainingDto.Filter.PTId = userId;
             }
-            return (await _trainingRepository.GetTrainings(queryTrainingDto)).Adapt<PagedResult<GetTrainingWithTraineeAndPT>>();
+            var trainings = (await _trainingRepository.GetTrainings(queryTrainingDto)).Adapt<PagedResult<GetTrainingWithTraineeAndPT>>();
+            foreach (var training in trainings.Items)
+            {
+                training.TrainingOverview = await _trainingRepository.GetTrainingOverview(training.Id);
+            }
+            return trainings;
         }
 
         public async Task UpdateTrainingStatus(Guid trainingId, TrainingStatus trainingStatus, string? userId)
@@ -212,6 +218,26 @@ namespace FitSwipe.BusinessLogic.Services.Trainings
                 throw new BadRequestException("This training already contains slots. Please use 'Cancel Training Slots' endpoint instead");
             }
             await _trainingRepository.DeleteAsync(id);
+        }
+
+        public async Task UpdateTrainingPriceAndApprove(UpdateTrainingPriceDto updateTrainingPriceDto, string userId)
+        {
+            var training = await GetDetailById(updateTrainingPriceDto.TrainingId);
+            if (training.PTId != userId)
+            {
+                throw new ForbiddenException("You do not have permission to do this");
+            }
+            foreach (var item in training.Slots)
+            {
+                if (item.Location == null)
+                {
+                    throw new BadRequestException("Some of the slots is not updated the location yet!");
+                }
+            }
+            var simpleTraining = (await _trainingRepository.GetByIdAsync(updateTrainingPriceDto.TrainingId))!;
+            simpleTraining.PricePerSlot = updateTrainingPriceDto.TrainingPrice;
+            simpleTraining.Status = TrainingStatus.NotStarted;
+            await _trainingRepository.UpdateAsync(simpleTraining);
         }
     }
 }

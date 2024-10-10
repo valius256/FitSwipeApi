@@ -4,6 +4,9 @@ namespace FitSwipe.BusinessLogic.Interfaces.Slots
 {
     public interface ISlotVideoServices
     {
-        public Task<CreateSlotVideoDtos> AddSlotVideoAsync(SlotVideoDto slotVideos);
+        Task<GetSlotVideoDto> AddSlotVideoAsync(CreateSlotVideoDtos slotVideos);
+        Task<List<GetSlotVideoDto>> AddRangeSlotVideoAsync(List<CreateSlotVideoDtos> slotVideos);
+        Task DeleteSlotVideoAsync(Guid id);
+        Task DeleteRangeSlotVideoAsync(List<Guid> ids);
     }
 }

@@ -16,5 +16,6 @@ namespace FitSwipe.BusinessLogic.Interfaces.Trainings
 
         Task UpdateTrainingStatus(Guid trainingId, TrainingStatus trainingStatus, string? userId);
         Task DeleteTraining(Guid id, string userId);
+        Task UpdateTrainingPriceAndApprove(UpdateTrainingPriceDto updateTrainingPriceDto, string userId);
     }
 }

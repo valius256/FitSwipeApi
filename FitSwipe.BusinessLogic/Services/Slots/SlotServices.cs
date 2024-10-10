@@ -18,12 +18,14 @@ namespace FitSwipe.BusinessLogic.Services.Slots
     {
         private readonly ISlotRepository _slotRepository;
         private readonly IUserServices _userServices;
+        private readonly ISlotVideoServices _slotVideoServices;
         private readonly ITrainingService _trainingService;
-        public SlotServices(ISlotRepository slotRepository, IUserServices userServices, ITrainingService trainingService)
+        public SlotServices(ISlotRepository slotRepository, IUserServices userServices, ITrainingService trainingService, ISlotVideoServices slotVideoServices)
         {
             _userServices = userServices;
             _slotRepository = slotRepository;
             _trainingService = trainingService;
+            _slotVideoServices = slotVideoServices;
         }
 
         public async Task<PagedResult<GetSlotDto>> GetSlots(PagingModel<QuerySlotDto> pagingModel)
@@ -426,6 +428,42 @@ namespace FitSwipe.BusinessLogic.Services.Slots
                 && s.Status == SlotStatus.Unbooked).ToListAsync();
 
             await _slotRepository.DeleteRangeAsync(slots);
+        }
+
+        public async Task UpdateSlotDetail(UpdateSlotDetailDto updateSlotDetailDto, string userId)
+        {
+            var slot = await _slotRepository.FindOneAsync(s => s.Id == updateSlotDetailDto.SlotId);
+            if (slot == null)
+            {
+                throw new DataNotFoundException("Slot is not found");
+            }
+            
+            var slotDetail = await GetSlotByIdAsync(slot.Id);
+            if (slotDetail.Training == null || slotDetail.Training.PTId != userId)
+            {
+                throw new ForbiddenException("You do not have permission to do this function");
+            }
+
+            slot.Location = updateSlotDetailDto.Location;
+            var toAdd = new List<CreateSlotVideoDtos>();
+            var toDelete = new List<SlotVideos>();
+            foreach (var video in slotDetail.Videos)
+            {
+                if (!updateSlotDetailDto.SlotVideos.Any(sv => sv.VideoUrl == video.VideoUrl))
+                {
+                    toDelete.Add(video.Adapt<SlotVideos>());
+                }
+            }
+            foreach (var video in updateSlotDetailDto.SlotVideos)
+            {
+                if (!slotDetail.Videos.Any(sv => sv.VideoUrl == video.VideoUrl))
+                {
+                    toAdd.Add(video);
+                }
+            }
+            await _slotRepository.UpdateAsync(slot);
+            await _slotVideoServices.AddRangeSlotVideoAsync(toAdd);
+            await _slotVideoServices.DeleteRangeSlotVideoAsync(toDelete.Select(sv => sv.Id).ToList());
         }
     }
 }
