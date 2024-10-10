@@ -41,7 +41,7 @@ builder.Services.AddCors(options =>
 {
     options.AddDefaultPolicy(policy =>
     {
-        policy.WithOrigins("http://10.0.2.2") // Replace with your actual origin(s)
+        policy.WithOrigins() // Replace with your actual origin(s)
             .AllowAnyMethod()
             .AllowAnyHeader()
         .AllowCredentials();
