@@ -1,5 +1,6 @@
 ﻿using FitSwipe.BusinessLogic.Interfaces.UploadDowload;
 using FitSwipe.BusinessLogic.Interfaces.Users;
+using FitSwipe.Shared.Dtos.UploadDowloads;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -56,6 +57,13 @@ namespace FitSwipe.API.Controllers
                 // Handle exceptions (e.g., log them and return a meaningful response)
                 return StatusCode(500, $"Internal server error: {ex.Message}");
             }
+        }
+
+        [HttpPost("upload-video-get-thumb")]
+        [Authorize]
+        public async Task<ActionResult<GetUploadVideoResultWithThumbDto>> UploadVideoAndGetThumbnail(IFormFile file)
+        {
+            return await _firebaseUploadServices.UploadVideoAndGetThumb(file,CurrentUserFirebaseId);
         }
     }
 }

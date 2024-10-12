@@ -3,6 +3,7 @@ namespace FitSwipe.Shared.Dtos.Slots
 {
     public class GetSlotVideoDto
     {
+        public Guid Id { get; set; }
         public Guid SlotId { get; set; }
         public string VideoUrl { get; set; } = string.Empty;
         public string ThumbnailUrl { get; set; } = string.Empty;

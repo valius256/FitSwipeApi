@@ -112,16 +112,24 @@ namespace FitSwipe.BusinessLogic.Services.Trainings
         public async Task<GetTrainingDetailDto> GetDetailById(string userId, Guid id)
         {
             var user = await _userServices.GetUserByIdRequiredAsync(userId);
-            var training = (await _trainingRepository.GetTrainingById(id)).Adapt<GetTrainingDetailDto>();
+            var training = (await _trainingRepository.GetTrainingById(id));
             if (training == null)
             {
                 throw new DataNotFoundException("Training not found");
             }
+
             if ((user.Role == Role.Trainee && training.TraineeId != userId) || (user.Role == Role.PT && training.PTId != userId))
             {
                 throw new ForbiddenException("You doesn't belong to this training");
             }
-            return training;
+
+            var mappedTraining = training.Adapt<GetTrainingDetailDto>();
+            foreach (var slotDto in mappedTraining.Slots)
+            {
+                var slot = training.Slots.FirstOrDefault(s => s.Id ==  slotDto.Id)!;
+                slotDto.TotalVideo = slot.Videos.Count;
+            }
+            return mappedTraining;
         }
         public async Task<GetTrainingDetailDto> GetCurrentTraining(string userId)
         {
@@ -132,6 +140,12 @@ namespace FitSwipe.BusinessLogic.Services.Trainings
                 throw new DataNotFoundException("No training found");
             }
             return await GetDetailById(userId, training.Id);
+        }
+        public async Task<Training?> GetSimpleCurrentTraining(string userId)
+        {
+            var user = await _userServices.GetUserByIdRequiredAsync(userId);
+            var training = await _trainingRepository.FindOneWithNoTrackingAsync(t => t.TraineeId == userId && (t.Status == TrainingStatus.NotStarted || t.Status == TrainingStatus.OnGoing));
+            return training;
         }
         public async Task<PagedResult<GetTrainingWithTraineeAndPT>> GetTrainings(string userId, PagingModel<QueryTrainingDto> queryTrainingDto)
         {

@@ -22,7 +22,7 @@ namespace FitSwipe.DataAccess.Repository.Impl
             return await _context.Trainings
                 .Include(t => t.PT)
                 .Include(t => t.Trainee)
-                .Include(t => t.Slots)
+                .Include(t => t.Slots).ThenInclude(s => s.Videos)
                 .Include(t => t.FeedbackImages)
                 .AsNoTracking()
                 .FirstOrDefaultAsync(t => t.Id == id);

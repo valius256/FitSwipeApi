@@ -1,4 +1,5 @@
-﻿using FitSwipe.Shared.Dtos.Slots;
+﻿using FitSwipe.DataAccess.Model.Entity;
+using FitSwipe.Shared.Dtos.Slots;
 
 namespace FitSwipe.BusinessLogic.Interfaces.Slots
 {
@@ -8,5 +9,6 @@ namespace FitSwipe.BusinessLogic.Interfaces.Slots
         Task<List<GetSlotVideoDto>> AddRangeSlotVideoAsync(List<CreateSlotVideoDtos> slotVideos);
         Task DeleteSlotVideoAsync(Guid id);
         Task DeleteRangeSlotVideoAsync(List<Guid> ids);
+        Task UpdateRangeSlotVideoAsync(List<SlotVideos> slotVideos);
     }
 }

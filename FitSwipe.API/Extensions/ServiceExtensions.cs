@@ -105,7 +105,7 @@ namespace FitSwipe.API.Extensions
             // Register Hangfire and configure it
             services.AddHangfire(config =>
 
-                config.UsePostgreSqlStorage(configuration.GetConnectionString("PostgresInLocal"),
+                config.UsePostgreSqlStorage(configuration.GetConnectionString("PostgresConnectionString"),
                     new PostgreSqlStorageOptions
                     {
                         QueuePollInterval = TimeSpan.FromSeconds(15), // Adjust the poll interval as needed
