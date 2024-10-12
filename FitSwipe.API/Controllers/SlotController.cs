@@ -73,7 +73,7 @@ namespace FitSwipe.API.Controllers
         [Authorize]
         public async Task<IActionResult> UpdateSlotDetail([FromBody] UpdateSlotDetailDto slotVideoDtoRequest)
         {
-            await _slotServices.UpdateSlotDetail(slotVideoDtoRequest,CurrentUserId);
+            await _slotServices.UpdateSlotDetail(slotVideoDtoRequest,CurrentUserFirebaseId);
             //var currSlot = await _slotServices.GetSlotByIdAsync(slotVideoDtoRequest.SlotId);
 
             //if (currSlot.CreateById != CurrentUserFirebaseId)

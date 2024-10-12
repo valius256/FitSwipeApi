@@ -20,5 +20,6 @@ namespace FitSwipe.BusinessLogic.Interfaces.Slots
         Task CancelTrainingSlots(Guid trainingId, string userId);
         Task DeleteAllUnbookedSlotInARange(DateOnly start, DateOnly end, string userId);
         Task UpdateSlotDetail(UpdateSlotDetailDto updateSlotDetailDto, string userId);
+        Task<int> CountSlotVideos(Guid id);
     }
 }

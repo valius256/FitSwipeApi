@@ -78,13 +78,22 @@ namespace FitSwipe.DataAccess.Repository.Impl
 
         public async Task<Slot?> GetSlotByIdAsync(Guid guid)
         {
-            return await _context.Slots
+            var slot = await _context.Slots
                 .Include(s => s.CreateBy)
                 .Include(s => s.Training)
                 .Include(s => s.TransactionSlots)
                 .Include(s => s.Videos)
                 .AsNoTracking()
                 .FirstOrDefaultAsync(s => s.Id == guid);
+
+            if (slot?.Training != null)
+            {
+                // Conditionally load the Trainee only if Training is not null
+                await _context.Entry(slot.Training)
+                    .Reference(t => t.Trainee)
+                    .LoadAsync();
+            }
+            return slot;
         }
 
         public async Task<List<Slot>> GetSlotsOfTrainee(string traineeId)

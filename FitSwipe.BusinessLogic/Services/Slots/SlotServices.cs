@@ -32,11 +32,14 @@ namespace FitSwipe.BusinessLogic.Services.Slots
             var result = (await _slotRepository.GetSlots(pagingModel)).Adapt<PagedResult<GetSlotDto>>();
             foreach (var slotDto in result.Items)
             {
-                slotDto.TotalVideo = await _slotRepository.CountSlotVideoAsync(slotDto.Id);
+                slotDto.TotalVideo = await CountSlotVideos(slotDto.Id);
             }
             return result;
         }
-
+        public async Task<int> CountSlotVideos(Guid id)
+        {
+            return await _slotRepository.CountSlotVideoAsync(id);
+        }
         public async Task<List<GetSlotDto>> CreateFreeSlotForPTAsync(List<CreateSlotDtos> model, string currentUserId)
         {
 
@@ -331,7 +334,7 @@ namespace FitSwipe.BusinessLogic.Services.Slots
             {
                 throw new BadRequestException("Training must be in pending or rejected status");
             }
-            var currentTraining = await _trainingService.GetCurrentTraining(currentUserId);
+            var currentTraining = await _trainingService.GetSimpleCurrentTraining(currentUserId);
             if (currentTraining != null)
             {
                 throw new BadRequestException("Trainee has already in a on-going training with a PT");
@@ -446,13 +449,20 @@ namespace FitSwipe.BusinessLogic.Services.Slots
             }
 
             slot.Location = updateSlotDetailDto.Location;
+            //Handle the update later
             var toAdd = new List<CreateSlotVideoDtos>();
             var toDelete = new List<SlotVideos>();
+            var toUpdate = new List<SlotVideos>();
             foreach (var video in slotDetail.Videos)
             {
-                if (!updateSlotDetailDto.SlotVideos.Any(sv => sv.VideoUrl == video.VideoUrl))
+                var existedVideo = updateSlotDetailDto.SlotVideos.FirstOrDefault(sv => sv.VideoUrl == video.VideoUrl);
+                if (existedVideo == null)
                 {
                     toDelete.Add(video.Adapt<SlotVideos>());
+                } else
+                {
+                    video.Description = existedVideo.Description;
+                    toUpdate.Add(video.Adapt<SlotVideos>());
                 }
             }
             foreach (var video in updateSlotDetailDto.SlotVideos)
@@ -464,6 +474,7 @@ namespace FitSwipe.BusinessLogic.Services.Slots
             }
             await _slotRepository.UpdateAsync(slot);
             await _slotVideoServices.AddRangeSlotVideoAsync(toAdd);
+            await _slotVideoServices.UpdateRangeSlotVideoAsync(toUpdate);
             await _slotVideoServices.DeleteRangeSlotVideoAsync(toDelete.Select(sv => sv.Id).ToList());
         }
     }

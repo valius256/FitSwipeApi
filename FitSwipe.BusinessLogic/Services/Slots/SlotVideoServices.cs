@@ -62,5 +62,9 @@ namespace FitSwipe.BusinessLogic.Services.Slots
            
             await _slotVideoRepository.DeleteRangeAsync(deleteList);
         }
+        public async Task UpdateRangeSlotVideoAsync(List<SlotVideos> slotVideos)
+        {
+            await _slotVideoRepository.UpdateRangeAsync(slotVideos);
+        }
     }
 }
