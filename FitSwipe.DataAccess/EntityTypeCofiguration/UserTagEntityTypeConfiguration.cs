@@ -16,7 +16,7 @@ namespace FitSwipe.DataAccess.EntityTypeCofiguration
             builder.HasOne(ut => ut.Tag)
                 .WithMany(t => t.UserTags)
                 .HasForeignKey(ut => ut.TagId)
-                .OnDelete(DeleteBehavior.Restrict);
+                .OnDelete(DeleteBehavior.Cascade);
 
 
         }

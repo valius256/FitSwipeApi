@@ -8,88 +8,10 @@ namespace FitSwipe.DataAccess.SeedData
     {
         public static void Seed(this ModelBuilder modelBuilder)
         {
-           #region UserModel
+            #region UserModel
 
             modelBuilder.Entity<User>().HasData(
-                new User
-                {
-                    Id = Guid.NewGuid(),
-                    FireBaseId = "123abc",
-                    UserName = "john doe",
-                    Gender = Gender.Male,
-                    Email = "john.doe@example.com",
-                    Password = "hashedpassword1", // Ensure this is hashed securely before production
-                    AvatarUrl = "https://i.ibb.co/HYsHmpm/pt5.png",
-                    Phone = "1234567890",
-                    DateOfBirth = DateTime.SpecifyKind(new DateTime(1990, 5, 1), DateTimeKind.Utc), // Set to UTC
-                    Weight = 75.5,
-                    Height = 180.3,
-                    Bio = "Fitness enthusiast and certified personal trainer.",
-                    City = "New York",
-                    District = "Manhattan",
-                    Ward = "Ward 5",
-                    Street = "5th Avenue",
-                    Role = Role.Trainee,
-                    Job = "Student",
-                    PricePerHour = 0,
-                    Status = UserStatus.Active,
-                    Balance = 1000,
-                },
-                new User
-                {
-                    Id = Guid.NewGuid(),
-                    FireBaseId = "456def",
-                    UserName = "jane smith",
-                    Gender = Gender.Female,
-                    Email = "jane.smith@example.com",
-                    Password = "hashedpassword2", // Ensure this is hashed securely before production
-                    AvatarUrl = "https://i.ibb.co/ZVhq6W7/c239694df88fecb8c521de3dd8625ba10fbbfa14f3559342640b9710e25b9d01-w-1024-h-1024-pmaid-165228136.png",
-                    Phone = "0987654321",
-                    DateOfBirth = DateTime.SpecifyKind(new DateTime(1985, 8, 20), DateTimeKind.Utc), // Set to UTC
-                    Weight = 65.0,
-                    Height = 170.2,
-                    Bio = "Yoga instructor with a passion for holistic health.",
-                    City = "Los Angeles",
-                    District = "Beverly Hills",
-                    Ward = "Ward 3",
-                    Street = "Rodeo Drive",
-                    Role = Role.PT,
-                    Job = "Yoga Instructor",
-                    Status = UserStatus.Active,
-                    Balance = 1500,
-                    PTStatus = PTStatus.Active,
-                    PTExperienceYear = 3.5,
-                    PricePerHour = 100000,
-                    SubscriptionPurchasedDate = DateTime.SpecifyKind(new DateTime(2023, 2, 10), DateTimeKind.Utc), // Set to UTC
-                    SubscriptionLevel = 1,
-                    SubscriptionPaymentStatus = PaymentStatus.Paid
-                },
-                new User
-                {
-                    Id = Guid.NewGuid(),
-                    FireBaseId = "789ghi",
-                    UserName = "alex jones",
-                    Gender = Gender.Male,
-                    Email = "alex.jones@example.com",
-                    Password = "hashedpassword3", // Ensure this is hashed securely before production
-                    AvatarUrl = "https://i.ibb.co/zVGS1Xv/pt1.png",
-                    Phone = "5551234567",
-                    DateOfBirth = DateTime.SpecifyKind(new DateTime(1992, 3, 10), DateTimeKind.Utc), // Set to UTC
-                    Weight = 85.0,
-                    Height = 185.4,
-                    Bio = "Aspiring bodybuilder and nutrition expert.",
-                    City = "Chicago",
-                    District = "Lincoln Park",
-                    Ward = "Ward 7",
-                    Street = "Clark Street",
-                    Role = Role.PT,
-                    Job = "Nutritionist",
-                    Status = UserStatus.Active,
-                    Balance = 2000,
-                    PricePerHour = 150000,
-                    PTStatus = PTStatus.Active,
-                    PTExperienceYear = 2.0,
-                },
+
                 new User
                 {
                     Id = Guid.NewGuid(),
@@ -104,16 +26,14 @@ namespace FitSwipe.DataAccess.SeedData
                     Weight = 62.5,
                     Height = 170.2,
                     Bio = "Certified yoga instructor and personal trainer with 5 years of experience.",
-                    City = "New York",
-                    District = "Manhattan",
-                    Ward = "Ward 3",
-                    Street = "Broadway",
                     Role = Role.PT,
                     Job = "Yoga Instructor",
                     Status = UserStatus.Active,
                     Balance = 3500,
                     PricePerHour = 200000,
                     PTStatus = PTStatus.Active,
+                    Latitude = 40.7128,  // Example coordinates
+                    Longitude = -74.0060,
                     PTExperienceYear = 5.0,
                 },
                 new User
@@ -130,15 +50,13 @@ namespace FitSwipe.DataAccess.SeedData
                     Weight = 78.3,
                     Height = 180.0,
                     Bio = "CrossFit enthusiast and certified personal trainer specializing in HIIT workouts.",
-                    City = "Los Angeles",
-                    District = "Santa Monica",
-                    Ward = "Ward 2",
-                    Street = "Ocean Avenue",
                     Role = Role.PT,
                     Job = "CrossFit Trainer",
                     Status = UserStatus.Active,
                     Balance = 2800,
                     PricePerHour = 180000,
+                    Latitude = 40.7128,  // Example coordinates
+                    Longitude = -74.0060,
                     PTStatus = PTStatus.Active,
                     PTExperienceYear = 3.5,
                 },
@@ -157,14 +75,12 @@ namespace FitSwipe.DataAccess.SeedData
                     Weight = 58.7,
                     Height = 165.5,
                     Bio = "Sports nutritionist and strength training coach with a focus on women's fitness.",
-                    City = "Seattle",
-                    District = "Capitol Hill",
-                    Ward = "Ward 5",
-                    Street = "Pike Street",
                     Role = Role.PT,
                     Job = "Strength Coach",
                     Status = UserStatus.Active,
                     Balance = 4200,
+                    Latitude = 40.7128,  // Example coordinates
+                    Longitude = -74.0060,
                     PricePerHour = 220000,
                     PTStatus = PTStatus.Active,
                     PTExperienceYear = 7.0,
@@ -183,13 +99,11 @@ namespace FitSwipe.DataAccess.SeedData
                     Weight = 75.8,
                     Height = 175.3,
                     Bio = "Former professional soccer player turned fitness coach. Specializes in sports-specific training.",
-                    City = "Miami",
-                    District = "South Beach",
-                    Ward = "Ward 4",
-                    Street = "Ocean Drive",
                     Role = Role.PT,
                     Job = "Sports Performance Coach",
                     Status = UserStatus.Active,
+                    Latitude = 40.7128,  // Example coordinates
+                    Longitude = -74.0060,
                     Balance = 3800,
                     PricePerHour = 190000,
                     PTStatus = PTStatus.Active,
@@ -209,14 +123,12 @@ namespace FitSwipe.DataAccess.SeedData
                     Weight = 54.2,
                     Height = 162.0,
                     Bio = "Pilates instructor and rehabilitation specialist. Focused on posture correction and core strength.",
-                    City = "San Francisco",
-                    District = "Marina",
-                    Ward = "Ward 2",
-                    Street = "Chestnut Street",
                     Role = Role.PT,
                     Job = "Pilates Instructor",
                     Status = UserStatus.Active,
                     Balance = 3200,
+                    Latitude = 40.7128,  // Example coordinates
+                    Longitude = -74.0060,
                     PricePerHour = 175000,
                     PTStatus = PTStatus.Active,
                     PTExperienceYear = 4.0,
@@ -235,16 +147,15 @@ namespace FitSwipe.DataAccess.SeedData
                     Weight = 90.5,
                     Height = 188.0,
                     Bio = "Bodybuilding champion and powerlifting coach. Specializes in muscle gain and strength training.",
-                    City = "Houston",
-                    District = "Midtown",
-                    Ward = "Ward 3",
-                    Street = "Main Street",
+
                     Role = Role.PT,
                     Job = "Strength and Conditioning Coach",
                     Status = UserStatus.Active,
                     Balance = 4500,
                     PricePerHour = 230000,
                     PTStatus = PTStatus.Active,
+                    Latitude = 40.7128,  // Example coordinates
+                    Longitude = -74.0060,
                     PTExperienceYear = 10.0,
                 },
                 new User
@@ -261,13 +172,11 @@ namespace FitSwipe.DataAccess.SeedData
                     Weight = 60.1,
                     Height = 168.5,
                     Bio = "Certified nutritionist and functional fitness trainer. Specializes in weight management and holistic health.",
-                    City = "Boston",
-                    District = "Back Bay",
-                    Ward = "Ward 5",
-                    Street = "Newbury Street",
                     Role = Role.PT,
                     Job = "Functional Fitness Trainer",
                     Status = UserStatus.Active,
+                    Latitude = 40.7128,  // Example coordinates
+                    Longitude = -74.0060,
                     Balance = 3900,
                     PricePerHour = 195000,
                     PTStatus = PTStatus.Active,
@@ -668,7 +577,7 @@ namespace FitSwipe.DataAccess.SeedData
                    Name = "Tâm huyết với học viên",
                    TagType = TagType.PTTaste,
                    CreateById = "123abc",
-               },             
+               },
                new Tag
                {
                    Id = Guid.NewGuid(),
@@ -887,7 +796,7 @@ namespace FitSwipe.DataAccess.SeedData
 
             #region Slot
 
-            
+
 
             #endregion
         }
