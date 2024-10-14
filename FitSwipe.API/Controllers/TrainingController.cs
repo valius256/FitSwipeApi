@@ -74,6 +74,13 @@ namespace FitSwipe.API.Controllers
             await _trainingService.FeedbackTraining(CurrentUserFirebaseId, feedbackTrainingDto);
             return Ok();
         }
+        [HttpPut("finishing")]
+        [Authorize]
+        public async Task<IActionResult> FinishTraining([FromRoute] Guid id)
+        {
+            await _slotServices.UpdateSlotsWhenTrainingFinished(CurrentUserFirebaseId);
+            return Ok();
+        }
         [HttpDelete("{id}/cancel")]
         [Authorize]
         public async Task<IActionResult> CancelTraining([FromRoute] Guid id)

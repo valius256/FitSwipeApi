@@ -31,5 +31,7 @@ namespace FitSwipe.Shared.Dtos.Payment
         public PaymentStatus PaymentStatus { get; set; }
         [Required]
         public string? RedirectResult { get; set; }
+        [Required]
+        public OrderType OrderType { get; set; }
     }
 }

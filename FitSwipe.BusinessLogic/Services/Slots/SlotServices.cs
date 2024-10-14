@@ -184,7 +184,7 @@ namespace FitSwipe.BusinessLogic.Services.Slots
 
         private async Task<bool> IsSlotTimeDupplicatedForPT(DateTime startTime, DateTime endTime, string userId, Guid? skip = null)
         {
-            var userSlot = await _slotRepository.FindWithNoTrackingAsync(s => s.CreateById == userId);
+            var userSlot = await _slotRepository.GetSlotsOfPT(userId);
             foreach (var slot in userSlot)
             {
                 if (skip != null && slot.Id == skip) continue;
@@ -476,6 +476,31 @@ namespace FitSwipe.BusinessLogic.Services.Slots
             await _slotVideoServices.AddRangeSlotVideoAsync(toAdd);
             await _slotVideoServices.UpdateRangeSlotVideoAsync(toUpdate);
             await _slotVideoServices.DeleteRangeSlotVideoAsync(toDelete.Select(sv => sv.Id).ToList());
+        }
+        public async Task UpdateSlotsWhenTrainingFinished(string userId)
+        {
+            var currentTraining = await _trainingService.GetCurrentTraining(userId);
+            if (currentTraining == null)
+            {
+                throw new BadRequestException("Trainee is not in a training yet");
+            }
+            var slots = await _slotRepository.FindAsync(s => s.TrainingId == currentTraining.Id
+                && s.Status == SlotStatus.NotStarted);
+            foreach (var slot in slots)
+            {
+                slot.Status = SlotStatus.Disabled;
+            }
+            await _slotRepository.UpdateRangeAsync(slots);
+            await _trainingService.UpdateTrainingStatus(currentTraining.Id,TrainingStatus.Finished,null);
+        }
+        public async Task UpdateRangePayment(List<Guid> slotIds)
+        {
+            var slots = await _slotRepository.FindAsync(s => slotIds.Contains(s.Id));
+            foreach (var slot in slots)
+            {
+                slot.PaymentStatus = PaymentStatus.Paid;
+            }
+            await _slotRepository.UpdateRangeAsync(slots);
         }
     }
 }
