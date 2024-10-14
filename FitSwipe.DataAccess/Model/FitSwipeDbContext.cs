@@ -1,6 +1,5 @@
 ﻿using FitSwipe.DataAccess.EntityTypeCofiguration;
 using FitSwipe.DataAccess.Model.Entity;
-using FitSwipe.DataAccess.SeedData;
 using Microsoft.EntityFrameworkCore;
 
 namespace FitSwipe.DataAccess.Model
@@ -51,7 +50,7 @@ namespace FitSwipe.DataAccess.Model
             modelBuilder.ApplyConfiguration(new MessageEntityTypeConfiguration());
 
 
-            modelBuilder.Seed();
+            //modelBuilder.Seed();
             base.OnModelCreating(modelBuilder);
         }
 

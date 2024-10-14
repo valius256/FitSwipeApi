@@ -159,7 +159,7 @@ namespace FitSwipe.BusinessLogic.Services.Auths
 
 
             var userResponseModel = new GetUserProfileDtos()
-            {         
+            {
                 Email = registerDtos.Email,
                 Password = registerDtos.Password,
                 Role = registerDtos.Role,
@@ -219,25 +219,6 @@ namespace FitSwipe.BusinessLogic.Services.Auths
 
                 };
                 await SetCustomClaimsAsync(authToken.LocalId, customClaims);
-
-                //var reAuthRequest = new
-                //{
-                //    loginDto.Email,
-                //    loginDto.Password,
-                //    returnSecureToken = true
-                //};
-
-                //var reAuthResponse = await _httpClient.PostAsJsonAsync("", reAuthRequest);
-                //if (!reAuthResponse.IsSuccessStatusCode)
-                //{
-                //    responseModel.Code = reAuthResponse.StatusCode.ToString();
-                //    responseModel.Message = await reAuthResponse.Content.ReadAsStringAsync();
-                //    return responseModel;
-                //}
-
-                //var reAuthToken = await reAuthResponse.Content.ReadFromJsonAsync<AuthToken>();
-                //if (reAuthToken == null)
-                //    throw new InvalidOperationException("Re-authentication token is null");
 
                 var options = new SessionCookieOptions
                 {

@@ -24,13 +24,10 @@ namespace FitSwipe.DataAccess.Model.Entity
         [AllowNull]
         public string? Bio { get; set; }
         [AllowNull]
-        public string? City { get; set; }
+        public double? Latitude { get; set; }
         [AllowNull]
-        public string? District { get; set; }
+        public double? Longitude { get; set; }
         [AllowNull]
-        public string? Ward { get; set; }
-        [AllowNull]
-        public string? Street { get; set; }
         public Role Role { get; set; }
         [AllowNull]
         public string? Job { get; set; }
