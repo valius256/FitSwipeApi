@@ -70,7 +70,7 @@ namespace FitSwipe.BusinessLogic.Services.Payments
                     throw new BadRequestException("Slot is not on a training");
                 }
                 // Calculate cost for the slot and add to total cost
-                var slotCost = (slotDetailDtos.EndTime - slotDetailDtos.StartTime).TotalHours * slotDetailDtos.Training.PricePerSlot.Value;
+                var slotCost = slotDetailDtos.Training.PricePerSlot.Value;
                 totalCost += slotCost;
             }
 
@@ -79,11 +79,11 @@ namespace FitSwipe.BusinessLogic.Services.Payments
             var tick = DateTime.Now.Ticks.ToString();
 
             // Create payment URL for multiple slots
-            var paymentUrl = CreateVnPayRequest(model, context, model.GetSlotGuids(), totalCost, lastOrderDescription, false, tick, lastUrl);
+            var paymentUrl = CreateVnPayRequest(model, context, model.GetSlotGuids(), totalCost, lastOrderDescription, false, tick, lastUrl,OrderType.Slots);
             return paymentUrl;
         }
 
-        private string CreateVnPayRequest<T>(T model, HttpContext context, List<Guid>? slotId, double amount, string? description, bool? isRechargePayment, string tick, string? returnPage)
+        private string CreateVnPayRequest<T>(T model, HttpContext context, List<Guid>? slotId, double amount, string? description, bool? isRechargePayment, string tick, string? returnPage, OrderType orderType)
         {
             var timeZoneById = TimeZoneInfo.FindSystemTimeZoneById(_vnPay.TimeZoneId);
             var timeNow = TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, timeZoneById);
@@ -99,9 +99,9 @@ namespace FitSwipe.BusinessLogic.Services.Payments
             pay.AddRequestData("vnp_CurrCode", _vnPay.CurrCode);
             pay.AddRequestData("vnp_IpAddr", pay.GetIpAddress(context));
             pay.AddRequestData("vnp_Locale", _vnPay.Locale);
-            pay.AddRequestData("vnp_OrderInfo", $"{isRechargePayment}|{description}|{currUid}|{returnPage}|{slotIdString}");
+            pay.AddRequestData("vnp_OrderInfo", $"{isRechargePayment}|{description}|{currUid}|{returnPage}|{orderType.ToString()}|{slotIdString}");
             pay.AddRequestData("vnp_OrderType", "other");
-            pay.AddRequestData("vnp_ReturnUrl", "http://localhost:5250/api/Payment/execute");
+            pay.AddRequestData("vnp_ReturnUrl", "https://fitandswipeapi.somee.com/api/Payment/execute");
             pay.AddRequestData("vnp_TxnRef", tick);
             pay.AddRequestData("vnp_ExpireDate", timeNow.AddMinutes(20).ToString("yyyyMMddHHmmss"));
 
@@ -116,13 +116,20 @@ namespace FitSwipe.BusinessLogic.Services.Payments
             var response = pay.GetFullResponseData(collections, _vnPay.HashSecret);
             if (response.Success)
             {
+                if (response.OrderType == OrderType.Slots)
+                {
+                    await HandleSlotsPayment(response);
+                }
+
+
                 var createTransactionDtos = new CreateTransactionDtos
                 {
                     TranscationCode = response.TransactionCode,
                     UserFireBaseId = response.UserFireBaseId,
                     Amount = (int)response.Money,
                     Method = TransactionMethod.VnPay,
-                    SlotIds = response.SlotIds
+                    SlotIds = response.SlotIds,
+                    Description = response.OrderDescription
                 };
 
                 // Create the transaction in the service
@@ -134,8 +141,12 @@ namespace FitSwipe.BusinessLogic.Services.Payments
                 throw new BadRequestException("Giao dịch đã bị hủy");
             }
 
-
             return response;
         }
+        private async Task HandleSlotsPayment(PaymentSlotResponseModel paymentSlotResponseModel)
+        {
+            await _slotServices.UpdateRangePayment(paymentSlotResponseModel.SlotIds);
+        }
     }
+   
 }

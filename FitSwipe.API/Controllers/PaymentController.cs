@@ -29,7 +29,7 @@ namespace FitSwipe.API.Controllers
         public async Task<IActionResult> CreatePaymentForSlotAsync([FromBody] PaySlotDtos model)
         {
             var result = await _paymentServices.CreatePaymentForSlotAsync(model, HttpContext, CurrentUserFirebaseId);
-            return Ok(result);
+            return Ok(new GetPaymentUrlDto { Url = result});
         }
 
         [HttpGet("execute")]

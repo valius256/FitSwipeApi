@@ -183,5 +183,15 @@ namespace FitSwipe.BusinessLogic.Services.Users
                 .ExecuteUpdateAsync(setter => setter.SetProperty(b => b.AvatarUrl, updateUserAvatarDtos.ImageAvatarUrl));
 
         }
+
+        public async Task<GetUserBalanceDto> GetUserBalance(string userId)
+        {
+            var user = await _userRepository.FindOneAsync(s => s.FireBaseId == userId);
+            if (user == null)
+            {
+                throw new DataNotFoundException("User not found");
+            }
+            return new GetUserBalanceDto { Balance = user.Balance ?? 0 };
+        }
     }
 }

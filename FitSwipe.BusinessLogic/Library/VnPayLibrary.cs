@@ -1,4 +1,5 @@
 ﻿using FitSwipe.Shared.Dtos.Payment;
+using FitSwipe.Shared.Enum;
 using Microsoft.AspNetCore.Http;
 using System.Globalization;
 using System.Net;
@@ -47,8 +48,9 @@ namespace FitSwipe.BusinessLogic.Library
 
             var returnUrl = orderInfoParts.Length > 3 ? orderInfoParts[3] : "";
 
+            var orderType = orderInfoParts.Length > 4 ? (OrderType) Enum.Parse(typeof(OrderType), orderInfoParts[4]) : OrderType.Slots;
 
-            string slotId = orderInfoParts.Length > 4 ? orderInfoParts[4] : "";
+            string slotId = orderInfoParts.Length > 5 ? orderInfoParts[5] : "";
             List<Guid> slotIds = string.IsNullOrEmpty(slotId)
                 ? new List<Guid>()
                 : slotId.Split(',').Select(Guid.Parse).ToList();
@@ -75,7 +77,8 @@ namespace FitSwipe.BusinessLogic.Library
                 UserFireBaseId = userId,
                 Money = ((decimal.Parse(money)) / 100),
                 IsRechargePayment = isRecharge,
-                RedirectResult = returnUrl
+                RedirectResult = returnUrl,
+                OrderType = orderType
             };
             return rs1;
         }

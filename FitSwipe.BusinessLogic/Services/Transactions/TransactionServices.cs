@@ -28,7 +28,7 @@ namespace FitSwipe.BusinessLogic.Services.Transactions
                 Status = Shared.Enum.TransactionStatus.Successed,
                 UserFireBaseId = createTransactionDtos.UserFireBaseId,
                 Amount = createTransactionDtos.Amount,
-                Description = $"Thanh toán cho slot: {convertTransactionToListString}"
+                Description = createTransactionDtos.Description ?? "" 
             };
 
             // Create TransactionSlots for each SlotId

@@ -69,6 +69,15 @@ namespace FitSwipe.DataAccess.Repository.Impl
                 {
                     query = query.Where(s =>  pagingModel.Filter.Status.Contains(s.Status));
                 }
+                if (pagingModel.Filter.Ids.Count > 0)
+                {
+                    query = query.Where(s => pagingModel.Filter.Ids.Contains(s.Id));
+                }
+                if (pagingModel.Filter.PTId != null)
+                {
+                    query = query.Where(s => s.CreateById == pagingModel.Filter.PTId || (s.Training != null && s.Training.PTId == pagingModel.Filter.PTId))
+                        .Include(s => s.Training);
+                }
             }
 
             int limit = pagingModel.Limit > 0 ? pagingModel.Limit : 10;
@@ -92,6 +101,9 @@ namespace FitSwipe.DataAccess.Repository.Impl
                 await _context.Entry(slot.Training)
                     .Reference(t => t.Trainee)
                     .LoadAsync();
+                await _context.Entry(slot.Training)
+                   .Reference(t => t.PT)
+                   .LoadAsync();
             }
             return slot;
         }
@@ -100,11 +112,18 @@ namespace FitSwipe.DataAccess.Repository.Impl
         {
             return await _context.Slots
                 .Include(s => s.Training)
-                .Where(s => s.Training != null && s.Training.TraineeId == traineeId)
+                .Where(s => s.CreateById == traineeId && s.Status != Shared.Enum.SlotStatus.Disabled)
                 .AsNoTracking()
                 .ToListAsync();
         }
-
+        public async Task<List<Slot>> GetSlotsOfPT(string PTId)
+        {
+            return await _context.Slots
+                .Include(s => s.Training)
+                .Where(s => (s.CreateById == PTId || (s.Training != null && s.Training.PTId == PTId)) && s.Status != Shared.Enum.SlotStatus.Disabled)
+                .AsNoTracking()
+                .ToListAsync();
+        }
         public async Task<int> CountSlotVideoAsync(Guid slotId)
         {
             return await _context.Slots
