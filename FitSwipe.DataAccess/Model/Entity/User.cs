@@ -28,6 +28,8 @@ namespace FitSwipe.DataAccess.Model.Entity
         [AllowNull]
         public double? Longitude { get; set; }
         [AllowNull]
+        public string? City { get; set; }
+        [AllowNull]
         public Role Role { get; set; }
         [AllowNull]
         public string? Job { get; set; }

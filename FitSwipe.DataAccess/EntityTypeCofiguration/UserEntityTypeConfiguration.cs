@@ -20,6 +20,8 @@ namespace FitSwipe.DataAccess.EntityTypeCofiguration
 
             builder.Property(u => u.Latitude).IsRequired(false);
             builder.Property(u => u.Longitude).IsRequired(false);
+            builder.Property(u => u.City).IsRequired(false);
+
 
             builder.Property(u => u.PricePerHour)
                 .IsRequired(true)
