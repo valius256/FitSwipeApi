@@ -1,5 +1,4 @@
-﻿using FitSwipe.DataAccess.Model.Entity;
-using FitSwipe.DataAccess.Model.Paging;
+﻿using FitSwipe.DataAccess.Model.Paging;
 using FitSwipe.Shared.Dtos.Slots;
 using FitSwipe.Shared.Dtos.Trainings;
 

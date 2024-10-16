@@ -28,6 +28,8 @@ public partial class Appsettings
     public SmtpAppSetting SmtpAppSetting { get; set; }
     [JsonPropertyName("FirebaseUpload")]
     public FirebaseUpload FirebaseUpload { get; set; }
+    [JsonPropertyName("PayOs")]
+    public PayOsOption PayOsOption { get; set; }
 }
 
 public partial class SmtpAppSetting
@@ -103,5 +105,15 @@ public partial class FireBase
     public string ProjectId { get; set; }
 }
 
+
+public partial class PayOsOption
+{
+    [JsonPropertyName("ClientID")]
+    public string ClientID { get; set; }
+    [JsonPropertyName("APIKey")]
+    public string APIKey { get; set; }
+    [JsonPropertyName("ChecksumKey")]
+    public string ChecksumKey { get; set; }
+}
 
 

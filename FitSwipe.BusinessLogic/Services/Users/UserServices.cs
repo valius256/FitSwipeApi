@@ -174,11 +174,6 @@ namespace FitSwipe.BusinessLogic.Services.Users
         public async Task UpdateAvatarImage(string userId, UpdateUserAvatarDtos updateUserAvatarDtos)
         {
             var currUser = await GetUserByIdRequiredAsync(userId);
-            if (currUser != null)
-            {
-                throw new DataNotFoundException("User not found");
-            }
-
             var result = await _userRepository.Where(l => l.FireBaseId == userId)
                 .ExecuteUpdateAsync(setter => setter.SetProperty(b => b.AvatarUrl, updateUserAvatarDtos.ImageAvatarUrl));
 
