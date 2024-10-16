@@ -54,6 +54,7 @@ namespace FitSwipe.API.Extensions
             services.AddScoped<IChatRoomRepository, ChatRoomRepository>();
             services.AddScoped<IUserChatRoomRepository, UserChatRoomRepository>();
             services.AddScoped<IMessageRepository, MessageRepository>();
+            services.AddScoped<IUserMediaRepository, UserMediaRepository>();
             services.AddProblemDetails();
             services.AddLogging();
 
@@ -75,6 +76,7 @@ namespace FitSwipe.API.Extensions
             services.AddScoped<ITrainingService, TrainingService>();
             services.AddScoped<IFeedbackImageSevices, FeedbackImageSevices>();
             services.AddScoped<IChatServices, ChatServices>();
+            services.AddScoped<IUserMediaService, UserMediaService>();
 
             services.AddTransient<IEmailServices, EmailServices>();
             services.AddScoped<IJwtProviderServices, JwtProviderServices>();
@@ -105,7 +107,7 @@ namespace FitSwipe.API.Extensions
             // Register Hangfire and configure it
             services.AddHangfire(config =>
 
-                config.UsePostgreSqlStorage(configuration.GetConnectionString("PostgresInLocal"),
+                config.UsePostgreSqlStorage(configuration.GetConnectionString("PostgresConnectionString"),
                     new PostgreSqlStorageOptions
                     {
                         QueuePollInterval = TimeSpan.FromSeconds(15), // Adjust the poll interval as needed

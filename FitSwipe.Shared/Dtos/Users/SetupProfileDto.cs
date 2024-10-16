@@ -12,5 +12,6 @@ namespace FitSwipe.Shared.Dtos.Users
         public double? Latitude { get; set; }
         public double? Longitude { get; set; }
         public string? Job { get; set; }
+        public string? UserName { get; set; }
     }
 }
