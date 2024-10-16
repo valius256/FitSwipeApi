@@ -2,6 +2,6 @@
 {
     public class UpdateUserAvatarDtos
     {
-        public string ImageAvatarUrl { get; set; }
+        public required string ImageAvatarUrl { get; set; }
     }
 }

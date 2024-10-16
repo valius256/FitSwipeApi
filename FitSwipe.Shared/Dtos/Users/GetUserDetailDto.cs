@@ -23,9 +23,8 @@ namespace FitSwipe.Shared.Dtos.Users
         public double? Height { get; set; }
         public string? Bio { get; set; }
         public string? City { get; set; }
-        public string? District { get; set; }
-        public string? Ward { get; set; }
-        public string? Street { get; set; }
+        public double? Longitude { get; set; }
+        public double? Latitude { get; set; }
         public Role Role { get; set; }
         public string? Job { get; set; }
         public double PricePerHour { get; set; }

@@ -17,9 +17,8 @@ namespace FitSwipe.Shared.Dtos.Users
         public double Height { get; set; }
         public string? Bio { get; set; }
         public string City { get; set; } = string.Empty;
-        public string District { get; set; } = string.Empty;
-        public string Ward { get; set; } = string.Empty;
-        public string Street { get; set; } = string.Empty;
+        public double? Longitude { get; set; }
+        public double? Latitude { get; set; }
         public Role Role { get; set; }
         public string Job { get; set; } = string.Empty;
         public UserStatus Status { get; set; }

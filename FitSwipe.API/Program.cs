@@ -36,7 +36,7 @@ builder.Services.AddDbContext<FitSwipeDbContext>(options =>
     //     b => b.MigrationsAssembly("FitSwipe.DataAccess"));
 
     // using postgres 
-    options.UseNpgsql(builder.Configuration.GetConnectionString("PostgresInLocal"),
+    options.UseNpgsql(builder.Configuration.GetConnectionString("PostgresConnectionString"),
         b => b.MigrationsAssembly("FitSwipe.DataAccess"));
 });
 builder.Services.AddCors(options =>

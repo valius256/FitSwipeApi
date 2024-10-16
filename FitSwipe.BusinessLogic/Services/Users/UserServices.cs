@@ -148,7 +148,12 @@ namespace FitSwipe.BusinessLogic.Services.Users
         public async Task SetupProfileAsync(string userId, SetupProfileDto setupProfileDto)
         {
             var user = await GetUserByIdRequiredAsync(userId);
+            if (setupProfileDto.UserName == null)
+            {
+                setupProfileDto.UserName = user.UserName;
+            }
             var updatedUser = setupProfileDto.Adapt(user);
+            
             if (setupProfileDto.DateOfBirth.HasValue)
             {
                 user.DateOfBirth = DateTime.SpecifyKind(setupProfileDto.DateOfBirth.Value, DateTimeKind.Utc);
