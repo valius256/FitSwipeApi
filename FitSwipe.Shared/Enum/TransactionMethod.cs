@@ -7,6 +7,7 @@ namespace FitSwipe.Shared.Enum
         Internal,
         VnPay,
         MoMo,
+        PayOs,
         Cash,
         Balance,
         Other

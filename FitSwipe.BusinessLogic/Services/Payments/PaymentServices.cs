@@ -11,6 +11,8 @@ using FitSwipe.Shared.Enum;
 using FitSwipe.Shared.Exceptions;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Options;
+using Net.payOS;
+using Net.payOS.Types;
 
 namespace FitSwipe.BusinessLogic.Services.Payments
 {
@@ -20,12 +22,14 @@ namespace FitSwipe.BusinessLogic.Services.Payments
         private readonly ISlotServices _slotServices;
         private readonly ITransactionServices _transactionServices;
         private readonly VnPay _vnPay;
-        public PaymentServices(IUserServices userServices, ISlotServices slotServices, IOptions<VnPay> vnPay, ITransactionServices transactionServices)
+        private readonly PayOsOption _payOs;
+        public PaymentServices(IUserServices userServices, ISlotServices slotServices, IOptions<VnPay> vnPay, ITransactionServices transactionServices, IOptions<PayOsOption> payOs)
         {
             _userServices = userServices;
             _transactionServices = transactionServices;
             _slotServices = slotServices;
             _vnPay = vnPay.Value;
+            _payOs = payOs.Value;
         }
 
         public async Task<string> CreatePaymentForSlotAsync(PaySlotDtos model, HttpContext context, string currentUserFirebaseId)
@@ -79,7 +83,7 @@ namespace FitSwipe.BusinessLogic.Services.Payments
             var tick = DateTime.Now.Ticks.ToString();
 
             // Create payment URL for multiple slots
-            var paymentUrl = CreateVnPayRequest(model, context, model.GetSlotGuids(), totalCost, lastOrderDescription, false, tick, lastUrl,OrderType.Slots);
+            var paymentUrl = CreateVnPayRequest(model, context, model.GetSlotGuids(), totalCost, lastOrderDescription, false, tick, lastUrl, OrderType.Slots);
             return paymentUrl;
         }
 
@@ -143,10 +147,104 @@ namespace FitSwipe.BusinessLogic.Services.Payments
 
             return response;
         }
+
         private async Task HandleSlotsPayment(PaymentSlotResponseModel paymentSlotResponseModel)
         {
             await _slotServices.UpdateRangePayment(paymentSlotResponseModel.SlotIds);
         }
+
+        public async Task HandleSlotsPayment(List<Guid> slotIds)
+        {
+            await _slotServices.UpdateRangePayment(slotIds);
+        }
+
+
+        public async Task<string> CreatePaymentForSlotByPayOsAsync(PaySlotDtos model, string CurrentUserFirebaseId)
+        {
+
+            var user = await _userServices.GetUserByIdRequiredAsync(CurrentUserFirebaseId);
+
+
+            if (user is null)
+            {
+                throw new ModelException(nameof(User), "Người dùng không khả dụng");
+            }
+
+            int totalCost = 0;
+
+            List<ItemData> items = new List<ItemData>();
+
+            foreach (var slotId in model.GetSlotGuids())
+            {
+                var slotDetailDtos = await _slotServices.GetSlotByIdAsync(slotId);
+
+                // Check if slot exists
+                if (slotDetailDtos is null)
+                {
+                    throw new ModelException("Slot", $"Slot {slotId} không tồn tại");
+                }
+
+                // Check if the slot's payment status is 'NotPaid'
+                if (slotDetailDtos.PaymentStatus != PaymentStatus.NotPaid)
+                {
+                    throw new BadRequestException("Invalid payment status");
+                }
+
+                // Check if slot has a valid training session with a price
+                if (slotDetailDtos.Training == null || slotDetailDtos.Training.PricePerSlot == null)
+                {
+                    throw new BadRequestException("Slot is not on a valid training session");
+                }
+
+                // Calculate cost for the slot and add to the total cost
+                var slotCost = slotDetailDtos.Training.PricePerSlot.Value;
+                totalCost += slotCost;
+
+                string slotTime = slotDetailDtos.StartTime + "to" + slotDetailDtos.EndTime + "of" + slotDetailDtos.Training.PT.UserName;
+                // Add slot item data to the list
+                ItemData item = new ItemData(slotTime, 1, slotCost);
+                items.Add(item);
+            }
+
+
+
+            var Content = "Thanh toán cho buổi tập";
+            var lastUrl = model.ReturnUrl?.Trim() ?? "";
+            var tick = DateTime.UtcNow.Ticks;
+
+            var cancelUrl = string.Empty; // example   cancelUrl="https://localhost:3002"
+            var successUrl = "http://localhost:5250/api/payment/handle-payos-callback"; // example   returnUrl="https://localhost:3002"
+
+
+            PayOS payOs = new PayOS(_payOs.ClientID, _payOs.APIKey, _payOs.ChecksumKey);
+            long paymentCode = GenerateUniqueOrderCode();
+            PaymentData paymentData = new PaymentData(paymentCode, totalCost, Content, items, cancelUrl, successUrl);
+            CreatePaymentResult createPayment = await payOs.createPaymentLink(paymentData);
+
+            // create a trasaction for the payment
+            var createTransactionDtos = new CreateTransactionDtos
+            {
+                TranscationCode = createPayment.orderCode.ToString(),
+                UserFireBaseId = CurrentUserFirebaseId,
+                Amount = totalCost,
+                Method = TransactionMethod.PayOs,
+                Description = Content,
+                SlotIds = model.GetSlotGuids()
+            };
+            await _transactionServices.CreateTransactionAsync(createTransactionDtos);
+
+
+            return createPayment.checkoutUrl;
+        }
+
+        public long GenerateUniqueOrderCode()
+        {
+            Random random = new Random();
+            long orderCode = random.Next(100000000, 999999999);
+            return orderCode;
+        }
+
+
     }
-   
+
 }

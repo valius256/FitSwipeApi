@@ -1,4 +1,5 @@
 ﻿using FitSwipe.BusinessLogic.Interfaces.Payments;
+using FitSwipe.BusinessLogic.Interfaces.Slots;
 using FitSwipe.BusinessLogic.Interfaces.Transactions;
 using FitSwipe.DataAccess.Model.Paging;
 using FitSwipe.Shared.Dtos.Payment;
@@ -16,11 +17,13 @@ namespace FitSwipe.API.Controllers
         private readonly IPaymentServices _paymentServices;
         private readonly ILogger<PaymentController> _logger;
         private readonly ITransactionServices _transactionServices;
+        private readonly ISlotTransactionServices _slotTransactionServices;
 
-        public PaymentController(IPaymentServices paymentServices, ILogger<PaymentController> logger, ITransactionServices transactionServices) : base(logger)
+        public PaymentController(IPaymentServices paymentServices, ILogger<PaymentController> logger, ITransactionServices transactionServices, ISlotTransactionServices slotTransactionServices) : base(logger)
         {
             _transactionServices = transactionServices;
             _paymentServices = paymentServices;
+            _slotTransactionServices = slotTransactionServices;
             _logger = logger;
         }
 
@@ -29,7 +32,7 @@ namespace FitSwipe.API.Controllers
         public async Task<IActionResult> CreatePaymentForSlotAsync([FromBody] PaySlotDtos model)
         {
             var result = await _paymentServices.CreatePaymentForSlotAsync(model, HttpContext, CurrentUserFirebaseId);
-            return Ok(new GetPaymentUrlDto { Url = result});
+            return Ok(new GetPaymentUrlDto { Url = result });
         }
 
         [HttpGet("execute")]
@@ -50,6 +53,60 @@ namespace FitSwipe.API.Controllers
         {
             var result = await _transactionServices.GetTransactionsPageAsync(pagingModel, CurrentUserFirebaseId);
             return Ok(result);
+        }
+
+        [HttpPost("create-payos-link")]
+        [Authorize]
+        public async Task<IActionResult> CreatePaymentWithPayOs([FromBody] PaySlotDtos model)
+        {
+            var result = await _paymentServices.CreatePaymentForSlotByPayOsAsync(model, CurrentUserFirebaseId);
+            if (result == null)
+            {
+                return BadRequest("Failed");
+            }
+            return Ok(result);
+        }
+
+        [HttpGet("handle-payos-callback")]
+        public async Task<IActionResult> HandlePaymentCallback([FromQuery] string code, [FromQuery] string id, [FromQuery] bool cancel, [FromQuery] string status, [FromQuery] int orderCode)
+        {
+            _logger.LogInformation($"Received payment callback with code: {code}, id: {id}, cancel: {cancel}, status: {status}, orderCode: {orderCode}");
+            if (string.IsNullOrEmpty(id) || string.IsNullOrEmpty(status))
+            {
+                return BadRequest("Invalid payment callback data.");
+            }
+
+            var transactionEntity = await _transactionServices.GetTransactionByOrderCodeAsync(orderCode);
+
+            if (cancel)
+            {
+                transactionEntity.Status = Shared.Enum.TransactionStatus.Failed;
+                await _transactionServices.UpdateTransactionStatus(orderCode, Shared.Enum.TransactionStatus.Failed);
+            }
+
+            if (status == "PAID")
+            {
+                transactionEntity.Status = Shared.Enum.TransactionStatus.Successed;
+                await _transactionServices.UpdateTransactionStatus(orderCode, Shared.Enum.TransactionStatus.Successed);
+
+                // handle payment for slots
+                var listOfSlotTransaction = await _slotTransactionServices.GetAllTransactionSlotByTransactionId(transactionEntity.Id);
+                var listOfSlot = listOfSlotTransaction.Select(l => l.TransactionId).ToList();
+                await _paymentServices.HandleSlotsPayment(listOfSlot);
+            }
+
+            if (status == "PENDING")
+            {
+                transactionEntity.Status = Shared.Enum.TransactionStatus.Pending;
+                await _transactionServices.UpdateTransactionStatus(orderCode, Shared.Enum.TransactionStatus.Pending);
+            }
+
+            if (status == "CANCELLED")
+            {
+                transactionEntity.Status = Shared.Enum.TransactionStatus.Canceled;
+                await _transactionServices.UpdateTransactionStatus(orderCode, Shared.Enum.TransactionStatus.Canceled);
+            }
+            return Ok(status);
         }
     }
 }
