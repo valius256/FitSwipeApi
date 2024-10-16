@@ -3,7 +3,10 @@ using FitSwipe.DataAccess.Model.Entity;
 using FitSwipe.DataAccess.Model.Paging;
 using FitSwipe.DataAccess.Repository.Intefaces;
 using FitSwipe.Shared.Dtos.Transactions;
+using FitSwipe.Shared.Enum;
+using FitSwipe.Shared.Exceptions;
 using Mapster;
+using Microsoft.EntityFrameworkCore;
 
 namespace FitSwipe.BusinessLogic.Services.Transactions
 {
@@ -25,10 +28,11 @@ namespace FitSwipe.BusinessLogic.Services.Transactions
             {
                 TranscationCode = createTransactionDtos.TranscationCode,
                 Method = createTransactionDtos.Method,
-                Status = Shared.Enum.TransactionStatus.Successed,
+                Status = Shared.Enum.TransactionStatus.Pending,
                 UserFireBaseId = createTransactionDtos.UserFireBaseId,
                 Amount = createTransactionDtos.Amount,
-                Description = createTransactionDtos.Description ?? "" 
+                Description = createTransactionDtos.Description ?? "",
+                CreatedDate = DateTime.UtcNow,
             };
 
             // Create TransactionSlots for each SlotId
@@ -37,7 +41,8 @@ namespace FitSwipe.BusinessLogic.Services.Transactions
                 var transactionSlot = new TransactionSlot
                 {
                     SlotId = slotId,
-                    Transaction = transaction
+                    Transaction = transaction,
+                    CreatedDate = DateTime.UtcNow
                 };
                 transaction.TransactionSlots.Add(transactionSlot);
             }
@@ -46,12 +51,31 @@ namespace FitSwipe.BusinessLogic.Services.Transactions
             return transaction.Adapt<GetSimpleTransactionDtos>();
         }
 
+
+        public async Task<Transaction> GetTransactionByOrderCodeAsync(long orderCode)
+        {
+            var result = await _transactionRepository.FindOneWithNoTrackingAsync(t => t.TranscationCode == orderCode.ToString());
+            if (result == null)
+            {
+                throw new DataNotFoundException("Transaction not found");
+            }
+            return result;
+        }
+
         public async Task<PagedResult<GetSimpleTransactionDtos>> GetTransactionsPageAsync(PagingModel<QueryTransactionDtos> pagedRequest, string userFirebaseId)
         {
             var pagedResultTransactionEntity = await _transactionRepository.GetTransactionsPageAsync(pagedRequest, userFirebaseId);
             return pagedResultTransactionEntity.Adapt<PagedResult<GetSimpleTransactionDtos>>();
         }
 
-
+        public async Task<bool> UpdateTransactionStatus(long orderCode, TransactionStatus status)
+        {
+            var effectedRecord = await _transactionRepository.Where(t => t.TranscationCode == orderCode.ToString()).ExecuteUpdateAsync(l => l.SetProperty(x => x.Status, status));
+            if (effectedRecord == 0)
+            {
+                return false;
+            }
+            return true;
+        }
     }
 }
