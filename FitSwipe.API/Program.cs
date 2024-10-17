@@ -19,6 +19,7 @@ builder.Services.Configure<SmtpAppSetting>(builder.Configuration.GetSection("Smt
 builder.Services.Configure<FirebaseUpload>(builder.Configuration.GetSection("FirebaseUpload"));
 
 builder.Services.Configure<VnPay>(builder.Configuration.GetSection("VnPay"));
+
 builder.Services.Configure<PayOsOption>(builder.Configuration.GetSection("PayOsOption"));
 
 
