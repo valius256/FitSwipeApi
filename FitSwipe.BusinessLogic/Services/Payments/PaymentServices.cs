@@ -213,7 +213,7 @@ namespace FitSwipe.BusinessLogic.Services.Payments
             var tick = DateTime.UtcNow.Ticks;
 
             var cancelUrl = string.Empty; // example   cancelUrl="https://localhost:3002"
-            var successUrl = "http://localhost:5250/api/payment/handle-payos-callback"; // example   returnUrl="https://localhost:3002"
+            var successUrl = "https://fitandswipeapi.somee.com/api/payment/handle-payos-callback"; // example   returnUrl="https://localhost:3002"
 
 
             PayOS payOs = new PayOS(_payOs.ClientID, _payOs.APIKey, _payOs.ChecksumKey);
