@@ -19,17 +19,20 @@ namespace FitSwipe.BusinessLogic.Services.Payments
     public class PaymentServices : IPaymentServices
     {
         private readonly IUserServices _userServices;
+        private readonly ISlotTransactionServices _slotTransactionServices;
         private readonly ISlotServices _slotServices;
         private readonly ITransactionServices _transactionServices;
         private readonly VnPay _vnPay;
         private readonly PayOsOption _payOs;
-        public PaymentServices(IUserServices userServices, ISlotServices slotServices, IOptions<VnPay> vnPay, ITransactionServices transactionServices, IOptions<PayOsOption> payOs)
+        public PaymentServices(IUserServices userServices, ISlotServices slotServices, IOptions<VnPay> vnPay
+            , ITransactionServices transactionServices, IOptions<PayOsOption> payOs, ISlotTransactionServices slotTransactionServices)
         {
             _userServices = userServices;
             _transactionServices = transactionServices;
             _slotServices = slotServices;
             _vnPay = vnPay.Value;
             _payOs = payOs.Value;
+            _slotTransactionServices = slotTransactionServices;
         }
 
         public async Task<string> CreatePaymentForSlotAsync(PaySlotDtos model, HttpContext context, string currentUserFirebaseId)
@@ -244,7 +247,41 @@ namespace FitSwipe.BusinessLogic.Services.Payments
             return orderCode;
         }
 
+        public async Task<string> HandlePayOsCallBackAsync(string code, string id, bool cancel, string status, int orderCode)
+        {
 
+            var transactionEntity = await _transactionServices.GetTransactionByOrderCodeAsync(orderCode);
+
+            if (cancel)
+            {
+                transactionEntity.Status = Shared.Enum.TransactionStatus.Failed;
+                await _transactionServices.UpdateTransactionStatus(orderCode, Shared.Enum.TransactionStatus.Failed);
+            }
+
+            if (status == "PAID")
+            {
+                transactionEntity.Status = Shared.Enum.TransactionStatus.Successed;
+                await _transactionServices.UpdateTransactionStatus(orderCode, Shared.Enum.TransactionStatus.Successed);
+
+                // handle payment for slots
+                var listOfSlotTransaction = await _slotTransactionServices.GetAllTransactionSlotByTransactionId(transactionEntity.Id);
+                var listOfSlot = listOfSlotTransaction.Select(l => l.TransactionId).ToList();
+                await HandleSlotsPayment(listOfSlot);
+            }
+
+            if (status == "PENDING")
+            {
+                transactionEntity.Status = Shared.Enum.TransactionStatus.Pending;
+                await _transactionServices.UpdateTransactionStatus(orderCode, Shared.Enum.TransactionStatus.Pending);
+            }
+
+            if (status == "CANCELLED")
+            {
+                transactionEntity.Status = Shared.Enum.TransactionStatus.Canceled;
+                await _transactionServices.UpdateTransactionStatus(orderCode, Shared.Enum.TransactionStatus.Canceled);
+            }
+            return status;
+        }
     }
 
 }

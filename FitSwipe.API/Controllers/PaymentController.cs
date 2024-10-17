@@ -75,37 +75,7 @@ namespace FitSwipe.API.Controllers
             {
                 return BadRequest("Invalid payment callback data.");
             }
-
-            var transactionEntity = await _transactionServices.GetTransactionByOrderCodeAsync(orderCode);
-
-            if (cancel)
-            {
-                transactionEntity.Status = Shared.Enum.TransactionStatus.Failed;
-                await _transactionServices.UpdateTransactionStatus(orderCode, Shared.Enum.TransactionStatus.Failed);
-            }
-
-            if (status == "PAID")
-            {
-                transactionEntity.Status = Shared.Enum.TransactionStatus.Successed;
-                await _transactionServices.UpdateTransactionStatus(orderCode, Shared.Enum.TransactionStatus.Successed);
-
-                // handle payment for slots
-                var listOfSlotTransaction = await _slotTransactionServices.GetAllTransactionSlotByTransactionId(transactionEntity.Id);
-                var listOfSlot = listOfSlotTransaction.Select(l => l.TransactionId).ToList();
-                await _paymentServices.HandleSlotsPayment(listOfSlot);
-            }
-
-            if (status == "PENDING")
-            {
-                transactionEntity.Status = Shared.Enum.TransactionStatus.Pending;
-                await _transactionServices.UpdateTransactionStatus(orderCode, Shared.Enum.TransactionStatus.Pending);
-            }
-
-            if (status == "CANCELLED")
-            {
-                transactionEntity.Status = Shared.Enum.TransactionStatus.Canceled;
-                await _transactionServices.UpdateTransactionStatus(orderCode, Shared.Enum.TransactionStatus.Canceled);
-            }
+            var result = await _paymentServices.HandlePayOsCallBackAsync(code, id, cancel, status, orderCode);
             return Ok(status);
         }
     }

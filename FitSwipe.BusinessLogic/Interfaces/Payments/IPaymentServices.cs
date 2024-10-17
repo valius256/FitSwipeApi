@@ -9,6 +9,7 @@ namespace FitSwipe.BusinessLogic.Interfaces.Payments
         Task<PaymentSlotResponseModel> PaymentExecuteAsync(IQueryCollection collections);
         Task<string> CreatePaymentForSlotByPayOsAsync(PaySlotDtos model, string CurrentUserFirebaseId);
         Task HandleSlotsPayment(List<Guid> slotIds);
+        Task<string> HandlePayOsCallBackAsync(string code, string id, bool cancel, string status, int orderCode);
 
     }
 }
