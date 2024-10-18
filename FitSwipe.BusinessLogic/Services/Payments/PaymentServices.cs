@@ -203,7 +203,7 @@ namespace FitSwipe.BusinessLogic.Services.Payments
                 var slotCost = slotDetailDtos.Training.PricePerSlot.Value;
                 totalCost += slotCost;
 
-                string slotTime = slotDetailDtos.StartTime + "to" + slotDetailDtos.EndTime + "of" + slotDetailDtos.Training.PT.UserName;
+                string slotTime = slotDetailDtos.StartTime + " to " + slotDetailDtos.EndTime + " of " + slotDetailDtos.Training.PT.UserName;
                 // Add slot item data to the list
                 ItemData item = new ItemData(slotTime, 1, slotCost);
                 items.Add(item);
