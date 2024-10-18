@@ -64,7 +64,7 @@ namespace FitSwipe.API.Controllers
             {
                 return BadRequest("Failed");
             }
-            return Ok(result);
+            return Ok(new GetPaymentUrlDto { Url = result });
         }
 
         [HttpGet("handle-payos-callback")]
