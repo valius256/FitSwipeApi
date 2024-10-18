@@ -193,5 +193,13 @@ namespace FitSwipe.BusinessLogic.Services.Users
             }
             return new GetUserBalanceDto { Balance = user.Balance ?? 0 };
         }
+
+        public async Task UpdatePTOverallRating(string userId)
+        {
+            var user = await GetUserByIdRequiredAsync(userId);
+            var getRefreshedRating =await _userRepository.GetNewRatingOfPT(userId);
+            user.PTRating = getRefreshedRating;
+            await _userRepository.UpdateAsync(user);
+        }
     }
 }

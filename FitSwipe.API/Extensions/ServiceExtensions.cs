@@ -56,6 +56,7 @@ namespace FitSwipe.API.Extensions
             services.AddScoped<IMessageRepository, MessageRepository>();
             services.AddScoped<ISlotTransactionRepository, SlotTransactionRepository>();
             services.AddScoped<IUserMediaRepository, UserMediaRepository>();
+            services.AddScoped<IRequestWithdrawRepository, RequestWithdrawRepository>();
             services.AddProblemDetails();
             services.AddLogging();
 
@@ -79,6 +80,7 @@ namespace FitSwipe.API.Extensions
             services.AddScoped<IChatServices, ChatServices>();
             services.AddScoped<ISlotTransactionServices, SlotTransactionServices>();
             services.AddScoped<IUserMediaService, UserMediaService>();
+            services.AddScoped<IRequestWithdrawService, RequestWithdrawService>();
 
             services.AddTransient<IEmailServices, EmailServices>();
             services.AddScoped<IJwtProviderServices, JwtProviderServices>();

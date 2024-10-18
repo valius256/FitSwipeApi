@@ -108,7 +108,7 @@ namespace FitSwipe.BusinessLogic.Services.Payments
             pay.AddRequestData("vnp_Locale", _vnPay.Locale);
             pay.AddRequestData("vnp_OrderInfo", $"{isRechargePayment}|{description}|{currUid}|{returnPage}|{orderType.ToString()}|{slotIdString}");
             pay.AddRequestData("vnp_OrderType", "other");
-            pay.AddRequestData("vnp_ReturnUrl", "https://fitandswipeapi.somee.com/api/Payment/execute");
+            pay.AddRequestData("vnp_ReturnUrl", "https://fitandswipeapi.somee.com/api/Payment/vnpay-execute");
             pay.AddRequestData("vnp_TxnRef", tick);
             pay.AddRequestData("vnp_ExpireDate", timeNow.AddMinutes(20).ToString("yyyyMMddHHmmss"));
 
@@ -216,7 +216,7 @@ namespace FitSwipe.BusinessLogic.Services.Payments
             var tick = DateTime.UtcNow.Ticks;
 
             var cancelUrl = string.Empty; // example   cancelUrl="https://localhost:3002"
-            var successUrl = "https://fitandswipeapi.somee.com/api/payment/handle-payos-callback"; // example   returnUrl="https://localhost:3002"
+            var successUrl = "https://fitandswipeapi.somee.com/api/payment/payos-callback"; // example   returnUrl="https://localhost:3002"
 
 
             PayOS payOs = new PayOS(_payOs.ClientID, _payOs.APIKey, _payOs.ChecksumKey);

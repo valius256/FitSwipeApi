@@ -64,6 +64,8 @@ namespace FitSwipe.DataAccess.Model.Entity
         public virtual ICollection<Training> TrainingsAttending { get; set; } = new List<Training>();
         public virtual ICollection<Transaction> Transactions { get; set; } = new List<Transaction>();
         public virtual ICollection<Slot> SlotsCreated { get; set; } = new List<Slot>();
+        public virtual ICollection<RequestWithdraw> RequestWithdrawsCreated { get; set; } = new List<RequestWithdraw>();
+        public virtual ICollection<RequestWithdraw> RequestWithdrawsHandled { get; set; } = new List<RequestWithdraw>();
         public ICollection<UserChatRoom> UserChatRooms { get; set; }
         public ICollection<Message> Messages { get; set; } = new List<Message>();
 
