@@ -82,6 +82,7 @@ namespace FitSwipe.BusinessLogic.Services.Trainings
             // update the rating of trainning 
             trainning.Rating = feedbackTrainingDto.Rating;
             trainning.Feedback = feedbackTrainingDto.Feedback;
+            trainning.UpdatedDate = DateTime.SpecifyKind(DateTime.Now, DateTimeKind.Utc);
 
             if (feedbackTrainingDto.ImageUrls != null && feedbackTrainingDto.ImageUrls.Any())
             {
@@ -97,7 +98,7 @@ namespace FitSwipe.BusinessLogic.Services.Trainings
                 }
             }
             await _trainingRepository.UpdateAsync(trainning);
-
+            await _userServices.UpdatePTOverallRating(userFirebaseId);
         }
 
         public async Task<GetTrainingDetailDto> GetDetailById(Guid id)
@@ -252,6 +253,11 @@ namespace FitSwipe.BusinessLogic.Services.Trainings
             simpleTraining.PricePerSlot = updateTrainingPriceDto.TrainingPrice;
             simpleTraining.Status = TrainingStatus.NotStarted;
             await _trainingRepository.UpdateAsync(simpleTraining);
+        }
+        public async Task<PagedResult<GetTrainingFeedbackDetailDto>> GetTrainingFeedbackOfPT(string userId, int limit, int page)
+        {
+            var result = await _trainingRepository.GetFeedbackTrainingOfPT(userId, limit, page);
+            return result.Adapt<PagedResult<GetTrainingFeedbackDetailDto>>();
         }
     }
 }

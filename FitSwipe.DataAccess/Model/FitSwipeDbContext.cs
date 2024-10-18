@@ -31,6 +31,7 @@ namespace FitSwipe.DataAccess.Model
         public DbSet<ChatRoom> ChatRooms { get; set; }
         public DbSet<UserChatRoom> UserChatRooms { get; set; }
         public DbSet<Message> Messages { get; set; }
+        public DbSet<RequestWithdraw> RequestWithdraws { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

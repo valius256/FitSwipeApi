@@ -157,5 +157,10 @@ namespace FitSwipe.DataAccess.Repository.Impl
             #endregion
             return query;
         }
+
+        public async Task<double?> GetNewRatingOfPT(string userId)
+        {
+            return await _context.Trainings.Where(t => t.Rating != null && t.PTId == userId).AverageAsync(t => t.Rating);
+        }
     }
 }

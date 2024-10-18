@@ -3,6 +3,7 @@ using System;
 using FitSwipe.DataAccess.Model;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace FitSwipe.DataAccess.Migrations
 {
     [DbContext(typeof(FitSwipeDbContext))]
-    partial class FitSwipeDbContextModelSnapshot : ModelSnapshot
+    [Migration("20241018143203_Add-request-withdraw-table")]
+    partial class Addrequestwithdrawtable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -255,9 +258,6 @@ namespace FitSwipe.DataAccess.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<int>("Amount")
-                        .HasColumnType("integer");
-
                     b.Property<string>("BankName")
                         .IsRequired()
                         .HasColumnType("text");
@@ -269,9 +269,11 @@ namespace FitSwipe.DataAccess.Migrations
                         .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("HandlerId")
+                        .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<string>("OperatorMessage")
+                        .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<string>("Reason")
@@ -860,7 +862,8 @@ namespace FitSwipe.DataAccess.Migrations
                     b.HasOne("FitSwipe.DataAccess.Model.Entity.User", "Handler")
                         .WithMany("RequestWithdrawsHandled")
                         .HasForeignKey("HandlerId")
-                        .OnDelete(DeleteBehavior.Restrict);
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
 
                     b.HasOne("FitSwipe.DataAccess.Model.Entity.User", "User")
                         .WithMany("RequestWithdrawsCreated")
