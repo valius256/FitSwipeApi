@@ -125,6 +125,12 @@ namespace FitSwipe.API.Extensions
             // Register any other required services here
             services.AddTransient<IDefaultScheduleJob, DefaultScheduleJob>();
 
+            services.AddHangfireServer(cf =>
+           {
+               RecurringJob.AddOrUpdate<SlotServices>(x =>
+                   x.CronJobUpdateSlotStatus(), Cron.Hourly());
+
+           });
 
 
             return services;

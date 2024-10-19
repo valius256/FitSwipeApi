@@ -9,6 +9,7 @@ using FitSwipe.Shared.Dtos.Trainings;
 using FitSwipe.Shared.Enum;
 using FitSwipe.Shared.Exceptions;
 using Mapster;
+using Microsoft.IdentityModel.Tokens;
 using System.Data.Entity;
 
 namespace FitSwipe.BusinessLogic.Services.Slots
@@ -441,7 +442,7 @@ namespace FitSwipe.BusinessLogic.Services.Slots
             {
                 throw new DataNotFoundException("Slot is not found");
             }
-            
+
             var slotDetail = await GetSlotByIdAsync(slot.Id);
             if (slotDetail.Training == null || slotDetail.Training.PTId != userId)
             {
@@ -459,7 +460,8 @@ namespace FitSwipe.BusinessLogic.Services.Slots
                 if (existedVideo == null)
                 {
                     toDelete.Add(video.Adapt<SlotVideos>());
-                } else
+                }
+                else
                 {
                     video.Description = existedVideo.Description;
                     toUpdate.Add(video.Adapt<SlotVideos>());
@@ -491,7 +493,7 @@ namespace FitSwipe.BusinessLogic.Services.Slots
                 slot.Status = SlotStatus.Disabled;
             }
             await _slotRepository.UpdateRangeAsync(slots);
-            await _trainingService.UpdateTrainingStatus(currentTraining.Id,TrainingStatus.Finished,null);
+            await _trainingService.UpdateTrainingStatus(currentTraining.Id, TrainingStatus.Finished, null);
         }
         public async Task UpdateRangePayment(List<Guid> slotIds)
         {
@@ -501,6 +503,76 @@ namespace FitSwipe.BusinessLogic.Services.Slots
                 slot.PaymentStatus = PaymentStatus.Paid;
             }
             await _slotRepository.UpdateRangeAsync(slots);
+        }
+
+        public async Task CronJobUpdateSlotStatus()
+        {
+
+            var listTrainingOfSlot = await HandleForSlotStatus();
+
+            if (listTrainingOfSlot == null)
+            {
+                return;
+            }
+
+            await HandleForTrainningStatus(listTrainingOfSlot);
+
+        }
+
+        private async Task<List<Training?>?> HandleForSlotStatus()
+        {
+            var slotsToUpdate = await _slotRepository.Where(sl => sl.Status == SlotStatus.OnGoing || sl.Status == SlotStatus.NotStarted).ToListAsync();
+
+            if (slotsToUpdate.IsNullOrEmpty())
+            {
+                return null;    
+            }
+
+            foreach (var slot in slotsToUpdate)
+            {
+                if (slot.StartTime <= DateTime.Now && slot.Status == SlotStatus.NotStarted)
+                {
+                    slot.Status = SlotStatus.OnGoing;
+                }
+
+                if (slot.EndTime <= DateTime.Now && slot.Status == SlotStatus.OnGoing)
+                {
+                    slot.Status = SlotStatus.Finished;
+                }
+            }
+            await _slotRepository.UpdateRangeAsync(slotsToUpdate);
+
+            var listOfTrainning = slotsToUpdate.Where(s => s.TrainingId != null).Select(s => s.Training).ToList();
+
+            if (listOfTrainning == null)
+            {
+                return null;
+            }
+
+            return listOfTrainning;
+        }
+
+        private async Task HandleForTrainningStatus(List<Training> trainings)
+        {
+            if (trainings == null)
+            {
+                return;
+            }
+
+            foreach (var trainning in trainings)
+            {
+                if (trainning.Status == TrainingStatus.NotStarted)
+                {
+                    trainning.Status = TrainingStatus.OnGoing;
+                }
+                if (trainning.Status == TrainingStatus.OnGoing)
+                {
+                    trainning.Status = TrainingStatus.Finished;
+                }
+            }
+            await _trainingService.UpdateListTraining(trainings);
+
+
         }
     }
 }
