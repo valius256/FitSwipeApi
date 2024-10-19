@@ -22,5 +22,8 @@ namespace FitSwipe.BusinessLogic.Interfaces.Slots
         Task<int> CountSlotVideos(Guid id);
         Task UpdateRangePayment(List<Guid> slotIds);
         Task UpdateSlotsWhenTrainingFinished(string userId);
+
+        Task CronJobUpdateSlotStatus();
+
     }
 }
