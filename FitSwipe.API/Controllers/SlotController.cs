@@ -30,6 +30,12 @@ namespace FitSwipe.API.Controllers
             var slotDetailDtos = await _slotServices.GetSlotByIdAsync(slotId);
             return Ok(slotDetailDtos);
         }
+        [Authorize]
+        [HttpGet("debt-slots")]
+        public async Task<ActionResult<List<GetSlotDetailDtos>>> GetAllDebtSlots()
+        {
+            return await _slotServices.GetAllDebtSlotsOfTrainee(CurrentUserFirebaseId);
+        }
 
         /// <summary>
         ///  Need in frontend block that the slot only book in days and don;t last to next day

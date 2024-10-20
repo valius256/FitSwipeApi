@@ -499,8 +499,14 @@ namespace FitSwipe.BusinessLogic.Services.Slots
             foreach (var slot in slots)
             {
                 slot.PaymentStatus = PaymentStatus.Paid;
+                slot.UpdatedDate = DateTime.SpecifyKind(DateTime.Now, DateTimeKind.Utc);
             }
             await _slotRepository.UpdateRangeAsync(slots);
+        }
+
+        public async Task<List<GetSlotDetailDtos>> GetAllDebtSlotsOfTrainee(string traineeId)
+        {
+            return (await _slotRepository.GetAllDebtSlotsOfTrainee(traineeId)).Adapt<List<GetSlotDetailDtos>>();
         }
     }
 }

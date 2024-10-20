@@ -97,10 +97,9 @@ namespace FitSwipe.API.Controllers
         }
         [Authorize]
         [HttpGet("PT-feedback/{userId}")]
-        public async Task<IActionResult> GetFeedbackOfPT([FromRoute] string userId, [FromQuery] int limit = 10, [FromQuery] int page = 1)
+        public async Task<ActionResult<PagedResult<GetTrainingFeedbackDetailDto>>> GetFeedbackOfPT([FromRoute] string userId, [FromQuery] int limit = 10, [FromQuery] int page = 1)
         {
-            await _trainingService.GetTrainingFeedbackOfPT(userId,limit,page);
-            return Ok();
+            return (await _trainingService.GetTrainingFeedbackOfPT(userId,limit,page));
         }
     }
 }

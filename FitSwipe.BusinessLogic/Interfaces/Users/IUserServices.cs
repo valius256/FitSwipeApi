@@ -21,5 +21,6 @@ namespace FitSwipe.BusinessLogic.Interfaces.Users
         Task SetupProfileAsync(string userId, SetupProfileDto setupProfileDto);
         Task UpdateAvatarImage(string userId, UpdateUserAvatarDtos updateUserAvatarDtos);
         Task UpdatePTOverallRating(string userId);
+        Task UpdateUserBalance(string userId, int amount);
     }
 }

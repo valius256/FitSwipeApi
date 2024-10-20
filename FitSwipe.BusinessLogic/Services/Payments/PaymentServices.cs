@@ -13,6 +13,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Options;
 using Net.payOS;
 using Net.payOS.Types;
+using static Google.Cloud.Firestore.V1.StructuredAggregationQuery.Types.Aggregation.Types;
 
 namespace FitSwipe.BusinessLogic.Services.Payments
 {
@@ -161,7 +162,74 @@ namespace FitSwipe.BusinessLogic.Services.Payments
             await _slotServices.UpdateRangePayment(slotIds);
         }
 
+        public async Task HandleSlotsPaymentWithBalance(List<Guid> slotIds, string userId)
+        {
+            var total = 0;
+            var user = await _userServices.GetUserByIdRequiredAsync(userId);
+            foreach (var slotId in slotIds)
+            {
+                var slot = await _slotServices.GetSlotByIdAsync(slotId);
+                if (slot != null)
+                {
+                    if (slot.Training == null || slot.Training.PricePerSlot == null)
+                    {
+                        throw new BadRequestException("One of the slot is not updated the price");
+                    };
+                    total += slot.Training.PricePerSlot.Value;
+                }
+            }
+            if (user.Balance < total)
+            {
+                throw new BadRequestException("Insufficient Balance");
+            }
+            await _userServices.UpdateUserBalance(userId, -total);
+            await _slotServices.UpdateRangePayment(slotIds);
+            await _transactionServices.CreateTransactionAsync(new CreateTransactionDtos
+            {
+                TranscationCode = DateTime.UtcNow.Ticks.ToString(),
+                UserFireBaseId = userId,
+                Amount = total,
+                Method = TransactionMethod.Balance,
+                Description = "Trả tiền bằng số dư",
+                Type = TransactionType.AutoDeduction,
+                SlotIds = slotIds,
+            });
+        }
 
+        public async Task<string> CreatePaymentRecharge(string userId, int amount)
+        {
+            var user = await _userServices.GetUserByIdRequiredAsync(userId);
+
+            var Content = "Nạp tiền vào tài khoản";
+            var cancelUrl = string.Empty; // example   cancelUrl="https://localhost:3002"
+            var successUrl = "https://fitandswipeapi.somee.com/api/payment/payos-callback";
+
+            PayOS payOs = new PayOS(_payOs.ClientID, _payOs.APIKey, _payOs.ChecksumKey);
+            long paymentCode = GenerateUniqueOrderCode();
+
+            PaymentData paymentData = new PaymentData(paymentCode, amount, Content, new List<ItemData>{
+                new ItemData("Nạp tiền " + userId, 1 , amount)
+            }, cancelUrl, successUrl);
+
+            CreatePaymentResult createPayment = await payOs.createPaymentLink(paymentData);
+
+            // create a trasaction for the payment
+            var createTransactionDtos = new CreateTransactionDtos
+            {
+                TranscationCode = createPayment.orderCode.ToString(),
+                UserFireBaseId = userId,
+                Amount = amount,
+                Method = TransactionMethod.PayOs,
+                Description = Content,
+                Type = TransactionType.Deposit,
+                SlotIds = [],
+
+            };
+            await _transactionServices.CreateTransactionAsync(createTransactionDtos);
+
+
+            return createPayment.checkoutUrl;
+        }
         public async Task<string> CreatePaymentForSlotByPayOsAsync(PaySlotDtos model, string CurrentUserFirebaseId)
         {
 
@@ -232,7 +300,9 @@ namespace FitSwipe.BusinessLogic.Services.Payments
                 Amount = totalCost,
                 Method = TransactionMethod.PayOs,
                 Description = Content,
-                SlotIds = model.GetSlotGuids()
+                Type = TransactionType.DirectPayment,
+                SlotIds = model.GetSlotGuids(),
+                
             };
             await _transactionServices.CreateTransactionAsync(createTransactionDtos);
 
@@ -264,9 +334,17 @@ namespace FitSwipe.BusinessLogic.Services.Payments
                 await _transactionServices.UpdateTransactionStatus(orderCode, Shared.Enum.TransactionStatus.Successed);
 
                 // handle payment for slots
-                var listOfSlotTransaction = await _slotTransactionServices.GetAllTransactionSlotByTransactionId(transactionEntity.Id);
-                var listOfSlot = listOfSlotTransaction.Select(l => l.TransactionId).ToList();
-                await HandleSlotsPayment(listOfSlot);
+                if (transactionEntity.Type == TransactionType.DirectPayment)
+                {
+                    var listOfSlotTransaction = await _slotTransactionServices.GetAllTransactionSlotByTransactionId(transactionEntity.Id);
+                    var listOfSlot = listOfSlotTransaction.Select(l => l.TransactionId).ToList();
+                    await HandleSlotsPayment(listOfSlot);
+                }
+                else if (transactionEntity.Type == TransactionType.Deposit)
+                {
+                    //Handle recharge
+                    await _userServices.UpdateUserBalance(transactionEntity.UserFireBaseId, transactionEntity.Amount);
+                } 
             }
 
             if (status == "PENDING")

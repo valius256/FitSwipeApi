@@ -76,7 +76,7 @@ namespace FitSwipe.API.Controllers
         [HttpGet("balance")]
         public async Task<GetUserBalanceDto> GetBalanceOfUser()
         {
-            return await _userServices.GetUserBalance(CurrentUserId);
+            return await _userServices.GetUserBalance(CurrentUserFirebaseId);
         }
     }
 }

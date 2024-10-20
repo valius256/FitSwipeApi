@@ -30,7 +30,7 @@ namespace FitSwipe.DataAccess.Repository.Impl
         public async Task<PagedResult<Training>> GetFeedbackTrainingOfPT(string userId, int limit, int page)
         {
             var query = _context.Trainings
-                .Where(t => t.PTId == userId)
+                .Where(t => t.PTId == userId && (t.Rating != null || t.Feedback != null) && t.Status == Shared.Enum.TrainingStatus.Finished)
                 .AsQueryable();
 
             limit = limit > 0 ? limit : 10;
@@ -39,6 +39,7 @@ namespace FitSwipe.DataAccess.Repository.Impl
             return await query
                 .Include(t => t.FeedbackImages)
                 .Include(t => t.Trainee)
+                .OrderByDescending(t => t.CreatedDate)
                 .ToNewPagingAsync(page, limit);
 
         }

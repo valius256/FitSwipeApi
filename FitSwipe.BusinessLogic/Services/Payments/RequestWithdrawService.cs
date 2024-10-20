@@ -1,5 +1,6 @@
 ﻿
 using FitSwipe.BusinessLogic.Interfaces.Payments;
+using FitSwipe.BusinessLogic.Interfaces.Transactions;
 using FitSwipe.BusinessLogic.Interfaces.Users;
 using FitSwipe.DataAccess.Model.Entity;
 using FitSwipe.DataAccess.Model.Paging;
@@ -14,12 +15,14 @@ namespace FitSwipe.BusinessLogic.Services.Payments
     public class RequestWithdrawService : IRequestWithdrawService
     {
         private readonly IRequestWithdrawRepository _requestWithdrawRepository;
+        private readonly ITransactionServices _transactionServices;
         private readonly IUserServices _userServices;
 
-        public RequestWithdrawService(IRequestWithdrawRepository requestWithdrawRepository, IUserServices userServices)
+        public RequestWithdrawService(IRequestWithdrawRepository requestWithdrawRepository, IUserServices userServices, ITransactionServices transactionServices)
         {
             _requestWithdrawRepository = requestWithdrawRepository;
             _userServices = userServices;
+            _transactionServices = transactionServices;
         }
 
         public async Task<GetRequestWithdrawDto> CreateRequestWithdraw(CreateRequestWithdrawDto createRequestWithdrawDto, string userId)
@@ -95,6 +98,17 @@ namespace FitSwipe.BusinessLogic.Services.Payments
             requestWithdraw.Status = updateRequestWithdrawDto.Status;
             requestWithdraw.HandlerId = userId;
             requestWithdraw.UpdatedDate = DateTime.SpecifyKind(DateTime.Now,DateTimeKind.Utc);
+
+            await _userServices.UpdateUserBalance(userId, - requestWithdraw.Amount);
+            await _transactionServices.CreateTransactionAsync(new Shared.Dtos.Transactions.CreateTransactionDtos
+            {
+                TranscationCode = DateTime.UtcNow.Ticks.ToString(),
+                UserFireBaseId = userId,
+                Amount = requestWithdraw.Amount,
+                Description = "Rút tiền tài khoản",
+                Method = Shared.Enum.TransactionMethod.Balance,
+                Type = Shared.Enum.TransactionType.Withdrawal
+            });
 
             await _requestWithdrawRepository.UpdateAsync(requestWithdraw.Adapt<RequestWithdraw>());
             return requestWithdraw.Adapt<GetRequestWithdrawDto>();
