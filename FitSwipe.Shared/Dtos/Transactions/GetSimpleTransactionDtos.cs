@@ -12,5 +12,6 @@ namespace FitSwipe.Shared.Dtos.Transactions
         public TransactionType Type { get; set; }
         public string Description { get; set; } = string.Empty;
         public List<Guid> TransactionSlot { get; set; } = new List<Guid>();
+        public DateTime CreatedDate { get; set; } = DateTime.Now;
     }
 }

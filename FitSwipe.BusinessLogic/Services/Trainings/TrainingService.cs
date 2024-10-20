@@ -9,7 +9,6 @@ using FitSwipe.Shared.Dtos.Trainings;
 using FitSwipe.Shared.Enum;
 using FitSwipe.Shared.Exceptions;
 using Mapster;
-using System.Runtime.InteropServices;
 
 namespace FitSwipe.BusinessLogic.Services.Trainings
 {
@@ -127,7 +126,7 @@ namespace FitSwipe.BusinessLogic.Services.Trainings
             var mappedTraining = training.Adapt<GetTrainingDetailDto>();
             foreach (var slotDto in mappedTraining.Slots)
             {
-                var slot = training.Slots.FirstOrDefault(s => s.Id ==  slotDto.Id)!;
+                var slot = training.Slots.FirstOrDefault(s => s.Id == slotDto.Id)!;
                 slotDto.TotalVideo = slot.Videos.Count;
             }
             return mappedTraining;
@@ -178,7 +177,7 @@ namespace FitSwipe.BusinessLogic.Services.Trainings
             {
                 throw new DataNotFoundException("The training is not found");
             }
-            
+
             if (training.Status == TrainingStatus.Pending && (trainingStatus != TrainingStatus.Rejected && trainingStatus != TrainingStatus.NotStarted && trainingStatus != TrainingStatus.Matched))
             {
                 throw new BadRequestException("Invalid transistion");
@@ -258,6 +257,31 @@ namespace FitSwipe.BusinessLogic.Services.Trainings
         {
             var result = await _trainingRepository.GetFeedbackTrainingOfPT(userId, limit, page);
             return result.Adapt<PagedResult<GetTrainingFeedbackDetailDto>>();
+        }
+
+        public async Task UpdateListTraining(List<Training> trainings)
+        {
+            await _trainingRepository.UpdateRangeAsync(trainings);
+            return;
+        }
+
+        public async Task<bool> IsFirstOrLastSlot(Guid slotId, Guid trainingId, bool isFirst)
+        {
+            var training = await GetDetailById(trainingId);
+            var slots = training.Slots.OrderBy(s => s.StartTime).ToList();
+            if (slots.Count == 0)
+            {
+                return false;
+            }
+            if (isFirst && slots[0].Id == slotId)
+            {
+                return true;
+            }
+            if (!isFirst && slots[slots.Count - 1].Id == slotId)
+            {
+                return true;
+            }
+            return false;
         }
     }
 }

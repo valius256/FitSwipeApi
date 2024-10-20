@@ -1,11 +1,9 @@
 ﻿using FitSwipe.BusinessLogic.Interfaces.UploadDowload;
 using FitSwipe.DataAccess.Model;
 using FitSwipe.Shared.Dtos.UploadDowloads;
-using FitSwipe.Shared.Exceptions;
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Storage.v1.Data;
 using Google.Cloud.Storage.V1;
-using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Options;
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.Formats;
@@ -25,7 +23,7 @@ namespace FitSwipe.BusinessLogic.Services.UploadDowload
         {
             try
             {
-                var contentType = await GetContentTypeAsync(fileName);
+                var contentType = GetContentTypeAsync(fileName);
                 if (string.IsNullOrEmpty(contentType))
                 {
                     throw new ArgumentException("Invalid video file type");
@@ -139,17 +137,7 @@ namespace FitSwipe.BusinessLogic.Services.UploadDowload
 
             return downloadLinksList;
         }
-        public async Task<GetUploadVideoResultWithThumbDto> UploadVideoAndGetThumb(IFormFile file, string userFirebaseId)
-        {
-            //if (file == null || file.Length == 0)
-            //    throw new BadRequestException("File is empty");
 
-            return new GetUploadVideoResultWithThumbDto
-            {
-                VideoUrl = "",
-                ThumbUrl = ""
-            };
-        }
         private async Task<string> UploadMediaToFirebaseStorage(string uid, string fileName, Stream fileStream, string contentType)
         {
             try
@@ -182,7 +170,7 @@ namespace FitSwipe.BusinessLogic.Services.UploadDowload
         }
         // handle multiple type vide 
 
-        private async Task<string> GetContentTypeAsync(string fileName)
+        private string? GetContentTypeAsync(string fileName)
         {
             var extension = Path.GetExtension(fileName).ToLowerInvariant();
             return extension switch
