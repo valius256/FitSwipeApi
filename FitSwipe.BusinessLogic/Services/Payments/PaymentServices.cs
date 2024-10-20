@@ -10,6 +10,7 @@ using FitSwipe.Shared.Dtos.Transactions;
 using FitSwipe.Shared.Enum;
 using FitSwipe.Shared.Exceptions;
 using Microsoft.AspNetCore.Http;
+using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.Extensions.Options;
 using Net.payOS;
 using Net.payOS.Types;
@@ -319,6 +320,13 @@ namespace FitSwipe.BusinessLogic.Services.Payments
 
         public async Task<string> HandlePayOsCallBackAsync(string code, string id, bool cancel, string status, int orderCode)
         {
+            //Check if user truyền bậy vào
+            //PayOS payOS = new PayOS(_payOs.ClientID, _payOs.APIKey, _payOs.ChecksumKey);
+            //PaymentLinkInformation paymentLinkInformation = await payOS.getPaymentLinkInformation(orderCode);
+            //if (paymentLinkInformation.status != status || paymentLinkInformation.id != id)
+            //{
+            //    throw new BadRequestException("Not today hacker");
+            //}
 
             var transactionEntity = await _transactionServices.GetTransactionByOrderCodeAsync(orderCode);
 
@@ -337,7 +345,7 @@ namespace FitSwipe.BusinessLogic.Services.Payments
                 if (transactionEntity.Type == TransactionType.DirectPayment)
                 {
                     var listOfSlotTransaction = await _slotTransactionServices.GetAllTransactionSlotByTransactionId(transactionEntity.Id);
-                    var listOfSlot = listOfSlotTransaction.Select(l => l.TransactionId).ToList();
+                    var listOfSlot = listOfSlotTransaction.Select(l => l.SlotId).ToList();
                     await HandleSlotsPayment(listOfSlot);
                 }
                 else if (transactionEntity.Type == TransactionType.Deposit)

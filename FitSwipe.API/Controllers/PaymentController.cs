@@ -52,9 +52,9 @@ namespace FitSwipe.API.Controllers
             return redirectTo;
         }
 
-        [HttpPost("transactions")]
+        [HttpGet("transactions")]
         [Authorize]
-        public async Task<IActionResult> GetAllTransaction([FromBody] PagingModel<QueryTransactionDtos> pagingModel)
+        public async Task<IActionResult> GetAllTransaction([FromQuery] PagingModel<QueryTransactionDtos> pagingModel)
         {
             var result = await _transactionServices.GetTransactionsPageAsync(pagingModel, CurrentUserFirebaseId);
             return Ok(result);

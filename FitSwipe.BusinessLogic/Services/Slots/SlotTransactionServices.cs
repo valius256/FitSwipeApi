@@ -16,7 +16,7 @@ namespace FitSwipe.BusinessLogic.Services.Slots
 
         public async Task<List<TransactionSlot>> GetAllTransactionSlotByTransactionId(Guid transactionId)
         {
-            return await _slotTransactionRepository.Where(st => st.TransactionId == transactionId).ToListAsync();
+            return (await _slotTransactionRepository.FindWithNoTrackingAsync(st => st.TransactionId == transactionId)).ToList();
         }
     }
 }
