@@ -58,12 +58,5 @@ namespace FitSwipe.API.Controllers
                 return StatusCode(500, $"Internal server error: {ex.Message}");
             }
         }
-
-        [HttpPost("upload-video-get-thumb")]
-        [Authorize]
-        public async Task<ActionResult<GetUploadVideoResultWithThumbDto>> UploadVideoAndGetThumbnail(IFormFile file)
-        {
-            return await _firebaseUploadServices.UploadVideoAndGetThumb(file,CurrentUserFirebaseId);
-        }
     }
 }

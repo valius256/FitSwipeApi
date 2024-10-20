@@ -52,9 +52,9 @@ namespace FitSwipe.API.Controllers
             return redirectTo;
         }
 
-        [HttpPost("transactions")]
+        [HttpGet("transactions")]
         [Authorize]
-        public async Task<IActionResult> GetAllTransaction([FromBody] PagingModel<QueryTransactionDtos> pagingModel)
+        public async Task<IActionResult> GetAllTransaction([FromQuery] PagingModel<QueryTransactionDtos> pagingModel)
         {
             var result = await _transactionServices.GetTransactionsPageAsync(pagingModel, CurrentUserFirebaseId);
             return Ok(result);
@@ -71,6 +71,17 @@ namespace FitSwipe.API.Controllers
             }
             return Ok(new GetPaymentUrlDto { Url = result });
         }
+        [HttpPost("payos-create-deposit")]
+        [Authorize]
+        public async Task<IActionResult> CreatePaymentDepositWithPayOs([FromQuery] int amount)
+        {
+            var result = await _paymentServices.CreatePaymentRecharge(CurrentUserFirebaseId, amount);
+            if (result == null)
+            {
+                return BadRequest("Failed");
+            }
+            return Ok(new GetPaymentUrlDto { Url = result });
+        }
 
         [HttpGet("payos-callback")]
         public async Task<IActionResult> HandlePaymentCallback([FromQuery] string code, [FromQuery] string id, [FromQuery] bool cancel, [FromQuery] string status, [FromQuery] int orderCode)
@@ -81,9 +92,20 @@ namespace FitSwipe.API.Controllers
                 return BadRequest("Invalid payment callback data.");
             }
             var result = await _paymentServices.HandlePayOsCallBackAsync(code, id, cancel, status, orderCode);
-            return Ok(status);
+            var redirectTo = Redirect("fitswipe://payment-completed");
+            if (redirectTo == null)
+            {
+                return Ok(result);
+            }
+            return redirectTo;
         }
-
+        [HttpPut("balance-payment")]
+        [Authorize]
+        public async Task<IActionResult> HandlePaymentSlotsWithBalance([FromBody] List<Guid> slotIds)
+        {
+            await _paymentServices.HandleSlotsPaymentWithBalance(slotIds, CurrentUserFirebaseId);
+            return Ok();
+        }
         [Authorize]//Role Operator
         [HttpGet("withdraw-all")]
         public async Task<ActionResult<PagedResult<GetRequestWithdrawDto>>> GetAllWithdrawRequestPaged([FromQuery] int limit = 10, [FromQuery] int page = 1)

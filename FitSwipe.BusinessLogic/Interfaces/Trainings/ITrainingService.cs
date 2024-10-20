@@ -20,5 +20,6 @@ namespace FitSwipe.BusinessLogic.Interfaces.Trainings
         Task UpdateListTraining(List<Training> trainings);
         Task UpdateTrainingPriceAndApprove(UpdateTrainingPriceDto updateTrainingPriceDto, string userId);
         Task<PagedResult<GetTrainingFeedbackDetailDto>> GetTrainingFeedbackOfPT(string userId, int limit, int page);
+        Task<bool> IsFirstOrLastSlot(Guid slotId, Guid trainingId, bool isFirst);
     }
 }

@@ -264,5 +264,24 @@ namespace FitSwipe.BusinessLogic.Services.Trainings
             await _trainingRepository.UpdateRangeAsync(trainings);
             return;
         }
+
+        public async Task<bool> IsFirstOrLastSlot(Guid slotId, Guid trainingId, bool isFirst)
+        {
+            var training = await GetDetailById(trainingId);
+            var slots = training.Slots.OrderBy(s => s.StartTime).ToList();
+            if (slots.Count == 0)
+            {
+                return false;
+            }
+            if (isFirst && slots[0].Id == slotId)
+            {
+                return true;
+            }
+            if (!isFirst && slots[slots.Count - 1].Id == slotId)
+            {
+                return true;
+            }
+            return false;
+        }
     }
 }

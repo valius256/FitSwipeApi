@@ -193,7 +193,16 @@ namespace FitSwipe.BusinessLogic.Services.Users
             }
             return new GetUserBalanceDto { Balance = user.Balance ?? 0 };
         }
-
+        public async Task UpdateUserBalance(string userId, int amount)
+        {
+            var user = await _userRepository.FindOneAsync(s => s.FireBaseId == userId);
+            if (user == null)
+            {
+                throw new DataNotFoundException("User not found");
+            }
+            user.Balance += amount;
+            await _userRepository.UpdateAsync(user);
+        }
         public async Task UpdatePTOverallRating(string userId)
         {
             var user = await GetUserByIdRequiredAsync(userId);

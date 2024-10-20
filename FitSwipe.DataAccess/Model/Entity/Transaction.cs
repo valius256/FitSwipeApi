@@ -8,6 +8,7 @@ namespace FitSwipe.DataAccess.Model.Entity
         public string TranscationCode { get; set; }
         public TransactionMethod Method { get; set; }
         public TransactionStatus Status { get; set; }
+        public TransactionType Type { get; set; }
         public string UserFireBaseId { get; set; } //Người dùng chịu trách nhiệm chính cho giao dịch này
         public int Amount { get; set; }
         public string Description { get; set; }

@@ -33,6 +33,7 @@ namespace FitSwipe.BusinessLogic.Services.Transactions
                 Amount = createTransactionDtos.Amount,
                 Description = createTransactionDtos.Description ?? "",
                 CreatedDate = DateTime.UtcNow,
+                Type = createTransactionDtos.Type
             };
 
             // Create TransactionSlots for each SlotId

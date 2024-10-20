@@ -501,78 +501,49 @@ namespace FitSwipe.BusinessLogic.Services.Slots
             foreach (var slot in slots)
             {
                 slot.PaymentStatus = PaymentStatus.Paid;
+                slot.UpdatedDate = DateTime.SpecifyKind(DateTime.Now, DateTimeKind.Utc);
             }
             await _slotRepository.UpdateRangeAsync(slots);
         }
 
         public async Task CronJobUpdateSlotStatus()
         {
-
-            var listTrainingOfSlot = await HandleForSlotStatus();
-
-            if (listTrainingOfSlot == null)
-            {
-                return;
-            }
-
-            await HandleForTrainningStatus(listTrainingOfSlot);
-
+            await HandleForSlotStatus();
+            //await HandleForTrainningStatus(listTrainingOfSlot);
         }
 
-        private async Task<List<Training?>?> HandleForSlotStatus()
+        private async Task HandleForSlotStatus()
         {
-            var slotsToUpdate = await _slotRepository.Where(sl => sl.Status == SlotStatus.OnGoing || sl.Status == SlotStatus.NotStarted).ToListAsync();
-
-            if (slotsToUpdate.IsNullOrEmpty())
-            {
-                return null;    
-            }
-
+            var slotsToUpdate = (await _slotRepository.FindWithNoTrackingAsync(sl => sl.Status == SlotStatus.OnGoing || sl.Status == SlotStatus.NotStarted)).ToList();
+            var trainingToUpdate = new List<Training>();
             foreach (var slot in slotsToUpdate)
             {
-                if (slot.StartTime <= DateTime.Now && slot.Status == SlotStatus.NotStarted)
-                {
-                    slot.Status = SlotStatus.OnGoing;
-                }
+                if (slot.TrainingId != null) 
+                { 
+                    if (slot.StartTime <= DateTime.Now && slot.Status == SlotStatus.NotStarted)
+                    {
+                        slot.Status = SlotStatus.OnGoing;
+                        if (await _trainingService.IsFirstOrLastSlot(slot.Id, slot.TrainingId.Value, true))
+                        {
+                            await _trainingService.UpdateTrainingStatus(slot.TrainingId.Value, TrainingStatus.OnGoing, null);
+                        }
+                    }
 
-                if (slot.EndTime <= DateTime.Now && slot.Status == SlotStatus.OnGoing)
-                {
-                    slot.Status = SlotStatus.Finished;
+                    if (slot.EndTime <= DateTime.Now && slot.Status == SlotStatus.OnGoing)
+                    {
+                        slot.Status = SlotStatus.Finished;
+                        if (await _trainingService.IsFirstOrLastSlot(slot.Id, slot.TrainingId.Value, false))
+                        {
+                            await _trainingService.UpdateTrainingStatus(slot.TrainingId.Value, TrainingStatus.Finished, null);
+                        }
+                    }
                 }
             }
-            await _slotRepository.UpdateRangeAsync(slotsToUpdate);
-
-            var listOfTrainning = slotsToUpdate.Where(s => s.TrainingId != null).Select(s => s.Training).ToList();
-
-            if (listOfTrainning == null)
-            {
-                return null;
-            }
-
-            return listOfTrainning;
         }
 
-        private async Task HandleForTrainningStatus(List<Training> trainings)
+        public async Task<List<GetSlotDetailDtos>> GetAllDebtSlotsOfTrainee(string traineeId)
         {
-            if (trainings == null)
-            {
-                return;
-            }
-
-            foreach (var trainning in trainings)
-            {
-                if (trainning.Status == TrainingStatus.NotStarted)
-                {
-                    trainning.Status = TrainingStatus.OnGoing;
-                }
-                if (trainning.Status == TrainingStatus.OnGoing)
-                {
-                    trainning.Status = TrainingStatus.Finished;
-                }
-            }
-            await _trainingService.UpdateListTraining(trainings);
-
-
+            return (await _slotRepository.GetAllDebtSlotsOfTrainee(traineeId)).Adapt<List<GetSlotDetailDtos>>();
         }
     }
 }
