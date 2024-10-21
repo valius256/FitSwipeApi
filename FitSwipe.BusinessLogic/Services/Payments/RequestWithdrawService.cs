@@ -97,7 +97,7 @@ namespace FitSwipe.BusinessLogic.Services.Payments
             requestWithdraw.OperatorMessage = updateRequestWithdrawDto.OperatorMessage;
             requestWithdraw.Status = updateRequestWithdrawDto.Status;
             requestWithdraw.HandlerId = userId;
-            requestWithdraw.UpdatedDate = DateTime.SpecifyKind(DateTime.Now,DateTimeKind.Utc);
+            requestWithdraw.UpdatedDate = DateTime.SpecifyKind(DateTime.UtcNow.AddHours(7),DateTimeKind.Utc);
 
             await _userServices.UpdateUserBalance(userId, - requestWithdraw.Amount);
             await _transactionServices.CreateTransactionAsync(new Shared.Dtos.Transactions.CreateTransactionDtos

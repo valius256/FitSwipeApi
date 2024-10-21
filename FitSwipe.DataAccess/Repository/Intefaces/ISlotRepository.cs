@@ -12,5 +12,6 @@ namespace FitSwipe.DataAccess.Repository.Intefaces
         Task<List<Slot>> GetSlotsOfPT(string PTId);
         Task<int> CountSlotVideoAsync(Guid slotId);
         Task<List<Slot>> GetAllDebtSlotsOfTrainee(string traineeId);
+        Task<List<Slot>> GetUpcomingSlotsOfPT(string traineeId, int limit);
     }
 }

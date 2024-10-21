@@ -41,8 +41,6 @@ namespace FitSwipe.DataAccess.Repository.Impl
                 query = query.Where(l => l.TranscationCode.Contains(filter.TranscationCode));
             }
 
-            var testResult = query.ToList();
-
             if (filter.Method is not null)
             {
                 query = query.Where(l => filter.Method.Contains(l.Method));
@@ -53,7 +51,7 @@ namespace FitSwipe.DataAccess.Repository.Impl
                 query = query.Where(l => filter.Status.Contains(l.Status));
             }
 
-            if (filter.MinAmount != 0 && filter.MaxAmount != 0)
+            if (filter.MinAmount != null && filter.MaxAmount != null)
             {
                 query = query.Where(l => l.Amount >= filter.MinAmount && l.Amount <= filter.MaxAmount);
             }
