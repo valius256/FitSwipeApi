@@ -501,7 +501,7 @@ namespace FitSwipe.BusinessLogic.Services.Slots
             foreach (var slot in slots)
             {
                 slot.PaymentStatus = PaymentStatus.Paid;
-                slot.UpdatedDate = DateTime.SpecifyKind(DateTime.Now, DateTimeKind.Utc);
+                slot.UpdatedDate = DateTime.SpecifyKind(DateTime.UtcNow.AddHours(7), DateTimeKind.Utc);
             }
             await _slotRepository.UpdateRangeAsync(slots);
         }
@@ -520,7 +520,7 @@ namespace FitSwipe.BusinessLogic.Services.Slots
             {
                 if (slot.TrainingId != null) 
                 { 
-                    if (slot.StartTime <= DateTime.Now && slot.Status == SlotStatus.NotStarted)
+                    if (slot.StartTime <= DateTime.SpecifyKind(DateTime.UtcNow.AddHours(7), DateTimeKind.Utc) && slot.Status == SlotStatus.NotStarted)
                     {
                         slot.Status = SlotStatus.OnGoing;
                         if (await _trainingService.IsFirstOrLastSlot(slot.Id, slot.TrainingId.Value, true))
@@ -529,7 +529,7 @@ namespace FitSwipe.BusinessLogic.Services.Slots
                         }
                     }
 
-                    if (slot.EndTime <= DateTime.Now && slot.Status == SlotStatus.OnGoing)
+                    if (slot.EndTime <= DateTime.SpecifyKind(DateTime.UtcNow.AddHours(7), DateTimeKind.Utc) && slot.Status == SlotStatus.OnGoing)
                     {
                         slot.Status = SlotStatus.Finished;
                         if (await _trainingService.IsFirstOrLastSlot(slot.Id, slot.TrainingId.Value, false))
@@ -544,6 +544,10 @@ namespace FitSwipe.BusinessLogic.Services.Slots
         public async Task<List<GetSlotDetailDtos>> GetAllDebtSlotsOfTrainee(string traineeId)
         {
             return (await _slotRepository.GetAllDebtSlotsOfTrainee(traineeId)).Adapt<List<GetSlotDetailDtos>>();
+        }
+        public async Task<List<GetSlotDetailDtos>> GetUpcomingSlotsOfPT(string ptId, int limit)
+        {
+            return (await _slotRepository.GetUpcomingSlotsOfPT(ptId, limit)).Adapt<List<GetSlotDetailDtos>>();
         }
     }
 }

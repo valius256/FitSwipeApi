@@ -81,7 +81,7 @@ namespace FitSwipe.BusinessLogic.Services.Trainings
             // update the rating of trainning 
             trainning.Rating = feedbackTrainingDto.Rating;
             trainning.Feedback = feedbackTrainingDto.Feedback;
-            trainning.UpdatedDate = DateTime.SpecifyKind(DateTime.Now, DateTimeKind.Utc);
+            trainning.UpdatedDate = DateTime.SpecifyKind(DateTime.UtcNow.AddHours(7), DateTimeKind.Utc);
 
             if (feedbackTrainingDto.ImageUrls != null && feedbackTrainingDto.ImageUrls.Any())
             {

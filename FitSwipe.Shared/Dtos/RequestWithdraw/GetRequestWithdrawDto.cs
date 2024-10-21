@@ -7,7 +7,7 @@ namespace FitSwipe.Shared.Dtos.RequestWithdraw
     {
         public Guid Id { get; set; }
         public required string UserId { get; set; }
-        public required string HandlerId { get; set; }
+        public string? HandlerId { get; set; }
         public int Amount { get; set; }
         public string Reason { get; set; } = string.Empty;
         public string AccountNumber { get; set; } = string.Empty;

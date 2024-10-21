@@ -11,7 +11,7 @@ namespace FitSwipe.DataAccess.Model
 
     public abstract class BaseEntity : BaseEntityEmpty, IBaseEntity
     {
-        public DateTime CreatedDate { get; set; } = DateTime.UtcNow;
+        public DateTime CreatedDate { get; set; } = DateTime.UtcNow.AddHours(7);
 
         public DateTime? UpdatedDate { get; set; }
 

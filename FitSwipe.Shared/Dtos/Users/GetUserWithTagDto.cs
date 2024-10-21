@@ -22,7 +22,7 @@ namespace FitSwipe.Shared.Dtos.Users
         public Role Role { get; set; }
         public string Job { get; set; } = string.Empty;
         public UserStatus Status { get; set; }
-        public DateTime CreatedDate { get; set; } = DateTime.Now;
+        public DateTime CreatedDate { get; set; } = DateTime.UtcNow.AddHours(7);
         public DateTime? UpdatedDate { get; set; }
         public DateTime? DeletedDate { get; set; }
         public RecordStatus RecordStatus { get; set; }

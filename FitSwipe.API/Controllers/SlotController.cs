@@ -36,7 +36,12 @@ namespace FitSwipe.API.Controllers
         {
             return await _slotServices.GetAllDebtSlotsOfTrainee(CurrentUserFirebaseId);
         }
-
+        [Authorize]
+        [HttpGet("upcoming-slots")]
+        public async Task<ActionResult<List<GetSlotDetailDtos>>> GetUpcomingSlotsOfPT([FromQuery] int limit = 10)
+        {
+            return await _slotServices.GetUpcomingSlotsOfPT(CurrentUserFirebaseId, limit);
+        }
         /// <summary>
         ///  Need in frontend block that the slot only book in days and don;t last to next day
         /// </summary>
