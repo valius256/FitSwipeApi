@@ -24,7 +24,7 @@ namespace FitSwipe.DataAccess.Repository.Impl
             }
             int limit = pagingRequest.Limit > 0 ? pagingRequest.Limit : 10;
             int page = pagingRequest.Page > 0 ? pagingRequest.Page : 1;
-            return await query.OrderBy(t => t.CreatedDate).ToNewPagingAsync(page, limit);
+            return await query.OrderByDescending(t => t.CreatedDate).ToNewPagingAsync(page, limit);
 
         }
 

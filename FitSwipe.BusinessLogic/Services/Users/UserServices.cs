@@ -210,5 +210,14 @@ namespace FitSwipe.BusinessLogic.Services.Users
             user.PTRating = getRefreshedRating;
             await _userRepository.UpdateAsync(user);
         }
+
+        public async Task EnableUserSubscription(string userId, int level)
+        {
+            var currUser = await GetUserByIdRequiredAsync(userId);
+            currUser.SubscriptionLevel = level;
+            currUser.SubscriptionPurchasedDate = DateTime.UtcNow.AddHours(7);
+            currUser.SubscriptionPaymentStatus = Shared.Enum.PaymentStatus.Paid;
+
+        }
     }
 }

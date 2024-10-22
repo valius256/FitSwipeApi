@@ -182,7 +182,7 @@ namespace FitSwipe.BusinessLogic.Services.Trainings
             {
                 throw new BadRequestException("Invalid transistion");
             }
-            if (training.Status == TrainingStatus.NotStarted && (trainingStatus != TrainingStatus.Disabled && trainingStatus != TrainingStatus.OnGoing))
+            if (training.Status == TrainingStatus.NotStarted && (trainingStatus != TrainingStatus.Disabled && trainingStatus != TrainingStatus.OnGoing && trainingStatus != TrainingStatus.Finished))
             {
                 throw new BadRequestException("Invalid transistion");
             }

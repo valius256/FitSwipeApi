@@ -12,6 +12,8 @@ namespace FitSwipe.BusinessLogic.Interfaces.Payments
         Task<string> HandlePayOsCallBackAsync(string code, string id, bool cancel, string status, int orderCode);
         Task HandleSlotsPaymentWithBalance(List<Guid> slotIds, string userId);
         Task<string> CreatePaymentRecharge(string userId, int amount);
+        Task<string> CreatePaymentSubscription(string userId, int level);
+        Task HandleSubscriptionPaymentWithBalance(string userId, int level);
 
     }
 }

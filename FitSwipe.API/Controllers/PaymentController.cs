@@ -82,7 +82,17 @@ namespace FitSwipe.API.Controllers
             }
             return Ok(new GetPaymentUrlDto { Url = result });
         }
-
+        [HttpPost("payos-create-subscription")]
+        [Authorize]
+        public async Task<IActionResult> CreatePaymentSubscriptionWithPayOs([FromQuery] int level)
+        {
+            var result = await _paymentServices.CreatePaymentSubscription(CurrentUserFirebaseId, level);
+            if (result == null)
+            {
+                return BadRequest("Failed");
+            }
+            return Ok(new GetPaymentUrlDto { Url = result });
+        }
         [HttpGet("payos-callback")]
         public async Task<IActionResult> HandlePaymentCallback([FromQuery] string code, [FromQuery] string id, [FromQuery] bool cancel, [FromQuery] string status, [FromQuery] int orderCode)
         {
@@ -104,6 +114,13 @@ namespace FitSwipe.API.Controllers
         public async Task<IActionResult> HandlePaymentSlotsWithBalance([FromBody] List<Guid> slotIds)
         {
             await _paymentServices.HandleSlotsPaymentWithBalance(slotIds, CurrentUserFirebaseId);
+            return Ok();
+        }
+        [HttpPut("balance-payment-subscription")]
+        [Authorize]
+        public async Task<IActionResult> HandlePaymentSubscriptionWithBalance([FromQuery] int level)
+        {
+            await _paymentServices.HandleSubscriptionPaymentWithBalance(CurrentUserFirebaseId, level);
             return Ok();
         }
         [Authorize]//Role Operator
