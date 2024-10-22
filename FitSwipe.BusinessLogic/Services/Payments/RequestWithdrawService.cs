@@ -37,6 +37,17 @@ namespace FitSwipe.BusinessLogic.Services.Payments
             var requestWithdraw = createRequestWithdrawDto.Adapt<RequestWithdraw>();
             requestWithdraw.UserId = userId;
 
+            await _userServices.UpdateUserBalance(userId, -requestWithdraw.Amount);
+            await _transactionServices.CreateTransactionAsync(new Shared.Dtos.Transactions.CreateTransactionDtos
+            {
+                TranscationCode = DateTime.UtcNow.Ticks.ToString(),
+                UserFireBaseId = userId,
+                Amount = requestWithdraw.Amount,
+                Description = "Rút tiền tài khoản",
+                Method = Shared.Enum.TransactionMethod.Balance,
+                Type = Shared.Enum.TransactionType.Withdrawal
+            });
+
             var addedRequest = await _requestWithdrawRepository.AddAsync(requestWithdraw);
             return addedRequest.Adapt<GetRequestWithdrawDto>();
         }
@@ -99,16 +110,19 @@ namespace FitSwipe.BusinessLogic.Services.Payments
             requestWithdraw.HandlerId = userId;
             requestWithdraw.UpdatedDate = DateTime.SpecifyKind(DateTime.UtcNow.AddHours(7),DateTimeKind.Utc);
 
-            await _userServices.UpdateUserBalance(userId, - requestWithdraw.Amount);
-            await _transactionServices.CreateTransactionAsync(new Shared.Dtos.Transactions.CreateTransactionDtos
+            if (requestWithdraw.Status == Shared.Enum.RequestStatus.Rejected)
             {
-                TranscationCode = DateTime.UtcNow.Ticks.ToString(),
-                UserFireBaseId = userId,
-                Amount = requestWithdraw.Amount,
-                Description = "Rút tiền tài khoản",
-                Method = Shared.Enum.TransactionMethod.Balance,
-                Type = Shared.Enum.TransactionType.Withdrawal
-            });
+                await _userServices.UpdateUserBalance(userId, requestWithdraw.Amount);
+                await _transactionServices.CreateTransactionAsync(new Shared.Dtos.Transactions.CreateTransactionDtos
+                {
+                    TranscationCode = DateTime.UtcNow.Ticks.ToString(),
+                    UserFireBaseId = userId,
+                    Amount = requestWithdraw.Amount,
+                    Description = "Hoàn tiền do thất bại",
+                    Method = Shared.Enum.TransactionMethod.Balance,
+                    Type = Shared.Enum.TransactionType.Deposit
+                });
+            }
 
             await _requestWithdrawRepository.UpdateAsync(requestWithdraw.Adapt<RequestWithdraw>());
             return requestWithdraw.Adapt<GetRequestWithdrawDto>();

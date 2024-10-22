@@ -7,6 +7,7 @@ namespace FitSwipe.Shared.Enum
         Deposit,
         Withdrawal,
         DirectPayment,
-        AutoDeduction
+        AutoDeduction,
+        DirectPaymentSubscription,
     }
 }

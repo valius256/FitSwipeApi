@@ -196,6 +196,30 @@ namespace FitSwipe.BusinessLogic.Services.Payments
                 SlotIds = slotIds,
             });
         }
+        public async Task HandleSubscriptionPaymentWithBalance(string userId, int level)
+        {
+            var amount = 0;
+            if (level == 1)
+            {
+                amount = 100000;
+            }
+            else
+            {
+                throw new BadRequestException("Other Subscriptions than level 1 is not supported yet!");
+            }
+            await _userServices.UpdateUserBalance(userId, -amount);
+            await _userServices.EnableUserSubscription(userId, level);
+            await _transactionServices.CreateTransactionAsync(new CreateTransactionDtos
+            {
+                TranscationCode = DateTime.UtcNow.Ticks.ToString(),
+                UserFireBaseId = userId,
+                Amount = amount,
+                Method = TransactionMethod.Balance,
+                Description = "Trả tiền gói VIP bằng số dư",
+                Type = TransactionType.AutoDeduction,
+                SlotIds = [],
+            });
+        }
 
         public async Task<string> CreatePaymentRecharge(string userId, int amount)
         {
@@ -223,6 +247,48 @@ namespace FitSwipe.BusinessLogic.Services.Payments
                 Method = TransactionMethod.PayOs,
                 Description = Content,
                 Type = TransactionType.Deposit,
+                SlotIds = [],
+
+            };
+            await _transactionServices.CreateTransactionAsync(createTransactionDtos);
+
+
+            return createPayment.checkoutUrl;
+        }
+        public async Task<string> CreatePaymentSubscription(string userId, int level)
+        {
+            var user = await _userServices.GetUserByIdRequiredAsync(userId);
+            var amount = 0;
+            if (level == 1)
+            {
+                amount = 10000;//Fix to 100000 later
+            } else
+            {
+                throw new BadRequestException("Other Subscriptions than level 1 is not supported yet!");
+            }
+
+            var Content = "Thanh toán gói VIP " + level;
+            var cancelUrl = string.Empty; // example   cancelUrl="https://localhost:3002"
+            var successUrl = "https://fitandswipeapi.somee.com/api/payment/payos-callback";
+
+            PayOS payOs = new PayOS(_payOs.ClientID, _payOs.APIKey, _payOs.ChecksumKey);
+            long paymentCode = GenerateUniqueOrderCode();
+
+            PaymentData paymentData = new PaymentData(paymentCode, amount, Content, new List<ItemData>{
+                new ItemData("Gói VIP 1", 1 , amount)
+            }, cancelUrl, successUrl);
+
+            CreatePaymentResult createPayment = await payOs.createPaymentLink(paymentData);
+
+            // create a trasaction for the payment
+            var createTransactionDtos = new CreateTransactionDtos
+            {
+                TranscationCode = createPayment.orderCode.ToString(),
+                UserFireBaseId = userId,
+                Amount = amount,
+                Method = TransactionMethod.PayOs,
+                Description = Content,
+                Type = TransactionType.DirectPaymentSubscription,
                 SlotIds = [],
 
             };
@@ -352,7 +418,20 @@ namespace FitSwipe.BusinessLogic.Services.Payments
                 {
                     //Handle recharge
                     await _userServices.UpdateUserBalance(transactionEntity.UserFireBaseId, transactionEntity.Amount);
-                } 
+                }
+                else if (transactionEntity.Type == TransactionType.DirectPaymentSubscription)
+                {
+                    int level = 1;
+                    if (!string.IsNullOrEmpty(transactionEntity.Description))
+                    {
+                        var levelChar = transactionEntity.Description[transactionEntity.Description.Length - 1]; // Return the last character
+                        if (char.IsDigit(levelChar))
+                        {
+                            level = levelChar - '0'; // Convert to int
+                        }
+                    }
+                    await _userServices.EnableUserSubscription(transactionEntity.UserFireBaseId, level);
+                }
             }
 
             if (status == "PENDING")

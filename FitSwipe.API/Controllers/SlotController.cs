@@ -117,6 +117,10 @@ namespace FitSwipe.API.Controllers
             await _slotServices.DeleteAllUnbookedSlotInARange(start, end, CurrentUserFirebaseId);
             return Ok();
         }
-
+        //[HttpGet("test")]
+        //public async Task Test()
+        //{
+        //    await _slotServices.CronJobUpdateSlotStatus();
+        //}
     }
 }

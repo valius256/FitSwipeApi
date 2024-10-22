@@ -516,6 +516,7 @@ namespace FitSwipe.BusinessLogic.Services.Slots
         {
             var slotsToUpdate = (await _slotRepository.FindWithNoTrackingAsync(sl => sl.Status == SlotStatus.OnGoing || sl.Status == SlotStatus.NotStarted)).ToList();
             var trainingToUpdate = new List<Training>();
+            var slotsWillUpdate = new List<Slot>();
             foreach (var slot in slotsToUpdate)
             {
                 if (slot.TrainingId != null) 
@@ -523,6 +524,7 @@ namespace FitSwipe.BusinessLogic.Services.Slots
                     if (slot.StartTime <= DateTime.SpecifyKind(DateTime.UtcNow.AddHours(7), DateTimeKind.Utc) && slot.Status == SlotStatus.NotStarted)
                     {
                         slot.Status = SlotStatus.OnGoing;
+                        slotsWillUpdate.Add(slot);
                         if (await _trainingService.IsFirstOrLastSlot(slot.Id, slot.TrainingId.Value, true))
                         {
                             await _trainingService.UpdateTrainingStatus(slot.TrainingId.Value, TrainingStatus.OnGoing, null);
@@ -532,6 +534,7 @@ namespace FitSwipe.BusinessLogic.Services.Slots
                     if (slot.EndTime <= DateTime.SpecifyKind(DateTime.UtcNow.AddHours(7), DateTimeKind.Utc) && slot.Status == SlotStatus.OnGoing)
                     {
                         slot.Status = SlotStatus.Finished;
+                        slotsWillUpdate.Add(slot);
                         if (await _trainingService.IsFirstOrLastSlot(slot.Id, slot.TrainingId.Value, false))
                         {
                             await _trainingService.UpdateTrainingStatus(slot.TrainingId.Value, TrainingStatus.Finished, null);
@@ -539,6 +542,7 @@ namespace FitSwipe.BusinessLogic.Services.Slots
                     }
                 }
             }
+            await _slotRepository.UpdateRangeAsync(slotsWillUpdate);
         }
 
         public async Task<List<GetSlotDetailDtos>> GetAllDebtSlotsOfTrainee(string traineeId)
