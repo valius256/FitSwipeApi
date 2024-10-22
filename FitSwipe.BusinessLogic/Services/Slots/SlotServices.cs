@@ -344,8 +344,11 @@ namespace FitSwipe.BusinessLogic.Services.Slots
             var updatingSlots = new List<Slot>();
             var deletingFreeSlots = new List<Slot>();
             var addingFreeSlots = new List<Slot>();
-            foreach (var slot in training.Slots)
+            int index = 0;
+            var sortedTrainingSlots = training.Slots.OrderBy(s => s.StartTime).ToList();
+            foreach (var slot in sortedTrainingSlots)
             {
+                index++;
                 bool isAnySlotOutside = true;
                 foreach (var freeSlot in freeSlots)
                 {
@@ -391,6 +394,7 @@ namespace FitSwipe.BusinessLogic.Services.Slots
                     throw new BadRequestException("Some of the slot are not in your current free time");
                 }
                 var simpleSlot = await _slotRepository.FindOneWithNoTrackingAsync(s => s.Id == slot.Id);
+                simpleSlot!.SlotNumber = index;
                 simpleSlot!.Status = SlotStatus.NotStarted;
                 updatingSlots.Add(simpleSlot);
             }

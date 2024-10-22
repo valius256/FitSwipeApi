@@ -3,6 +3,7 @@ using FitSwipe.DataAccess.Model;
 using FitSwipe.DataAccess.Model.Entity;
 using FitSwipe.DataAccess.Model.Paging;
 using FitSwipe.DataAccess.Repository.Intefaces;
+using FitSwipe.Shared.Dtos.Tags;
 using FitSwipe.Shared.Dtos.Users;
 using FitSwipe.Shared.Enum;
 using Microsoft.EntityFrameworkCore;
@@ -24,6 +25,13 @@ namespace FitSwipe.DataAccess.Repository.Impl
                 .Include(u => u.UserMedias)
                 .Include(u => u.TrainingsInstructing.Where(t => t.Status == TrainingStatus.NotStarted || t.Status == TrainingStatus.OnGoing))
                 .Include(u => u.TrainingsAttending.Where(t => t.Status == TrainingStatus.NotStarted || t.Status == TrainingStatus.OnGoing))
+                .FirstOrDefaultAsync(s => s.FireBaseId == id);
+        }
+
+        public async Task<User?> GetUserWithTagsById(string id)
+        {
+            return await _context.Users
+                .Include(u => u.UserTags).ThenInclude(ut => ut.Tag)
                 .FirstOrDefaultAsync(s => s.FireBaseId == id);
         }
         //public async Task<List<User>> GetUsers(QueryUserDto queryUserDto)
@@ -53,33 +61,35 @@ namespace FitSwipe.DataAccess.Repository.Impl
             int page = pagingModel.Page > 0 ? pagingModel.Page : 1;
             return await query.ToNewPagingAsync(page, limit);
         }
-        public async Task<PagedResult<User>> GetMatchedPTOrdered(List<Guid> tagIds, string userId, int page, int limit)
+        public async Task<PagedResult<User>> GetMatchedPTOrdered(GetUserWithTagDto user, int page, int limit)
         {
-            var refUser = await FindOneAsync(u => u.FireBaseId == userId);
+            double sameGenderScore = (user.Tags.Any(t => t.SpecialTag == SpecialTag.SameGender)) ? 20 : 0;
+            double diffGenderScore = (user.Tags.Any(t => t.SpecialTag == SpecialTag.DifferentGender)) ? 20 : 0;
 
-            if (refUser == null) return new PagedResult<User>(); // handle user not found case
-
+            var tagIds = user.Tags.Select(t => t.Id).ToList();
             const double EarthRadius = 6371; // Earth radius in kilometers
             var random = new Random();
             var query = _context.Users
                 .Include(u => u.TrainingsInstructing)
                 .Include(u => u.UserTags)
                     .ThenInclude(ut => ut.Tag)
-                .Where(u => u.Role == Role.PT && !u.TrainingsInstructing.Any(t => t.TraineeId == userId))
+                .Where(u => u.Role == Role.PT && !u.TrainingsInstructing.Any(t => t.TraineeId == user.FireBaseId))
                 .Select(u => new UserWithMatchScore
                 {
                     //Some math that calculate distance of 2 points in the globe
                     User = u,
                     MatchScore = u.UserTags.Count(ut => tagIds.Contains(ut.TagId))
+                    + ((u.Gender == user.Gender) ? sameGenderScore : 0)
+                    + ((u.Gender != user.Gender) ? diffGenderScore : 0)
                     + (u.PTRating ?? 0) * 3
                     + ((u.SubscriptionLevel ?? 0) * 10)
-                    + (refUser.Latitude.HasValue && refUser.Longitude.HasValue && u.Latitude.HasValue && u.Longitude.HasValue
+                    + (user.Latitude.HasValue && user.Longitude.HasValue && u.Latitude.HasValue && u.Longitude.HasValue
                         ? (
                         2 * EarthRadius *
                             Math.Asin(Math.Sqrt(
-                            Math.Pow(Math.Sin((Math.PI / 180) * (u.Latitude.Value - refUser.Latitude.Value) / 2), 2) +
-                            Math.Cos((Math.PI / 180) * refUser.Latitude.Value) * Math.Cos((Math.PI / 180) * u.Latitude.Value) *
-                            Math.Pow(Math.Sin((Math.PI / 180) * (u.Longitude.Value - refUser.Longitude.Value) / 2), 2)
+                            Math.Pow(Math.Sin((Math.PI / 180) * (u.Latitude.Value - user.Latitude.Value) / 2), 2) +
+                            Math.Cos((Math.PI / 180) * user.Latitude.Value) * Math.Cos((Math.PI / 180) * u.Latitude.Value) *
+                            Math.Pow(Math.Sin((Math.PI / 180) * (u.Longitude.Value - user.Longitude.Value) / 2), 2)
                         ))
                 )
                 : 0)

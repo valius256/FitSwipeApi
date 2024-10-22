@@ -10,6 +10,6 @@ namespace FitSwipe.BusinessLogic.Interfaces.Tags
         Task<List<GetTagDto>> GetsTagByUserId(string userId);
         Task UpsertUserTags(string userId, UpsertUserTagDto upsertUserTagDto);
         Task<List<GetTagDto>> GetCommonTags(string firstUserId, string secondUserId);
-        Task<PagedResult<GetUserWithTagDto>> GetRecommendedPTListByTags(string userId, int page, int limit);
+        //Task<PagedResult<GetUserWithTagDto>> GetRecommendedPTListByTags(string userId, int page, int limit);
     }
 }

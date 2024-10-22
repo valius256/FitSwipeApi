@@ -36,7 +36,7 @@ namespace FitSwipe.API.Controllers
         [HttpGet("match-ordered")]
         public async Task<PagedResult<GetUserWithTagDto>> GetMatchedUsersWithTagsPaged([FromQuery] int page = 1, [FromQuery] int limit = 10)
         {
-            return await _userTagService.GetRecommendedPTListByTags(CurrentUserFirebaseId, page, limit);
+            return await _userServices.GetMatchedUserPagedWithTagsOrderedAsync(CurrentUserFirebaseId, page, limit);
         }
         [Authorize]
         [HttpPatch("update-degree")]
@@ -61,7 +61,11 @@ namespace FitSwipe.API.Controllers
             await _userServices.UpdateAvatarImage(CurrentUserFirebaseId, updateUserAvatarDtos);
             return Ok();
         }
-
+        [HttpGet("subscriptions")]
+        public async Task<GetUserSubscriptionDto> GetSubscriptionInfomation()
+        {
+            return await _userServices.GetUserSubscription(CurrentUserFirebaseId);
+        }
         [HttpGet("{id}/simple")]
         public async Task<GetUserDto> GetSimpleUserById([FromRoute] string id)
         {
