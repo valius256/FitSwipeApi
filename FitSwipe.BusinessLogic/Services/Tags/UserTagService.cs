@@ -74,12 +74,12 @@ namespace FitSwipe.BusinessLogic.Services.Tags
             return firstUserTags.Where(ft => secondUserTags.FirstOrDefault(st => st.Id == ft.Id) != null).ToList();
         }
 
-        public async Task<PagedResult<GetUserWithTagDto>> GetRecommendedPTListByTags(string userId, int page, int limit)
-        {
-            await _userServices.GetUserByIdRequiredAsync(userId);
-            var userTags = await GetsTagByUserId(userId);
-            var result = await _userServices.GetMatchedUserPagedWithTagsOrderedAsync(userTags.Select(ut => ut.Id).ToList(), userId, page, limit);
-            return result;
-        }
+        //public async Task<PagedResult<GetUserWithTagDto>> GetRecommendedPTListByTags(string userId, int page, int limit)
+        //{
+        //    await _userServices.GetUserByIdRequiredAsync(userId);
+        //    var userTags = await GetsTagByUserId(userId);
+        //    var result = await _userServices.GetMatchedUserPagedWithTagsOrderedAsync(userId, page, limit);
+        //    return result;
+        //}
     }
 }

@@ -42,7 +42,18 @@ namespace FitSwipe.BusinessLogic.Services.Users
             }
             return mappedResult;
         }
+        public async Task<GetUserWithTagDto> GetUserWithTagById(string userId)
+        {
+            var user = await _userRepository.GetUserWithTagsById(userId);
+            if (user == null)
+            {
+                throw new DataNotFoundException("User is not found");
+            }
 
+            var mappedUser = user.Adapt<GetUserWithTagDto>();
+            mappedUser.Tags = user.UserTags.Select(u => u.Tag.Adapt<GetTagDto>()).ToList();
+            return mappedUser;
+        }
 
 
         public async Task<List<User>> GetAllUserAsync()
@@ -56,9 +67,10 @@ namespace FitSwipe.BusinessLogic.Services.Users
             return await _userRepository.FindOneAsync(l => l.Email == email);
         }
 
-        public async Task<PagedResult<GetUserWithTagDto>> GetMatchedUserPagedWithTagsOrderedAsync(List<Guid> tagIds, string userId, int page, int limit)
+        public async Task<PagedResult<GetUserWithTagDto>> GetMatchedUserPagedWithTagsOrderedAsync(string userId, int page, int limit)
         {
-            var result = await _userRepository.GetMatchedPTOrdered(tagIds, userId, page, limit);
+            var user = await GetUserDetail(userId);
+            var result = await _userRepository.GetMatchedPTOrdered(user.Adapt<GetUserWithTagDto>(), page, limit);
             var mappedResult = result.Adapt<PagedResult<GetUserWithTagDto>>();
             foreach (var item in mappedResult.Items)
             {
@@ -183,7 +195,10 @@ namespace FitSwipe.BusinessLogic.Services.Users
                 .ExecuteUpdateAsync(setter => setter.SetProperty(b => b.AvatarUrl, updateUserAvatarDtos.ImageAvatarUrl));
 
         }
-
+        public async Task<GetUserSubscriptionDto> GetUserSubscription(string userId)
+        {
+            return (await GetUserByIdRequiredAsync(userId)).Adapt<GetUserSubscriptionDto>();
+        }
         public async Task<GetUserBalanceDto> GetUserBalance(string userId)
         {
             var user = await _userRepository.FindOneAsync(s => s.FireBaseId == userId);
@@ -214,9 +229,20 @@ namespace FitSwipe.BusinessLogic.Services.Users
         public async Task EnableUserSubscription(string userId, int level)
         {
             var currUser = await GetUserByIdRequiredAsync(userId);
+
+            if (currUser.SubscriptionLevel != null && currUser.SubscriptionPurchasedDate != null
+                && currUser.SubscriptionPurchasedDate.Value.AddDays(30) < DateTime.UtcNow.AddHours(7)
+                && currUser.SubscriptionLevel == level)
+            {
+                currUser.SubscriptionPurchasedDate = currUser.SubscriptionPurchasedDate.Value.AddDays(30);              
+            } else
+            {
+                currUser.SubscriptionPurchasedDate = DateTime.UtcNow.AddHours(7);
+            }
+
             currUser.SubscriptionLevel = level;
-            currUser.SubscriptionPurchasedDate = DateTime.UtcNow.AddHours(7);
             currUser.SubscriptionPaymentStatus = Shared.Enum.PaymentStatus.Paid;
+            await _userRepository.UpdateAsync(currUser);
 
         }
     }

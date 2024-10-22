@@ -10,7 +10,8 @@ namespace FitSwipe.DataAccess.Repository.Intefaces
         Task<User?> GetUserDetailById(string id);
         Task<PagedResult<User>> GetUsersPaged(PagingModel<QueryUserDto> pagingModel);
         Task<PagedResult<User>> GetUsersPagedWithTags(PagingModel<QueryUserDto> pagingModel);
-        Task<PagedResult<User>> GetMatchedPTOrdered(List<Guid> tagIds, string userId, int page, int limit);
+        Task<PagedResult<User>> GetMatchedPTOrdered(GetUserWithTagDto user, int page, int limit);
+        Task<User?> GetUserWithTagsById(string id);
         Task<double?> GetNewRatingOfPT(string userId);
     }
 }
