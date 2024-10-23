@@ -83,16 +83,16 @@ namespace FitSwipe.DataAccess.Repository.Impl
                     + ((u.Gender != user.Gender) ? diffGenderScore : 0)
                     + (u.PTRating ?? 0) * 3
                     + ((u.SubscriptionLevel ?? 0) * 10)
-                    + (user.Latitude.HasValue && user.Longitude.HasValue && u.Latitude.HasValue && u.Longitude.HasValue
+                    + Math.Min(100, 100 / Math.Max(1, ((user.Latitude.HasValue && user.Longitude.HasValue && u.Latitude.HasValue && u.Longitude.HasValue
                         ? (
                         2 * EarthRadius *
                             Math.Asin(Math.Sqrt(
                             Math.Pow(Math.Sin((Math.PI / 180) * (u.Latitude.Value - user.Latitude.Value) / 2), 2) +
                             Math.Cos((Math.PI / 180) * user.Latitude.Value) * Math.Cos((Math.PI / 180) * u.Latitude.Value) *
                             Math.Pow(Math.Sin((Math.PI / 180) * (u.Longitude.Value - user.Longitude.Value) / 2), 2)
-                        ))
-                )
-                : 0)
+                            ))
+                        )
+                      : 0))))
                 })
                 .OrderByDescending(u => u.MatchScore)
                 .AsQueryable();

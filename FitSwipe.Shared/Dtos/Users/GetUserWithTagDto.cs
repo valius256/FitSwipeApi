@@ -1,5 +1,6 @@
 ﻿using FitSwipe.Shared.Dtos.Tags;
 using FitSwipe.Shared.Enum;
+using System.Diagnostics.CodeAnalysis;
 
 namespace FitSwipe.Shared.Dtos.Users
 {
@@ -31,6 +32,8 @@ namespace FitSwipe.Shared.Dtos.Users
         public string? Description { get; set; }
         public double? PTExperienceYear { get; set; }
         public double? PTRating { get; set; }
+        public int? SubscriptionLevel { get; set; }
+        public PaymentStatus? SubscriptionPaymentStatus { get; set; }
         public List<GetTagDto> Tags { get; set; } = new List<GetTagDto>();
     }
 }
