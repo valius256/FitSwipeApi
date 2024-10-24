@@ -143,7 +143,7 @@ namespace FitSwipe.BusinessLogic.Services.Payments
                     Amount = (int)response.Money,
                     Method = TransactionMethod.VnPay,
                     SlotIds = response.SlotIds,
-                    Description = response.OrderDescription
+                    Description = response.OrderDescription,
                 };
 
                 // Create the transaction in the service
@@ -190,9 +190,10 @@ namespace FitSwipe.BusinessLogic.Services.Payments
             }
             await _userServices.UpdateUserBalance(userId, -total);
             await _slotServices.UpdateRangePayment(slotIds);
+            var code = GenerateUniqueOrderCode();
             await _transactionServices.CreateTransactionAsync(new CreateTransactionDtos
             {
-                TranscationCode = DateTime.UtcNow.Ticks.ToString(),
+                TranscationCode = code.ToString(),
                 UserFireBaseId = userId,
                 Amount = total,
                 Method = TransactionMethod.Balance,
@@ -200,6 +201,7 @@ namespace FitSwipe.BusinessLogic.Services.Payments
                 Type = TransactionType.AutoDeduction,
                 SlotIds = slotIds,
             });
+            await _transactionServices.UpdateTransactionStatus(code, TransactionStatus.Successed);
         }
         public async Task HandleSubscriptionPaymentWithBalance(string userId, int level)
         {
@@ -214,9 +216,10 @@ namespace FitSwipe.BusinessLogic.Services.Payments
             }
             await _userServices.UpdateUserBalance(userId, -amount);
             await _userServices.EnableUserSubscription(userId, level);
+            var code = GenerateUniqueOrderCode();
             await _transactionServices.CreateTransactionAsync(new CreateTransactionDtos
             {
-                TranscationCode = DateTime.UtcNow.Ticks.ToString(),
+                TranscationCode = code.ToString(),
                 UserFireBaseId = userId,
                 Amount = amount,
                 Method = TransactionMethod.Balance,
@@ -224,6 +227,7 @@ namespace FitSwipe.BusinessLogic.Services.Payments
                 Type = TransactionType.AutoDeduction,
                 SlotIds = [],
             });
+            await _transactionServices.UpdateTransactionStatus(code, TransactionStatus.Successed);
         }
 
         public async Task<string> CreatePaymentRecharge(string userId, int amount)
@@ -275,7 +279,7 @@ namespace FitSwipe.BusinessLogic.Services.Payments
 
             var Content = "Thanh toán gói VIP " + level;
             var cancelUrl = string.Empty; // example   cancelUrl="https://localhost:3002"
-            var successUrl = "https://fitandswipeapi.somee.com/api/payment/payos-callback";
+            var successUrl = "https://localhost:7151/api/payment/payos-callback";
 
             PayOS payOs = new PayOS(_payOs.ClientID, _payOs.APIKey, _payOs.ChecksumKey);
             long paymentCode = GenerateUniqueOrderCode();

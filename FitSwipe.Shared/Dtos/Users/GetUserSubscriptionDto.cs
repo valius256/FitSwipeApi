@@ -1,8 +1,6 @@
-﻿using FitSwipe.Shared.Enum;
-
+using FitSwipe.Shared.Enum;
 namespace FitSwipe.Shared.Dtos.Users
 {
-
     public class GetUserSubscriptionDto
     {
         public string FireBaseId { get; set; } = string.Empty;

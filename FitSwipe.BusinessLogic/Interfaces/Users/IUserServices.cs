@@ -15,7 +15,7 @@ namespace FitSwipe.BusinessLogic.Interfaces.Users
         Task<User> GetUserByIdRequiredAsync(string id);
         Task<PagedResult<GetUserDto>> GetUserPagedAsync(PagingModel<QueryUserDto> pagingModel);
         Task<PagedResult<GetUserWithTagDto>> GetUserPagedWithTagsAsync(PagingModel<QueryUserDto> pagingModel);
-        Task<PagedResult<GetUserWithTagDto>> GetMatchedUserPagedWithTagsOrderedAsync(List<Guid> tagIds, string userId, int page, int limit);
+        Task<PagedResult<GetUserWithTagDto>> GetMatchedUserPagedWithTagsOrderedAsync(string userId, int page, int limit);
         Task<GetUserBalanceDto> GetUserBalance(string userId);
         Task UpdatePTDegreeAsync(string userId, UpdateImageUrlDto updateImageUrlDto);
         Task SetupProfileAsync(string userId, SetupProfileDto setupProfileDto);
@@ -23,7 +23,11 @@ namespace FitSwipe.BusinessLogic.Interfaces.Users
         Task UpdatePTOverallRating(string userId);
         Task UpdateUserBalance(string userId, int amount);
         Task EnableUserSubscription(string userId, int level);
+
         Task<List<GetUserSubscriptionDto>> GetAllUserSubcriptionsExpired();
         Task UpdateUserSubcription(GetUserSubscriptionDto getUserSubscriptionDto);
+
+        Task<GetUserSubscriptionDto> GetUserSubscription(string userId);
+
     }
 }
