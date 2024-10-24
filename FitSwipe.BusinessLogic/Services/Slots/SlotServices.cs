@@ -9,7 +9,6 @@ using FitSwipe.Shared.Dtos.Trainings;
 using FitSwipe.Shared.Enum;
 using FitSwipe.Shared.Exceptions;
 using Mapster;
-using Microsoft.IdentityModel.Tokens;
 using System.Data.Entity;
 
 namespace FitSwipe.BusinessLogic.Services.Slots
@@ -519,8 +518,8 @@ namespace FitSwipe.BusinessLogic.Services.Slots
             var slotsWillUpdate = new List<Slot>();
             foreach (var slot in slotsToUpdate)
             {
-                if (slot.TrainingId != null) 
-                { 
+                if (slot.TrainingId != null)
+                {
                     if (slot.StartTime <= DateTime.SpecifyKind(DateTime.UtcNow.AddHours(7), DateTimeKind.Utc) && slot.Status == SlotStatus.NotStarted)
                     {
                         slot.Status = SlotStatus.OnGoing;
@@ -534,6 +533,7 @@ namespace FitSwipe.BusinessLogic.Services.Slots
                     if (slot.EndTime <= DateTime.SpecifyKind(DateTime.UtcNow.AddHours(7), DateTimeKind.Utc) && slot.Status == SlotStatus.OnGoing)
                     {
                         slot.Status = SlotStatus.Finished;
+
                         slotsWillUpdate.Add(slot);
                         if (await _trainingService.IsFirstOrLastSlot(slot.Id, slot.TrainingId.Value, false))
                         {
@@ -552,6 +552,17 @@ namespace FitSwipe.BusinessLogic.Services.Slots
         public async Task<List<GetSlotDetailDtos>> GetUpcomingSlotsOfPT(string ptId, int limit)
         {
             return (await _slotRepository.GetUpcomingSlotsOfPT(ptId, limit)).Adapt<List<GetSlotDetailDtos>>();
+        }
+
+        public async Task<List<GetSlotDetailDtos>> GetAllSlotInCurrentDate()
+        {
+            var currentDate = DateTime.UtcNow.AddHours(7).Date; // Gets the date part of the current time
+            var slotEntity = await _slotRepository
+                .FindAsync(s => s.StartTime.Date == currentDate);
+
+
+            var result = slotEntity.Adapt<List<GetSlotDetailDtos>>();
+            return result;
         }
     }
 }

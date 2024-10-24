@@ -153,7 +153,7 @@ namespace FitSwipe.BusinessLogic.Services.Users
                 setupProfileDto.UserName = user.UserName;
             }
             var updatedUser = setupProfileDto.Adapt(user);
-            
+
             if (setupProfileDto.DateOfBirth.HasValue)
             {
                 user.DateOfBirth = DateTime.SpecifyKind(setupProfileDto.DateOfBirth.Value, DateTimeKind.Utc);
@@ -206,7 +206,7 @@ namespace FitSwipe.BusinessLogic.Services.Users
         public async Task UpdatePTOverallRating(string userId)
         {
             var user = await GetUserByIdRequiredAsync(userId);
-            var getRefreshedRating =await _userRepository.GetNewRatingOfPT(userId);
+            var getRefreshedRating = await _userRepository.GetNewRatingOfPT(userId);
             user.PTRating = getRefreshedRating;
             await _userRepository.UpdateAsync(user);
         }
@@ -218,6 +218,19 @@ namespace FitSwipe.BusinessLogic.Services.Users
             currUser.SubscriptionPurchasedDate = DateTime.UtcNow.AddHours(7);
             currUser.SubscriptionPaymentStatus = Shared.Enum.PaymentStatus.Paid;
 
+        }
+
+        public async Task<List<GetUserSubscriptionDto>> GetAllUserSubcriptionsExpired()
+        {
+            var userSubcriptionExpired = await _userRepository.Where(u => u.SubscriptionPaymentStatus == Shared.Enum.PaymentStatus.Paid &&
+                    (u.SubscriptionPurchasedDate != null && (DateTime.UtcNow.AddHours(7) - u.SubscriptionPurchasedDate.Value).TotalDays >= 30.0)).AsNoTracking().ToListAsync();
+            return userSubcriptionExpired.Adapt<List<GetUserSubscriptionDto>>();
+        }
+
+        public async Task UpdateUserSubcription(GetUserSubscriptionDto getUserSubscriptionDto)
+        {
+            await _userRepository.Where(l => l.FireBaseId == getUserSubscriptionDto.FireBaseId)
+                .ExecuteUpdateAsync(u => u.SetProperty(t => t.SubscriptionPaymentStatus, Shared.Enum.PaymentStatus.NotPaid));
         }
     }
 }

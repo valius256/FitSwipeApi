@@ -23,5 +23,7 @@ namespace FitSwipe.BusinessLogic.Interfaces.Users
         Task UpdatePTOverallRating(string userId);
         Task UpdateUserBalance(string userId, int amount);
         Task EnableUserSubscription(string userId, int level);
+        Task<List<GetUserSubscriptionDto>> GetAllUserSubcriptionsExpired();
+        Task UpdateUserSubcription(GetUserSubscriptionDto getUserSubscriptionDto);
     }
 }

@@ -21,7 +21,7 @@ namespace FitSwipe.API.Controllers
         private readonly ISlotTransactionServices _slotTransactionServices;
         private readonly IRequestWithdrawService _requestWithdrawService;
 
-        public PaymentController(IPaymentServices paymentServices, ILogger<PaymentController> logger, 
+        public PaymentController(IPaymentServices paymentServices, ILogger<PaymentController> logger,
             ITransactionServices transactionServices, ISlotTransactionServices slotTransactionServices,
             IRequestWithdrawService requestWithdrawService) : base(logger)
         {
@@ -133,7 +133,7 @@ namespace FitSwipe.API.Controllers
         [HttpGet("withdraw-user")]
         public async Task<ActionResult<PagedResult<GetRequestWithdrawDto>>> GetAllWithdrawRequestOfOneUserPaged([FromQuery] int limit = 10, [FromQuery] int page = 1)
         {
-            return await _requestWithdrawService.GetRequestWithdrawOfUser(CurrentUserFirebaseId,limit, page);
+            return await _requestWithdrawService.GetRequestWithdrawOfUser(CurrentUserFirebaseId, limit, page);
         }
         [Authorize]
         [HttpPost("withdraw")]
@@ -151,7 +151,7 @@ namespace FitSwipe.API.Controllers
         [HttpDelete("withdraw/{id}")]
         public async Task<IActionResult> DeleteWithdrawRequest([FromRoute] Guid id)
         {
-            await _requestWithdrawService.DeleteRequestWithdraw(id,CurrentUserFirebaseId);
+            await _requestWithdrawService.DeleteRequestWithdraw(id, CurrentUserFirebaseId);
             return Ok();
         }
     }

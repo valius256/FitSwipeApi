@@ -1,20 +1,21 @@
-﻿using FitSwipe.BusinessLogic.Interfaces.Payments;
+﻿using Firebase.Auth;
+using FitSwipe.BusinessLogic.Interfaces.Payments;
 using FitSwipe.BusinessLogic.Interfaces.Slots;
+using FitSwipe.BusinessLogic.Interfaces.Trainings;
 using FitSwipe.BusinessLogic.Interfaces.Transactions;
 using FitSwipe.BusinessLogic.Interfaces.Users;
 using FitSwipe.BusinessLogic.Library;
 using FitSwipe.DataAccess.Model;
 using FitSwipe.DataAccess.Model.Entity;
+using FitSwipe.DataAccess.Repository.Intefaces;
 using FitSwipe.Shared.Dtos.Payment;
 using FitSwipe.Shared.Dtos.Transactions;
 using FitSwipe.Shared.Enum;
 using FitSwipe.Shared.Exceptions;
 using Microsoft.AspNetCore.Http;
-using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.Extensions.Options;
 using Net.payOS;
 using Net.payOS.Types;
-using static Google.Cloud.Firestore.V1.StructuredAggregationQuery.Types.Aggregation.Types;
 
 namespace FitSwipe.BusinessLogic.Services.Payments
 {
@@ -25,16 +26,20 @@ namespace FitSwipe.BusinessLogic.Services.Payments
         private readonly ISlotServices _slotServices;
         private readonly ITransactionServices _transactionServices;
         private readonly VnPay _vnPay;
+        private readonly ISlotRepository _slotRepository;
+        private readonly ITrainingService _trainingService;
         private readonly PayOsOption _payOs;
-        public PaymentServices(IUserServices userServices, ISlotServices slotServices, IOptions<VnPay> vnPay
+        public PaymentServices(IUserServices userServices, ISlotRepository slotRepository, ISlotServices slotServices, IOptions<VnPay> vnPay, ITrainingService trainingService
             , ITransactionServices transactionServices, IOptions<PayOsOption> payOs, ISlotTransactionServices slotTransactionServices)
         {
             _userServices = userServices;
             _transactionServices = transactionServices;
             _slotServices = slotServices;
+            _slotRepository = slotRepository;
             _vnPay = vnPay.Value;
             _payOs = payOs.Value;
             _slotTransactionServices = slotTransactionServices;
+            _trainingService = trainingService;
         }
 
         public async Task<string> CreatePaymentForSlotAsync(PaySlotDtos model, HttpContext context, string currentUserFirebaseId)
@@ -43,7 +48,7 @@ namespace FitSwipe.BusinessLogic.Services.Payments
 
             if (user is null)
             {
-                throw new ModelException(nameof(User), "Người dùng không khả dụng");
+                throw new ModelException(nameof(DataAccess.Model.Entity.User), "Người dùng không khả dụng");
             }
 
             // Initialize total cost
@@ -262,7 +267,8 @@ namespace FitSwipe.BusinessLogic.Services.Payments
             if (level == 1)
             {
                 amount = 10000;//Fix to 100000 later
-            } else
+            }
+            else
             {
                 throw new BadRequestException("Other Subscriptions than level 1 is not supported yet!");
             }
@@ -369,7 +375,7 @@ namespace FitSwipe.BusinessLogic.Services.Payments
                 Description = Content,
                 Type = TransactionType.DirectPayment,
                 SlotIds = model.GetSlotGuids(),
-                
+
             };
             await _transactionServices.CreateTransactionAsync(createTransactionDtos);
 
@@ -446,6 +452,81 @@ namespace FitSwipe.BusinessLogic.Services.Payments
                 await _transactionServices.UpdateTransactionStatus(orderCode, Shared.Enum.TransactionStatus.Canceled);
             }
             return status;
+        }
+
+        public async Task CronForUAutoPurchaseByUserBalance()
+        {
+            var allSlotStartInDay = await _slotServices.GetAllSlotInCurrentDate();
+            if (allSlotStartInDay.Count == 0)
+            {
+                return;
+            }
+            foreach (var slot in allSlotStartInDay)
+            {
+                var user = await _userServices.GetUserByIdRequiredAsync(slot.CreateById.ToString());
+                if (slot.Training == null || slot.Training.PricePerSlot == null)
+                {
+                    throw new BadRequestException("One of the slot is not updated the price");
+                }
+                if (user.Balance >= slot.Training.PricePerSlot)
+                {
+                    await HandleSlotsPaymentWithBalance(new List<Guid> { slot.Id }, user.FireBaseId);
+                }
+            }
+        }
+
+        public async Task CronChangeSubscriptionStatusWhenOverdue()
+        {
+            var allExpiredSubscription = await _userServices.GetAllUserSubcriptionsExpired();
+            foreach (var user in allExpiredSubscription)
+            {
+                user.SubscriptionPaymentStatus = PaymentStatus.NotPaid;
+                await _userServices.UpdateUserSubcription(user);
+            }
+        }
+
+        public async Task CronJobUpdateSlotStatus()
+        {
+            await HandleForSlotStatus();
+            //await HandleForTrainningStatus(listTrainingOfSlot);
+        }
+
+        private async Task HandleForSlotStatus()
+        {
+            var slotsToUpdate = (await _slotRepository.FindWithNoTrackingAsync(sl => sl.Status == SlotStatus.OnGoing || sl.Status == SlotStatus.NotStarted)).ToList();
+            var trainingToUpdate = new List<Training>();
+            var slotsWillUpdate = new List<Slot>();
+            foreach (var slot in slotsToUpdate)
+            {
+                if (slot.TrainingId != null)
+                {
+                    if (slot.StartTime <= DateTime.SpecifyKind(DateTime.UtcNow.AddHours(7), DateTimeKind.Utc) && slot.Status == SlotStatus.NotStarted)
+                    {
+                        slot.Status = SlotStatus.OnGoing;
+                        slotsWillUpdate.Add(slot);
+                        if (await _trainingService.IsFirstOrLastSlot(slot.Id, slot.TrainingId.Value, true))
+                        {
+                            await _trainingService.UpdateTrainingStatus(slot.TrainingId.Value, TrainingStatus.OnGoing, null);
+                        }
+                    }
+
+                    if (slot.EndTime <= DateTime.SpecifyKind(DateTime.UtcNow.AddHours(7), DateTimeKind.Utc) && slot.Status == SlotStatus.OnGoing)
+                    {
+                        slot.Status = SlotStatus.Finished;
+                        var trainingUserOfSlot = await _userServices.GetUserByIdRequiredAsync(slot.Training.TraineeId);
+                        if (trainingUserOfSlot.Balance >= slot.Training.PricePerSlot)
+                        {
+                            await HandleSlotsPaymentWithBalance(new List<Guid> { slot.Id }, trainingUserOfSlot.FireBaseId);
+                        }
+                        slotsWillUpdate.Add(slot);
+                        if (await _trainingService.IsFirstOrLastSlot(slot.Id, slot.TrainingId.Value, false))
+                        {
+                            await _trainingService.UpdateTrainingStatus(slot.TrainingId.Value, TrainingStatus.Finished, null);
+                        }
+                    }
+                }
+            }
+            await _slotRepository.UpdateRangeAsync(slotsWillUpdate);
         }
     }
 
