@@ -59,7 +59,12 @@ namespace FitSwipe.API.Controllers
             return response;
         }
 
-
+        [HttpPost("login-facebook")]
+        public async Task<IActionResult> LoginWithFacebook([FromBody] FacebookLoginDto dto)
+        {
+            var response = await _authServices.SignInWithFacebookToken(dto.AccessToken);
+            return Ok(response);
+        }
 
     }
 }

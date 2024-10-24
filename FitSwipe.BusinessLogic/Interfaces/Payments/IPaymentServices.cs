@@ -14,6 +14,8 @@ namespace FitSwipe.BusinessLogic.Interfaces.Payments
         Task<string> CreatePaymentRecharge(string userId, int amount);
         Task<string> CreatePaymentSubscription(string userId, int level);
         Task HandleSubscriptionPaymentWithBalance(string userId, int level);
-
+        Task CronForUAutoPurchaseByUserBalance();
+        Task CronChangeSubscriptionStatusWhenOverdue();
+        Task CronJobUpdateSlotStatus();
     }
 }
