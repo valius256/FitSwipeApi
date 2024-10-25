@@ -24,14 +24,14 @@ namespace FitSwipe.API.Controllers
 
         [HttpPost("chat1-1")]
         [Authorize]
-        public async Task<IActionResult> CreateSoloChat([FromBody] string toUserFirebaseId)
+        public async Task<IActionResult> CreateSoloChat([FromQuery] string toUserFirebaseId)
         {
             var chatRoomId = await _chatServices.CreateSoloChatAsync(CurrentUserFirebaseId, toUserFirebaseId);
 
-            if (chatRoomId == null)
-            {
-                return BadRequest("Failed to create chat room.");
-            }
+            //if (chatRoomId == null)
+            //{
+            //    return BadRequest("Failed to create chat room.");
+            //}
 
             return Ok(new { ChatRoomId = chatRoomId });
         }
@@ -87,6 +87,27 @@ namespace FitSwipe.API.Controllers
         {
             var chatRooms = await _chatServices.GetAllChatRoomByUserFirebaseIdAsync(CurrentUserFirebaseId);
             return Ok(chatRooms);
+        }
+        [HttpGet("chat-room-detail/{chatRoomId}")]
+        [Authorize]
+        public async Task<IActionResult> GetChatRoomDetailById([FromRoute] Guid chatRoomId)
+        {
+            var chatRooms = await _chatServices.GetChatRoomDetailByIdAsync(chatRoomId,CurrentUserFirebaseId);
+            return Ok(chatRooms);
+        }
+        [HttpGet("messages")]
+        [Authorize]
+        public async Task<IActionResult> GetMessagesOfTheRoomWith([FromQuery] string guestId, [FromQuery] int limit = 10, [FromQuery] int skip = 0)
+        {
+            var chatRooms = await _chatServices.GetMessagesOfTheRoomWith(CurrentUserFirebaseId, guestId, limit, skip);
+            return Ok(chatRooms);
+        }
+        [HttpPut("seen")]
+        [Authorize]
+        public async Task<IActionResult> SeenMessages([FromQuery] Guid chatRoomId)
+        {
+            await _chatServices.UpdateViewedUnseenMessages(chatRoomId,CurrentUserFirebaseId);
+            return Ok();
         }
     }
 }

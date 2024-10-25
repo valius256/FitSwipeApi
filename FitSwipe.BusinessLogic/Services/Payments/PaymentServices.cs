@@ -265,7 +265,7 @@ namespace FitSwipe.BusinessLogic.Services.Payments
             var amount = 0;
             if (level == 1)
             {
-                amount = 10000;//Fix to 100000 later
+                amount = 99000;
             } else
             {
                 throw new BadRequestException("Other Subscriptions than level 1 is not supported yet!");

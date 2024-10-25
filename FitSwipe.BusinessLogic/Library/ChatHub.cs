@@ -29,7 +29,7 @@ namespace FitSwipe.BusinessLogic.Library
             _logger.LogInformation($"Message from {userFirebaseId} to room {chatRoomId}: {message}");
             // Broadcast the message to all clients in the room
             await _chatServices.SaveMessageAsync(chatRoomId, message, userFirebaseId);
-            await Clients.Group(chatRoomId).SendAsync("ReceiveMessage", userFirebaseId, message);
+            await Clients.Group(chatRoomId).SendAsync("ReceiveMessage", userFirebaseId, message, DateTime.UtcNow.AddHours(7), chatRoomId);
         }
 
         // Called when a client joins a room (private or group)
@@ -38,7 +38,7 @@ namespace FitSwipe.BusinessLogic.Library
             await Groups.AddToGroupAsync(Context.ConnectionId, chatRoomId);
             await Clients.Group(chatRoomId).SendAsync("UserJoined", Context.ConnectionId, isGroup);
             //var isAddOrNot = _chatServices.CreateChatRoomAsync(isGroup, userFirebaseId, chatRoomId); 
-            var result = await _chatServices.GetAllGroupChatMessageFromGroupChatIdAsync(Guid.Parse(chatRoomId));
+            //var result = await _chatServices.GetAllGroupChatMessageFromGroupChatIdAsync(Guid.Parse(chatRoomId));
 
             _logger.LogInformation($"User {Context.ConnectionId} joined chat room {chatRoomId}");
         }
