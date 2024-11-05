@@ -1,5 +1,5 @@
-﻿using Firebase.Auth;
-using FitSwipe.BusinessLogic.Interfaces.Payments;
+﻿using FitSwipe.BusinessLogic.Interfaces.Payments;
+using FitSwipe.BusinessLogic.Interfaces.Sender;
 using FitSwipe.BusinessLogic.Interfaces.Slots;
 using FitSwipe.BusinessLogic.Interfaces.Trainings;
 using FitSwipe.BusinessLogic.Interfaces.Transactions;
@@ -7,6 +7,7 @@ using FitSwipe.BusinessLogic.Interfaces.Users;
 using FitSwipe.BusinessLogic.Library;
 using FitSwipe.DataAccess.Model;
 using FitSwipe.DataAccess.Model.Entity;
+using FitSwipe.DataAccess.Model.Enum;
 using FitSwipe.DataAccess.Repository.Intefaces;
 using FitSwipe.Shared.Dtos.Payment;
 using FitSwipe.Shared.Dtos.Transactions;
@@ -29,14 +30,19 @@ namespace FitSwipe.BusinessLogic.Services.Payments
         private readonly ISlotRepository _slotRepository;
         private readonly ITrainingService _trainingService;
         private readonly PayOsOption _payOs;
+        private readonly IEmailServices _emailServices;
+
         public PaymentServices(IUserServices userServices, ISlotRepository slotRepository, ISlotServices slotServices, IOptions<VnPay> vnPay, ITrainingService trainingService
-            , ITransactionServices transactionServices, IOptions<PayOsOption> payOs, ISlotTransactionServices slotTransactionServices)
+            , ITransactionServices transactionServices, IOptions<PayOsOption> payOs,
+            IEmailServices emailServices,
+            ISlotTransactionServices slotTransactionServices)
         {
             _userServices = userServices;
             _transactionServices = transactionServices;
             _slotServices = slotServices;
             _slotRepository = slotRepository;
             _vnPay = vnPay.Value;
+            _trainingService = trainingService;
             _payOs = payOs.Value;
             _slotTransactionServices = slotTransactionServices;
             _trainingService = trainingService;
@@ -315,7 +321,7 @@ namespace FitSwipe.BusinessLogic.Services.Payments
 
             if (user is null)
             {
-                throw new ModelException(nameof(User), "Người dùng không khả dụng");
+                throw new ModelException(nameof(user), "Người dùng không khả dụng");
             }
 
             int totalCost = 0;
@@ -423,6 +429,19 @@ namespace FitSwipe.BusinessLogic.Services.Payments
                     var listOfSlotTransaction = await _slotTransactionServices.GetAllTransactionSlotByTransactionId(transactionEntity.Id);
                     var listOfSlot = listOfSlotTransaction.Select(l => l.SlotId).ToList();
                     await HandleSlotsPayment(listOfSlot);
+
+                    // handle for sent email bill
+                    var user = await _userServices.GetUserByIdRequiredAsync(transactionEntity.UserFireBaseId);
+                    var emailParams = new Dictionary<string, string>()
+                    {
+                        { "Name", $"{user.Email}" },
+                        {"Amount", $"{transactionEntity.Amount}"},
+                        {"PaymentDate", $"{DateTime.UtcNow.AddHours(7)}" }
+                    };
+                    var toAddress = new List<string>() { user.Email };
+                    await _emailServices.SendAsync(EmailType.Payment_Success, toAddress, new List<string>(), emailParams,
+                        false);
+
                 }
                 else if (transactionEntity.Type == TransactionType.Deposit)
                 {
