@@ -62,7 +62,7 @@ namespace FitSwipe.BusinessLogic.Services.Chats
                 {
                     ChatRoomId = chatRoom.Id,
                     UserFirebaseId = userFirebaseId,
-                    JoinedAt = DateTime.UtcNow
+                    JoinedAt = DateTime.UtcNow.AddHours(7)
                 };
                 await _userChatRoomRepository.AddAsync(userChatRoom);
             }
@@ -201,7 +201,7 @@ namespace FitSwipe.BusinessLogic.Services.Chats
                 ChatRoomId = chatRoom.Id,
                 Content = message,
                 UserFirebaseId = userFirebaseId,
-                SentAt = DateTime.UtcNow
+                SentAt = DateTime.UtcNow.AddHours(7)
             };
 
             await _messageRepository.AddAsync(newMessage);
