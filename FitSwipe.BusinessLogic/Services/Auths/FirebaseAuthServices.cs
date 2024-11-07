@@ -220,6 +220,11 @@ namespace FitSwipe.BusinessLogic.Services.Auths
 
                 var userInDb = await _userServices.GetUserByIdRequiredAsync(authToken.LocalId);
 
+                if (userInDb.Status == UserStatus.Inactive)
+                {
+                    throw new BadRequestException("The user status is inactive");
+                }
+                
                 var customClaims = new Dictionary<string, object>
                 {
                     { "roles", userInDb.Role.ToString() },

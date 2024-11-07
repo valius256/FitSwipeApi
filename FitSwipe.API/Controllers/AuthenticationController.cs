@@ -2,6 +2,8 @@
 using FitSwipe.BusinessLogic.Interfaces.Users;
 using FitSwipe.Shared.Dtos.Auth;
 using FitSwipe.Shared.Dtos.Users;
+using FitSwipe.Shared.Enum;
+using FitSwipe.Shared.Exceptions;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -56,6 +58,10 @@ namespace FitSwipe.API.Controllers
         public async Task<GetUserDto> GetProfile()
         {
             var response = await _userServices.GetSimpleUser(CurrentUserFirebaseId);
+            if (response.Status == UserStatus.Inactive)
+            {
+                throw new BadRequestException("The status of user is Inactive");
+            }
             return response;
         }
 
