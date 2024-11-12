@@ -117,7 +117,7 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 
-app.UseCors("AllowAllOrigins");
+app.UseCors("AllowAll");
 app.MapControllers();
 app.MapHangfireDashboard();
 app.MapHub<ChatHub>("/chathub");
