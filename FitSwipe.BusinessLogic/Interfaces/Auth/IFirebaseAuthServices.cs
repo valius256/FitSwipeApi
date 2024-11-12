@@ -1,4 +1,5 @@
-﻿using FirebaseAdmin.Auth;
+﻿using Firebase.Auth;
+using FirebaseAdmin.Auth;
 using FitSwipe.BusinessLogic.Models.Users;
 using FitSwipe.Shared.Dtos.Auth;
 using FitSwipe.Shared.Dtos.Users;
@@ -19,5 +20,7 @@ namespace FitSwipe.BusinessLogic.Interfaces.Auth
         Task SetCustomClaimsAsync(string userId, Dictionary<string, object> claims);
         //Task<list<Exporteduserrecord>> Getalluserrecord();
         Task<string> CreateSessionCookieAsync(string idToken, SessionCookieOptions options);
+        Task<FacebookUser> VerifyFacebookAccessToken(string accessToken);
+        Task<UserCredential> SignInWithFacebookToken(string facebookAccessToken);
     }
 }

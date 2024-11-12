@@ -111,7 +111,7 @@ namespace FitSwipe.API.Extensions
             // Register Hangfire and configure it
             services.AddHangfire(config =>
 
-                config.UsePostgreSqlStorage(configuration.GetConnectionString("PostgresConnectionString"),
+                config.UsePostgreSqlStorage(configuration.GetConnectionString("PostgresInLocal"),
                     new PostgreSqlStorageOptions
                     {
                         QueuePollInterval = TimeSpan.FromSeconds(15), // Adjust the poll interval as needed
@@ -129,7 +129,10 @@ namespace FitSwipe.API.Extensions
            {
                RecurringJob.AddOrUpdate<SlotServices>(x =>
                    x.CronJobUpdateSlotStatus(), Cron.Hourly());
-
+               RecurringJob.AddOrUpdate<PaymentServices>(x =>
+                   x.CronForUAutoPurchaseByUserBalance(), Cron.Hourly());
+               RecurringJob.AddOrUpdate<PaymentServices>(x =>
+                  x.CronChangeSubscriptionStatusWhenOverdue(), Cron.Daily());
            });
 
 
@@ -184,7 +187,9 @@ namespace FitSwipe.API.Extensions
 
 
 
-                });
+                })
+
+                ;
 
             services.AddAuthorization(options =>
             {
