@@ -343,8 +343,11 @@ namespace FitSwipe.BusinessLogic.Services.Slots
             var updatingSlots = new List<Slot>();
             var deletingFreeSlots = new List<Slot>();
             var addingFreeSlots = new List<Slot>();
-            foreach (var slot in training.Slots)
+            int index = 0;
+            var sortedTrainingSlots = training.Slots.OrderBy(s => s.StartTime).ToList();
+            foreach (var slot in sortedTrainingSlots)
             {
+                index++;
                 bool isAnySlotOutside = true;
                 foreach (var freeSlot in freeSlots)
                 {
@@ -390,6 +393,7 @@ namespace FitSwipe.BusinessLogic.Services.Slots
                     throw new BadRequestException("Some of the slot are not in your current free time");
                 }
                 var simpleSlot = await _slotRepository.FindOneWithNoTrackingAsync(s => s.Id == slot.Id);
+                simpleSlot!.SlotNumber = index;
                 simpleSlot!.Status = SlotStatus.NotStarted;
                 updatingSlots.Add(simpleSlot);
             }
@@ -426,10 +430,10 @@ namespace FitSwipe.BusinessLogic.Services.Slots
 
         public async Task DeleteAllUnbookedSlotInARange(DateOnly start, DateOnly end, string userId)
         {
-            var slots = await _slotRepository.Where(s => s.StartTime >= start.ToDateTime(TimeOnly.MinValue)
-                && s.EndTime <= end.ToDateTime(TimeOnly.MaxValue)
+            var slots = await _slotRepository.FindAsync(s => s.StartTime >= DateTime.SpecifyKind(start.ToDateTime(TimeOnly.MinValue), DateTimeKind.Utc)
+                && s.EndTime <= DateTime.SpecifyKind(end.ToDateTime(TimeOnly.MaxValue), DateTimeKind.Utc)
                 && s.CreateById == userId
-                && s.Status == SlotStatus.Unbooked).ToListAsync();
+                && s.Status == SlotStatus.Unbooked);
 
             await _slotRepository.DeleteRangeAsync(slots);
         }
@@ -441,7 +445,7 @@ namespace FitSwipe.BusinessLogic.Services.Slots
             {
                 throw new DataNotFoundException("Slot is not found");
             }
-            
+
             var slotDetail = await GetSlotByIdAsync(slot.Id);
             if (slotDetail.Training == null || slotDetail.Training.PTId != userId)
             {
@@ -459,7 +463,8 @@ namespace FitSwipe.BusinessLogic.Services.Slots
                 if (existedVideo == null)
                 {
                     toDelete.Add(video.Adapt<SlotVideos>());
-                } else
+                }
+                else
                 {
                     video.Description = existedVideo.Description;
                     toUpdate.Add(video.Adapt<SlotVideos>());
@@ -491,7 +496,7 @@ namespace FitSwipe.BusinessLogic.Services.Slots
                 slot.Status = SlotStatus.Disabled;
             }
             await _slotRepository.UpdateRangeAsync(slots);
-            await _trainingService.UpdateTrainingStatus(currentTraining.Id,TrainingStatus.Finished,null);
+            await _trainingService.UpdateTrainingStatus(currentTraining.Id, TrainingStatus.Finished, null);
         }
         public async Task UpdateRangePayment(List<Guid> slotIds)
         {
@@ -499,8 +504,69 @@ namespace FitSwipe.BusinessLogic.Services.Slots
             foreach (var slot in slots)
             {
                 slot.PaymentStatus = PaymentStatus.Paid;
+                slot.UpdatedDate = DateTime.SpecifyKind(DateTime.UtcNow.AddHours(7), DateTimeKind.Utc);
             }
             await _slotRepository.UpdateRangeAsync(slots);
+        }
+
+        public async Task CronJobUpdateSlotStatus()
+        {
+            await HandleForSlotStatus();
+            //await HandleForTrainningStatus(listTrainingOfSlot);
+        }
+
+        private async Task HandleForSlotStatus()
+        {
+            var slotsToUpdate = (await _slotRepository.FindWithNoTrackingAsync(sl => sl.Status == SlotStatus.OnGoing || sl.Status == SlotStatus.NotStarted)).ToList();
+            var trainingToUpdate = new List<Training>();
+            var slotsWillUpdate = new List<Slot>();
+            foreach (var slot in slotsToUpdate)
+            {
+                if (slot.TrainingId != null)
+                {
+                    if (slot.StartTime <= DateTime.SpecifyKind(DateTime.UtcNow.AddHours(7), DateTimeKind.Utc) && slot.Status == SlotStatus.NotStarted)
+                    {
+                        slot.Status = SlotStatus.OnGoing;
+                        slotsWillUpdate.Add(slot);
+                        if (await _trainingService.IsFirstOrLastSlot(slot.Id, slot.TrainingId.Value, true))
+                        {
+                            await _trainingService.UpdateTrainingStatus(slot.TrainingId.Value, TrainingStatus.OnGoing, null);
+                        }
+                    }
+
+                    if (slot.EndTime <= DateTime.SpecifyKind(DateTime.UtcNow.AddHours(7), DateTimeKind.Utc) && slot.Status == SlotStatus.OnGoing)
+                    {
+                        slot.Status = SlotStatus.Finished;
+
+                        slotsWillUpdate.Add(slot);
+                        if (await _trainingService.IsFirstOrLastSlot(slot.Id, slot.TrainingId.Value, false))
+                        {
+                            await _trainingService.UpdateTrainingStatus(slot.TrainingId.Value, TrainingStatus.Finished, null);
+                        }
+                    }
+                }
+            }
+            await _slotRepository.UpdateRangeAsync(slotsWillUpdate);
+        }
+
+        public async Task<List<GetSlotDetailDtos>> GetAllDebtSlotsOfTrainee(string traineeId)
+        {
+            return (await _slotRepository.GetAllDebtSlotsOfTrainee(traineeId)).Adapt<List<GetSlotDetailDtos>>();
+        }
+        public async Task<List<GetSlotDetailDtos>> GetUpcomingSlotsOfPT(string ptId, int limit)
+        {
+            return (await _slotRepository.GetUpcomingSlotsOfPT(ptId, limit)).Adapt<List<GetSlotDetailDtos>>();
+        }
+
+        public async Task<List<GetSlotDetailDtos>> GetAllSlotInCurrentDate()
+        {
+            var currentDate = DateTime.UtcNow.AddHours(7).Date; // Gets the date part of the current time
+            var slotEntity = await _slotRepository
+                .FindAsync(s => s.StartTime.Date == currentDate);
+
+
+            var result = slotEntity.Adapt<List<GetSlotDetailDtos>>();
+            return result;
         }
     }
 }

@@ -16,6 +16,7 @@ namespace FitSwipe.Shared.Dtos.Slots
         public string? Location { get; set; }
         public double? Rating { get; set; }
         public string? Feedback { get; set; }
+        public int? SlotNumber { get; set; }
         public int TotalVideo { get; set; } = 0;
     }
 }

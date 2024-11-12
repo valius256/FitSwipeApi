@@ -1,5 +1,7 @@
-﻿using FitSwipe.DataAccess.Model;
+﻿using FitSwipe.DataAccess.Helper;
+using FitSwipe.DataAccess.Model;
 using FitSwipe.DataAccess.Model.Entity;
+using FitSwipe.DataAccess.Model.Paging;
 using FitSwipe.DataAccess.Repository.Intefaces;
 using Microsoft.EntityFrameworkCore;
 
@@ -14,9 +16,22 @@ namespace FitSwipe.DataAccess.Repository.Impl
 
         }
 
-        public async Task<List<Message>> GetAllChatMessageWithChatRoomIdAsync(Guid chatRoomId)
+        public async Task<PagedResult<Message>> GetAllChatMessageWithChatRoomIdAsync(Guid chatRoomId, int limit, int skip)
         {
-            return await _context.Messages.Where(ld => ld.ChatRoomId == chatRoomId).OrderBy(l => l.SentAt).ToListAsync();
+            limit = limit > 0 ? limit : 10;
+            var query = _context.Messages.Where(ld => ld.ChatRoomId == chatRoomId)
+                .OrderByDescending(l => l.SentAt);
+
+            return new PagedResult<Message>
+            {
+                Items = await query
+                        .Skip(skip)
+                        .Take(limit).ToListAsync(),
+                Errors = [],
+                Limit = limit,
+                Page = 0,
+                Total = await query.CountAsync()
+            };
         }
     }
 }

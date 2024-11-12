@@ -16,6 +16,7 @@ namespace FitSwipe.Shared.Dtos.Slots
         public double? Rating { get; set; }
         public string? Feedback { get; set; }
         public string? Location { get; set; }
+        public int? SlotNumber { get; set; }
         public virtual GetUserDto CreateBy { get; set; } = default!;
     }
 }

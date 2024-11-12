@@ -9,7 +9,6 @@ using FitSwipe.Shared.Dtos.Trainings;
 using FitSwipe.Shared.Enum;
 using FitSwipe.Shared.Exceptions;
 using Mapster;
-using System.Runtime.InteropServices;
 
 namespace FitSwipe.BusinessLogic.Services.Trainings
 {
@@ -82,6 +81,7 @@ namespace FitSwipe.BusinessLogic.Services.Trainings
             // update the rating of trainning 
             trainning.Rating = feedbackTrainingDto.Rating;
             trainning.Feedback = feedbackTrainingDto.Feedback;
+            trainning.UpdatedDate = DateTime.SpecifyKind(DateTime.UtcNow.AddHours(7), DateTimeKind.Utc);
 
             if (feedbackTrainingDto.ImageUrls != null && feedbackTrainingDto.ImageUrls.Any())
             {
@@ -97,7 +97,7 @@ namespace FitSwipe.BusinessLogic.Services.Trainings
                 }
             }
             await _trainingRepository.UpdateAsync(trainning);
-
+            await _userServices.UpdatePTOverallRating(userFirebaseId);
         }
 
         public async Task<GetTrainingDetailDto> GetDetailById(Guid id)
@@ -126,7 +126,7 @@ namespace FitSwipe.BusinessLogic.Services.Trainings
             var mappedTraining = training.Adapt<GetTrainingDetailDto>();
             foreach (var slotDto in mappedTraining.Slots)
             {
-                var slot = training.Slots.FirstOrDefault(s => s.Id ==  slotDto.Id)!;
+                var slot = training.Slots.FirstOrDefault(s => s.Id == slotDto.Id)!;
                 slotDto.TotalVideo = slot.Videos.Count;
             }
             return mappedTraining;
@@ -177,12 +177,12 @@ namespace FitSwipe.BusinessLogic.Services.Trainings
             {
                 throw new DataNotFoundException("The training is not found");
             }
-            
+
             if (training.Status == TrainingStatus.Pending && (trainingStatus != TrainingStatus.Rejected && trainingStatus != TrainingStatus.NotStarted && trainingStatus != TrainingStatus.Matched))
             {
                 throw new BadRequestException("Invalid transistion");
             }
-            if (training.Status == TrainingStatus.NotStarted && (trainingStatus != TrainingStatus.Disabled && trainingStatus != TrainingStatus.OnGoing))
+            if (training.Status == TrainingStatus.NotStarted && (trainingStatus != TrainingStatus.Disabled && trainingStatus != TrainingStatus.OnGoing && trainingStatus != TrainingStatus.Finished))
             {
                 throw new BadRequestException("Invalid transistion");
             }
@@ -252,6 +252,36 @@ namespace FitSwipe.BusinessLogic.Services.Trainings
             simpleTraining.PricePerSlot = updateTrainingPriceDto.TrainingPrice;
             simpleTraining.Status = TrainingStatus.NotStarted;
             await _trainingRepository.UpdateAsync(simpleTraining);
+        }
+        public async Task<PagedResult<GetTrainingFeedbackDetailDto>> GetTrainingFeedbackOfPT(string userId, int limit, int page)
+        {
+            var result = await _trainingRepository.GetFeedbackTrainingOfPT(userId, limit, page);
+            return result.Adapt<PagedResult<GetTrainingFeedbackDetailDto>>();
+        }
+
+        public async Task UpdateListTraining(List<Training> trainings)
+        {
+            await _trainingRepository.UpdateRangeAsync(trainings);
+            return;
+        }
+
+        public async Task<bool> IsFirstOrLastSlot(Guid slotId, Guid trainingId, bool isFirst)
+        {
+            var training = await GetDetailById(trainingId);
+            var slots = training.Slots.OrderBy(s => s.StartTime).ToList();
+            if (slots.Count == 0)
+            {
+                return false;
+            }
+            if (isFirst && slots[0].Id == slotId)
+            {
+                return true;
+            }
+            if (!isFirst && slots[slots.Count - 1].Id == slotId)
+            {
+                return true;
+            }
+            return false;
         }
     }
 }

@@ -9,5 +9,7 @@
         public virtual ChatRoom ChatRoom { get; set; }
 
         public DateTime JoinedAt { get; set; } = DateTime.UtcNow;
+
+        public int UnseenMessaged { get; set; } = 0;
     }
 }

@@ -1,10 +1,14 @@
 ﻿using FitSwipe.BusinessLogic.Interfaces.Payments;
+using FitSwipe.BusinessLogic.Interfaces.Sender;
 using FitSwipe.BusinessLogic.Interfaces.Slots;
+using FitSwipe.BusinessLogic.Interfaces.Trainings;
 using FitSwipe.BusinessLogic.Interfaces.Transactions;
 using FitSwipe.BusinessLogic.Interfaces.Users;
 using FitSwipe.BusinessLogic.Library;
 using FitSwipe.DataAccess.Model;
 using FitSwipe.DataAccess.Model.Entity;
+using FitSwipe.DataAccess.Model.Enum;
+using FitSwipe.DataAccess.Repository.Intefaces;
 using FitSwipe.Shared.Dtos.Payment;
 using FitSwipe.Shared.Dtos.Transactions;
 using FitSwipe.Shared.Enum;
@@ -23,16 +27,25 @@ namespace FitSwipe.BusinessLogic.Services.Payments
         private readonly ISlotServices _slotServices;
         private readonly ITransactionServices _transactionServices;
         private readonly VnPay _vnPay;
+        private readonly ISlotRepository _slotRepository;
+        private readonly ITrainingService _trainingService;
         private readonly PayOsOption _payOs;
-        public PaymentServices(IUserServices userServices, ISlotServices slotServices, IOptions<VnPay> vnPay
-            , ITransactionServices transactionServices, IOptions<PayOsOption> payOs, ISlotTransactionServices slotTransactionServices)
+        private readonly IEmailServices _emailServices;
+
+        public PaymentServices(IUserServices userServices, ISlotRepository slotRepository, ISlotServices slotServices, IOptions<VnPay> vnPay, ITrainingService trainingService
+            , ITransactionServices transactionServices, IOptions<PayOsOption> payOs,
+            IEmailServices emailServices,
+            ISlotTransactionServices slotTransactionServices)
         {
             _userServices = userServices;
             _transactionServices = transactionServices;
             _slotServices = slotServices;
+            _slotRepository = slotRepository;
             _vnPay = vnPay.Value;
+            _trainingService = trainingService;
             _payOs = payOs.Value;
             _slotTransactionServices = slotTransactionServices;
+            _trainingService = trainingService;
         }
 
         public async Task<string> CreatePaymentForSlotAsync(PaySlotDtos model, HttpContext context, string currentUserFirebaseId)
@@ -41,7 +54,7 @@ namespace FitSwipe.BusinessLogic.Services.Payments
 
             if (user is null)
             {
-                throw new ModelException(nameof(User), "Người dùng không khả dụng");
+                throw new ModelException(nameof(DataAccess.Model.Entity.User), "Người dùng không khả dụng");
             }
 
             // Initialize total cost
@@ -108,7 +121,7 @@ namespace FitSwipe.BusinessLogic.Services.Payments
             pay.AddRequestData("vnp_Locale", _vnPay.Locale);
             pay.AddRequestData("vnp_OrderInfo", $"{isRechargePayment}|{description}|{currUid}|{returnPage}|{orderType.ToString()}|{slotIdString}");
             pay.AddRequestData("vnp_OrderType", "other");
-            pay.AddRequestData("vnp_ReturnUrl", "https://fitandswipeapi.somee.com/api/Payment/execute");
+            pay.AddRequestData("vnp_ReturnUrl", "https://fitandswipeapi.somee.com/api/Payment/vnpay-execute");
             pay.AddRequestData("vnp_TxnRef", tick);
             pay.AddRequestData("vnp_ExpireDate", timeNow.AddMinutes(20).ToString("yyyyMMddHHmmss"));
 
@@ -136,7 +149,7 @@ namespace FitSwipe.BusinessLogic.Services.Payments
                     Amount = (int)response.Money,
                     Method = TransactionMethod.VnPay,
                     SlotIds = response.SlotIds,
-                    Description = response.OrderDescription
+                    Description = response.OrderDescription,
                 };
 
                 // Create the transaction in the service
@@ -161,7 +174,144 @@ namespace FitSwipe.BusinessLogic.Services.Payments
             await _slotServices.UpdateRangePayment(slotIds);
         }
 
+        public async Task HandleSlotsPaymentWithBalance(List<Guid> slotIds, string userId)
+        {
+            var total = 0;
+            var user = await _userServices.GetUserByIdRequiredAsync(userId);
+            foreach (var slotId in slotIds)
+            {
+                var slot = await _slotServices.GetSlotByIdAsync(slotId);
+                if (slot != null)
+                {
+                    if (slot.Training == null || slot.Training.PricePerSlot == null)
+                    {
+                        throw new BadRequestException("One of the slot is not updated the price");
+                    };
+                    total += slot.Training.PricePerSlot.Value;
+                }
+            }
+            if (user.Balance < total)
+            {
+                throw new BadRequestException("Insufficient Balance");
+            }
+            await _userServices.UpdateUserBalance(userId, -total);
+            await _slotServices.UpdateRangePayment(slotIds);
+            var code = GenerateUniqueOrderCode();
+            await _transactionServices.CreateTransactionAsync(new CreateTransactionDtos
+            {
+                TranscationCode = code.ToString(),
+                UserFireBaseId = userId,
+                Amount = total,
+                Method = TransactionMethod.Balance,
+                Description = "Trả tiền bằng số dư",
+                Type = TransactionType.AutoDeduction,
+                SlotIds = slotIds,
+            });
+            await _transactionServices.UpdateTransactionStatus(code, TransactionStatus.Successed);
+        }
+        public async Task HandleSubscriptionPaymentWithBalance(string userId, int level)
+        {
+            var amount = 0;
+            if (level == 1)
+            {
+                amount = 100000;
+            }
+            else
+            {
+                throw new BadRequestException("Other Subscriptions than level 1 is not supported yet!");
+            }
+            await _userServices.UpdateUserBalance(userId, -amount);
+            await _userServices.EnableUserSubscription(userId, level);
+            var code = GenerateUniqueOrderCode();
+            await _transactionServices.CreateTransactionAsync(new CreateTransactionDtos
+            {
+                TranscationCode = code.ToString(),
+                UserFireBaseId = userId,
+                Amount = amount,
+                Method = TransactionMethod.Balance,
+                Description = "Trả tiền gói VIP bằng số dư",
+                Type = TransactionType.AutoDeduction,
+                SlotIds = [],
+            });
+            await _transactionServices.UpdateTransactionStatus(code, TransactionStatus.Successed);
+        }
 
+        public async Task<string> CreatePaymentRecharge(string userId, int amount)
+        {
+            var user = await _userServices.GetUserByIdRequiredAsync(userId);
+
+            var Content = "Nạp tiền vào tài khoản";
+            var cancelUrl = string.Empty; // example   cancelUrl="https://localhost:3002"
+            var successUrl = "https://fitandswipeapi.somee.com/api/payment/payos-callback";
+
+            PayOS payOs = new PayOS(_payOs.ClientID, _payOs.APIKey, _payOs.ChecksumKey);
+            long paymentCode = GenerateUniqueOrderCode();
+
+            PaymentData paymentData = new PaymentData(paymentCode, amount, Content, new List<ItemData>{
+                new ItemData("Nạp tiền " + userId, 1 , amount)
+            }, cancelUrl, successUrl);
+
+            CreatePaymentResult createPayment = await payOs.createPaymentLink(paymentData);
+
+            // create a trasaction for the payment
+            var createTransactionDtos = new CreateTransactionDtos
+            {
+                TranscationCode = createPayment.orderCode.ToString(),
+                UserFireBaseId = userId,
+                Amount = amount,
+                Method = TransactionMethod.PayOs,
+                Description = Content,
+                Type = TransactionType.Deposit,
+                SlotIds = [],
+
+            };
+            await _transactionServices.CreateTransactionAsync(createTransactionDtos);
+
+
+            return createPayment.checkoutUrl;
+        }
+        public async Task<string> CreatePaymentSubscription(string userId, int level)
+        {
+            var user = await _userServices.GetUserByIdRequiredAsync(userId);
+            var amount = 0;
+            if (level == 1)
+            {
+                amount = 99000;
+            } else
+            {
+                throw new BadRequestException("Other Subscriptions than level 1 is not supported yet!");
+            }
+
+            var Content = "Thanh toán gói VIP " + level;
+            var cancelUrl = string.Empty; // example   cancelUrl="https://localhost:3002"
+            var successUrl = "https://fitandswipeapi.somee.com/api/payment/payos-callback";
+
+            PayOS payOs = new PayOS(_payOs.ClientID, _payOs.APIKey, _payOs.ChecksumKey);
+            long paymentCode = GenerateUniqueOrderCode();
+
+            PaymentData paymentData = new PaymentData(paymentCode, amount, Content, new List<ItemData>{
+                new ItemData("Gói VIP 1", 1 , amount)
+            }, cancelUrl, successUrl);
+
+            CreatePaymentResult createPayment = await payOs.createPaymentLink(paymentData);
+
+            // create a trasaction for the payment
+            var createTransactionDtos = new CreateTransactionDtos
+            {
+                TranscationCode = createPayment.orderCode.ToString(),
+                UserFireBaseId = userId,
+                Amount = amount,
+                Method = TransactionMethod.PayOs,
+                Description = Content,
+                Type = TransactionType.DirectPaymentSubscription,
+                SlotIds = [],
+
+            };
+            await _transactionServices.CreateTransactionAsync(createTransactionDtos);
+
+
+            return createPayment.checkoutUrl;
+        }
         public async Task<string> CreatePaymentForSlotByPayOsAsync(PaySlotDtos model, string CurrentUserFirebaseId)
         {
 
@@ -170,7 +320,7 @@ namespace FitSwipe.BusinessLogic.Services.Payments
 
             if (user is null)
             {
-                throw new ModelException(nameof(User), "Người dùng không khả dụng");
+                throw new ModelException(nameof(user), "Người dùng không khả dụng");
             }
 
             int totalCost = 0;
@@ -216,7 +366,7 @@ namespace FitSwipe.BusinessLogic.Services.Payments
             var tick = DateTime.UtcNow.Ticks;
 
             var cancelUrl = string.Empty; // example   cancelUrl="https://localhost:3002"
-            var successUrl = "https://fitandswipeapi.somee.com/api/payment/handle-payos-callback"; // example   returnUrl="https://localhost:3002"
+            var successUrl = "https://fitandswipeapi.somee.com/api/payment/payos-callback"; // example   returnUrl="https://localhost:3002"
 
 
             PayOS payOs = new PayOS(_payOs.ClientID, _payOs.APIKey, _payOs.ChecksumKey);
@@ -232,7 +382,9 @@ namespace FitSwipe.BusinessLogic.Services.Payments
                 Amount = totalCost,
                 Method = TransactionMethod.PayOs,
                 Description = Content,
-                SlotIds = model.GetSlotGuids()
+                Type = TransactionType.DirectPayment,
+                SlotIds = model.GetSlotGuids(),
+
             };
             await _transactionServices.CreateTransactionAsync(createTransactionDtos);
 
@@ -249,6 +401,13 @@ namespace FitSwipe.BusinessLogic.Services.Payments
 
         public async Task<string> HandlePayOsCallBackAsync(string code, string id, bool cancel, string status, int orderCode)
         {
+            //Check if user truyền bậy vào
+            //PayOS payOS = new PayOS(_payOs.ClientID, _payOs.APIKey, _payOs.ChecksumKey);
+            //PaymentLinkInformation paymentLinkInformation = await payOS.getPaymentLinkInformation(orderCode);
+            //if (paymentLinkInformation.status != status || paymentLinkInformation.id != id)
+            //{
+            //    throw new BadRequestException("Not today hacker");
+            //}
 
             var transactionEntity = await _transactionServices.GetTransactionByOrderCodeAsync(orderCode);
 
@@ -264,9 +423,43 @@ namespace FitSwipe.BusinessLogic.Services.Payments
                 await _transactionServices.UpdateTransactionStatus(orderCode, Shared.Enum.TransactionStatus.Successed);
 
                 // handle payment for slots
-                var listOfSlotTransaction = await _slotTransactionServices.GetAllTransactionSlotByTransactionId(transactionEntity.Id);
-                var listOfSlot = listOfSlotTransaction.Select(l => l.TransactionId).ToList();
-                await HandleSlotsPayment(listOfSlot);
+                if (transactionEntity.Type == TransactionType.DirectPayment)
+                {
+                    var listOfSlotTransaction = await _slotTransactionServices.GetAllTransactionSlotByTransactionId(transactionEntity.Id);
+                    var listOfSlot = listOfSlotTransaction.Select(l => l.SlotId).ToList();
+                    await HandleSlotsPayment(listOfSlot);
+
+                    // handle for sent email bill
+                    var user = await _userServices.GetUserByIdRequiredAsync(transactionEntity.UserFireBaseId);
+                    var emailParams = new Dictionary<string, string>()
+                    {
+                        { "Name", $"{user.Email}" },
+                        {"Amount", $"{transactionEntity.Amount}"},
+                        {"PaymentDate", $"{DateTime.UtcNow.AddHours(7)}" }
+                    };
+                    var toAddress = new List<string>() { user.Email };
+                    await _emailServices.SendAsync(EmailType.Payment_Success, toAddress, new List<string>(), emailParams,
+                        false);
+
+                }
+                else if (transactionEntity.Type == TransactionType.Deposit)
+                {
+                    //Handle recharge
+                    await _userServices.UpdateUserBalance(transactionEntity.UserFireBaseId, transactionEntity.Amount);
+                }
+                else if (transactionEntity.Type == TransactionType.DirectPaymentSubscription)
+                {
+                    int level = 1;
+                    if (!string.IsNullOrEmpty(transactionEntity.Description))
+                    {
+                        var levelChar = transactionEntity.Description[transactionEntity.Description.Length - 1]; // Return the last character
+                        if (char.IsDigit(levelChar))
+                        {
+                            level = levelChar - '0'; // Convert to int
+                        }
+                    }
+                    await _userServices.EnableUserSubscription(transactionEntity.UserFireBaseId, level);
+                }
             }
 
             if (status == "PENDING")
@@ -281,6 +474,81 @@ namespace FitSwipe.BusinessLogic.Services.Payments
                 await _transactionServices.UpdateTransactionStatus(orderCode, Shared.Enum.TransactionStatus.Canceled);
             }
             return status;
+        }
+
+        public async Task CronForUAutoPurchaseByUserBalance()
+        {
+            var allSlotStartInDay = await _slotServices.GetAllSlotInCurrentDate();
+            if (allSlotStartInDay.Count == 0)
+            {
+                return;
+            }
+            foreach (var slot in allSlotStartInDay)
+            {
+                var user = await _userServices.GetUserByIdRequiredAsync(slot.CreateById.ToString());
+                if (slot.Training == null || slot.Training.PricePerSlot == null)
+                {
+                    throw new BadRequestException("One of the slot is not updated the price");
+                }
+                if (user.Balance >= slot.Training.PricePerSlot)
+                {
+                    await HandleSlotsPaymentWithBalance(new List<Guid> { slot.Id }, user.FireBaseId);
+                }
+            }
+        }
+
+        public async Task CronChangeSubscriptionStatusWhenOverdue()
+        {
+            var allExpiredSubscription = await _userServices.GetAllUserSubcriptionsExpired();
+            foreach (var user in allExpiredSubscription)
+            {
+                user.SubscriptionPaymentStatus = PaymentStatus.NotPaid;
+                await _userServices.UpdateUserSubcription(user);
+            }
+        }
+
+        public async Task CronJobUpdateSlotStatus()
+        {
+            await HandleForSlotStatus();
+            //await HandleForTrainningStatus(listTrainingOfSlot);
+        }
+
+        private async Task HandleForSlotStatus()
+        {
+            var slotsToUpdate = (await _slotRepository.FindWithNoTrackingAsync(sl => sl.Status == SlotStatus.OnGoing || sl.Status == SlotStatus.NotStarted)).ToList();
+            var trainingToUpdate = new List<Training>();
+            var slotsWillUpdate = new List<Slot>();
+            foreach (var slot in slotsToUpdate)
+            {
+                if (slot.TrainingId != null)
+                {
+                    if (slot.StartTime <= DateTime.SpecifyKind(DateTime.UtcNow.AddHours(7), DateTimeKind.Utc) && slot.Status == SlotStatus.NotStarted)
+                    {
+                        slot.Status = SlotStatus.OnGoing;
+                        slotsWillUpdate.Add(slot);
+                        if (await _trainingService.IsFirstOrLastSlot(slot.Id, slot.TrainingId.Value, true))
+                        {
+                            await _trainingService.UpdateTrainingStatus(slot.TrainingId.Value, TrainingStatus.OnGoing, null);
+                        }
+                    }
+
+                    if (slot.EndTime <= DateTime.SpecifyKind(DateTime.UtcNow.AddHours(7), DateTimeKind.Utc) && slot.Status == SlotStatus.OnGoing)
+                    {
+                        slot.Status = SlotStatus.Finished;
+                        var trainingUserOfSlot = await _userServices.GetUserByIdRequiredAsync(slot.Training.TraineeId);
+                        if (trainingUserOfSlot.Balance >= slot.Training.PricePerSlot)
+                        {
+                            await HandleSlotsPaymentWithBalance(new List<Guid> { slot.Id }, trainingUserOfSlot.FireBaseId);
+                        }
+                        slotsWillUpdate.Add(slot);
+                        if (await _trainingService.IsFirstOrLastSlot(slot.Id, slot.TrainingId.Value, false))
+                        {
+                            await _trainingService.UpdateTrainingStatus(slot.TrainingId.Value, TrainingStatus.Finished, null);
+                        }
+                    }
+                }
+            }
+            await _slotRepository.UpdateRangeAsync(slotsWillUpdate);
         }
     }
 

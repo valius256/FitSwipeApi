@@ -1,5 +1,6 @@
 ﻿using FitSwipe.Shared.Dtos.Tags;
 using FitSwipe.Shared.Enum;
+using System.Diagnostics.CodeAnalysis;
 
 namespace FitSwipe.Shared.Dtos.Users
 {
@@ -22,7 +23,7 @@ namespace FitSwipe.Shared.Dtos.Users
         public Role Role { get; set; }
         public string Job { get; set; } = string.Empty;
         public UserStatus Status { get; set; }
-        public DateTime CreatedDate { get; set; } = DateTime.Now;
+        public DateTime CreatedDate { get; set; } = DateTime.UtcNow.AddHours(7);
         public DateTime? UpdatedDate { get; set; }
         public DateTime? DeletedDate { get; set; }
         public RecordStatus RecordStatus { get; set; }
@@ -31,6 +32,8 @@ namespace FitSwipe.Shared.Dtos.Users
         public string? Description { get; set; }
         public double? PTExperienceYear { get; set; }
         public double? PTRating { get; set; }
+        public int? SubscriptionLevel { get; set; }
+        public PaymentStatus? SubscriptionPaymentStatus { get; set; }
         public List<GetTagDto> Tags { get; set; } = new List<GetTagDto>();
     }
 }

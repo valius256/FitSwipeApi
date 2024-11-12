@@ -21,6 +21,7 @@ namespace FitSwipe.Shared.Dtos.Slots
         public DateTime? UpdatedDate { get; set; }
         public DateTime? DeletedDate { get; set; }
         public RecordStatus RecordStatus { get; set; }
+        public int? SlotNumber { get; set; }
         public virtual GetTrainingWithTraineeAndPT? Training { get; set; } = default!;
         public virtual GetUserDto CreateBy { get; set; } = default!;
 

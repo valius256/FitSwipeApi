@@ -56,6 +56,7 @@ namespace FitSwipe.API.Extensions
             services.AddScoped<IMessageRepository, MessageRepository>();
             services.AddScoped<ISlotTransactionRepository, SlotTransactionRepository>();
             services.AddScoped<IUserMediaRepository, UserMediaRepository>();
+            services.AddScoped<IRequestWithdrawRepository, RequestWithdrawRepository>();
             services.AddProblemDetails();
             services.AddLogging();
 
@@ -79,6 +80,7 @@ namespace FitSwipe.API.Extensions
             services.AddScoped<IChatServices, ChatServices>();
             services.AddScoped<ISlotTransactionServices, SlotTransactionServices>();
             services.AddScoped<IUserMediaService, UserMediaService>();
+            services.AddScoped<IRequestWithdrawService, RequestWithdrawService>();
 
             services.AddTransient<IEmailServices, EmailServices>();
             services.AddScoped<IJwtProviderServices, JwtProviderServices>();
@@ -109,7 +111,7 @@ namespace FitSwipe.API.Extensions
             // Register Hangfire and configure it
             services.AddHangfire(config =>
 
-                config.UsePostgreSqlStorage(configuration.GetConnectionString("PostgresConnectionString"),
+                config.UsePostgreSqlStorage(configuration.GetConnectionString("PostgresInLocal"),
                     new PostgreSqlStorageOptions
                     {
                         QueuePollInterval = TimeSpan.FromSeconds(15), // Adjust the poll interval as needed
@@ -123,6 +125,15 @@ namespace FitSwipe.API.Extensions
             // Register any other required services here
             services.AddTransient<IDefaultScheduleJob, DefaultScheduleJob>();
 
+            services.AddHangfireServer(cf =>
+           {
+               RecurringJob.AddOrUpdate<SlotServices>(x =>
+                   x.CronJobUpdateSlotStatus(), Cron.Hourly());
+               RecurringJob.AddOrUpdate<PaymentServices>(x =>
+                   x.CronForUAutoPurchaseByUserBalance(), Cron.Hourly());
+               RecurringJob.AddOrUpdate<PaymentServices>(x =>
+                  x.CronChangeSubscriptionStatusWhenOverdue(), Cron.Daily());
+           });
 
 
             return services;
@@ -176,7 +187,9 @@ namespace FitSwipe.API.Extensions
 
 
 
-                });
+                })
+
+                ;
 
             services.AddAuthorization(options =>
             {

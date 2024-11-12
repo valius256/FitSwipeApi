@@ -1,5 +1,4 @@
 ﻿using FitSwipe.Shared.Dtos.UploadDowloads;
-using Microsoft.AspNetCore.Http;
 
 namespace FitSwipe.BusinessLogic.Interfaces.UploadDowload
 {
@@ -7,7 +6,6 @@ namespace FitSwipe.BusinessLogic.Interfaces.UploadDowload
     {
         Task<string> UploadImageAsync(string userFirebaseId, string fileName, Stream fileStream, string mimeType);
         Task<List<DowloadImagesDtos>> DownloadImagesAsync(string uid);
-        Task<string> UploadVideoAsync(string userFirebaseId, string fileName, Stream fileStream);
-        Task<GetUploadVideoResultWithThumbDto> UploadVideoAndGetThumb(IFormFile file, string userFirebaseId);
+        Task<string> UploadVideoAsync(string userFirebaseId, string fileName, Stream fileStream);   
     }
 }

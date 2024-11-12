@@ -2,6 +2,8 @@
 using FitSwipe.BusinessLogic.Interfaces.Users;
 using FitSwipe.Shared.Dtos.Auth;
 using FitSwipe.Shared.Dtos.Users;
+using FitSwipe.Shared.Enum;
+using FitSwipe.Shared.Exceptions;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -28,7 +30,7 @@ namespace FitSwipe.API.Controllers
         }
 
         [HttpPost("forgot-password")]
-        public async Task<IActionResult> ForgotPassword([FromBody] string email)
+        public async Task<IActionResult> ForgotPassword([FromQuery] string email)
         {
             var response = await _authServices.ForgotPasswordAsync(email);
             return Ok(response);
@@ -56,10 +58,19 @@ namespace FitSwipe.API.Controllers
         public async Task<GetUserDto> GetProfile()
         {
             var response = await _userServices.GetSimpleUser(CurrentUserFirebaseId);
+            if (response.Status == UserStatus.Inactive)
+            {
+                throw new BadRequestException("The status of user is Inactive");
+            }
             return response;
         }
 
-
+        [HttpPost("login-facebook")]
+        public async Task<IActionResult> LoginWithFacebook([FromBody] FacebookLoginDto dto)
+        {
+            var response = await _authServices.SignInWithFacebookToken(dto.AccessToken);
+            return Ok(response);
+        }
 
     }
 }

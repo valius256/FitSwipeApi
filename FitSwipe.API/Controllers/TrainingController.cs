@@ -95,5 +95,11 @@ namespace FitSwipe.API.Controllers
             await _trainingService.UpdateTrainingPriceAndApprove(updateTrainingPriceDto, CurrentUserFirebaseId);
             return Ok();
         }
+        [Authorize]
+        [HttpGet("PT-feedback/{userId}")]
+        public async Task<ActionResult<PagedResult<GetTrainingFeedbackDetailDto>>> GetFeedbackOfPT([FromRoute] string userId, [FromQuery] int limit = 10, [FromQuery] int page = 1)
+        {
+            return (await _trainingService.GetTrainingFeedbackOfPT(userId,limit,page));
+        }
     }
 }

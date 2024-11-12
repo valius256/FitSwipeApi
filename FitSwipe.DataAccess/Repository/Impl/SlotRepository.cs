@@ -84,7 +84,45 @@ namespace FitSwipe.DataAccess.Repository.Impl
             int page = pagingModel.Page > 0 ? pagingModel.Page : 1;
             return await query.ToNewPagingAsync(page, limit);
         }
+        public async Task<List<Slot>> GetUpcomingSlotsOfPT(string ptId, int limit)
+        {
+            var slots = await _context.Slots
+                .Where(s => s.StartTime > DateTime.SpecifyKind(DateTime.UtcNow.AddHours(7), DateTimeKind.Utc) && s.Training != null 
+                && s.Training.PTId == ptId && s.Status != Shared.Enum.SlotStatus.Pending)
+                .Include(s => s.Training)
+                .OrderBy(s => s.StartTime)
+                .Take(limit)
+                .ToListAsync();
 
+            foreach (var slot in slots)
+            {
+                if (slot?.Training != null)
+                {
+                    await _context.Entry(slot.Training)
+                       .Reference(t => t.Trainee)
+                       .LoadAsync();
+                }
+            }
+            return slots;
+        }
+        public async Task<List<Slot>> GetAllDebtSlotsOfTrainee(string traineeId)
+        {
+            var slots = await _context.Slots
+                .Where(s => s.PaymentStatus != Shared.Enum.PaymentStatus.Paid && s.Training != null && s.Training.TraineeId == traineeId)
+                .Include(s => s.Training)
+                .ToListAsync();
+
+            foreach(var slot in slots)
+            {
+                if (slot?.Training != null)
+                {
+                    await _context.Entry(slot.Training)
+                       .Reference(t => t.PT)
+                       .LoadAsync();
+                }
+            }
+            return slots;
+        }
         public async Task<Slot?> GetSlotByIdAsync(Guid guid)
         {
             var slot = await _context.Slots

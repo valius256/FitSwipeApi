@@ -12,7 +12,7 @@ namespace FitSwipe.Shared.Dtos.Tags
         public string? TagImage { get; set; }
         public string CreateById { get; set; } = string.Empty;
         public SpecialTag? SpecialTag { get; set; }
-        public DateTime CreatedDate { get; set; } = DateTime.Now;
+        public DateTime CreatedDate { get; set; } = DateTime.UtcNow.AddHours(7);
         public DateTime? UpdatedDate { get; set; }
         public DateTime? DeletedDate { get; set; }
         public RecordStatus RecordStatus { get; set; }

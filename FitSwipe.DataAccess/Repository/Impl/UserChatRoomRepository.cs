@@ -18,7 +18,15 @@ namespace FitSwipe.DataAccess.Repository.Impl
             return await _fitSwipeDbContext.UserChatRooms.Where(l => l.UserFirebaseId == userFirebaseId)
                 .Include(l => l.ChatRoom)
                 .Include(l => l.User)
-                .OrderBy(l => l.CreatedDate).ToListAsync();
+                .OrderByDescending(l => l.ChatRoom.UpdatedDate != null)
+                    .ThenByDescending(l => l.ChatRoom.UpdatedDate)
+                    .ThenByDescending(l => l.ChatRoom.CreatedDate)
+                .ToListAsync();
+        }
+
+        public async Task<List<UserChatRoom>> GetUserChatRoomsWithUserByChatRoomId(Guid chatRoomId)
+        {
+            return await _fitSwipeDbContext.UserChatRooms.Where(uc => uc.ChatRoomId == chatRoomId).Include(s => s.User).ToListAsync();
         }
     }
 }

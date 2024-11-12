@@ -30,7 +30,18 @@ namespace FitSwipe.API.Controllers
             var slotDetailDtos = await _slotServices.GetSlotByIdAsync(slotId);
             return Ok(slotDetailDtos);
         }
-
+        [Authorize]
+        [HttpGet("debt-slots")]
+        public async Task<ActionResult<List<GetSlotDetailDtos>>> GetAllDebtSlots()
+        {
+            return await _slotServices.GetAllDebtSlotsOfTrainee(CurrentUserFirebaseId);
+        }
+        [Authorize]
+        [HttpGet("upcoming-slots")]
+        public async Task<ActionResult<List<GetSlotDetailDtos>>> GetUpcomingSlotsOfPT([FromQuery] int limit = 10)
+        {
+            return await _slotServices.GetUpcomingSlotsOfPT(CurrentUserFirebaseId, limit);
+        }
         /// <summary>
         ///  Need in frontend block that the slot only book in days and don;t last to next day
         /// </summary>
@@ -106,6 +117,10 @@ namespace FitSwipe.API.Controllers
             await _slotServices.DeleteAllUnbookedSlotInARange(start, end, CurrentUserFirebaseId);
             return Ok();
         }
-
+        //[HttpGet("test")]
+        //public async Task Test()
+        //{
+        //    await _slotServices.CronJobUpdateSlotStatus();
+        //}
     }
 }
