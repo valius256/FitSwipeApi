@@ -276,16 +276,15 @@ namespace FitSwipe.BusinessLogic.Services.Payments
             var amount = 0;
             if (level == 1)
             {
-                amount = 10000;//Fix to 100000 later
-            }
-            else
+                amount = 99000;
+            } else
             {
                 throw new BadRequestException("Other Subscriptions than level 1 is not supported yet!");
             }
 
             var Content = "Thanh toán gói VIP " + level;
             var cancelUrl = string.Empty; // example   cancelUrl="https://localhost:3002"
-            var successUrl = "https://localhost:7151/api/payment/payos-callback";
+            var successUrl = "https://fitandswipeapi.somee.com/api/payment/payos-callback";
 
             PayOS payOs = new PayOS(_payOs.ClientID, _payOs.APIKey, _payOs.ChecksumKey);
             long paymentCode = GenerateUniqueOrderCode();

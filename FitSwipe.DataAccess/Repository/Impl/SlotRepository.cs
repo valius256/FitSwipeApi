@@ -87,7 +87,8 @@ namespace FitSwipe.DataAccess.Repository.Impl
         public async Task<List<Slot>> GetUpcomingSlotsOfPT(string ptId, int limit)
         {
             var slots = await _context.Slots
-                .Where(s => s.StartTime > DateTime.SpecifyKind(DateTime.UtcNow.AddHours(7),DateTimeKind.Utc) && s.Training != null && s.Training.PTId == ptId)
+                .Where(s => s.StartTime > DateTime.SpecifyKind(DateTime.UtcNow.AddHours(7), DateTimeKind.Utc) && s.Training != null 
+                && s.Training.PTId == ptId && s.Status != Shared.Enum.SlotStatus.Pending)
                 .Include(s => s.Training)
                 .OrderBy(s => s.StartTime)
                 .Take(limit)

@@ -13,11 +13,13 @@ namespace FitSwipe.DataAccess.Repository.Impl
             _context = context;
         }
 
-        public async Task<ChatRoom> GetPrivateChatRoomAsync(string userFirebaseId1, string userFirebaseId2)
+        public async Task<ChatRoom?> GetPrivateChatRoomAsync(string userFirebaseId1, string userFirebaseId2)
         {
             var result = await _context.ChatRooms
                 .Where(r => !r.IsGroup)
+                .Include(r => r.UserChatRooms)
                 .FirstOrDefaultAsync(r =>
+                    r.UserChatRooms.Count == 2 &&
                     r.UserChatRooms.Any(uc => uc.UserFirebaseId == userFirebaseId1) &&
                     r.UserChatRooms.Any(uc => uc.UserFirebaseId == userFirebaseId2)
                 );

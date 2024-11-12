@@ -30,7 +30,7 @@ namespace FitSwipe.API.Controllers
         }
 
         [HttpPost("forgot-password")]
-        public async Task<IActionResult> ForgotPassword([FromBody] string email)
+        public async Task<IActionResult> ForgotPassword([FromQuery] string email)
         {
             var response = await _authServices.ForgotPasswordAsync(email);
             return Ok(response);
