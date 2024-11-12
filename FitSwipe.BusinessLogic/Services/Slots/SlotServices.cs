@@ -431,10 +431,10 @@ namespace FitSwipe.BusinessLogic.Services.Slots
 
         public async Task DeleteAllUnbookedSlotInARange(DateOnly start, DateOnly end, string userId)
         {
-            var slots = await _slotRepository.Where(s => s.StartTime >= DateTime.SpecifyKind(start.ToDateTime(TimeOnly.MinValue), DateTimeKind.Utc)
+            var slots = await _slotRepository.FindAsync(s => s.StartTime >= DateTime.SpecifyKind(start.ToDateTime(TimeOnly.MinValue), DateTimeKind.Utc)
                 && s.EndTime <= DateTime.SpecifyKind(end.ToDateTime(TimeOnly.MaxValue), DateTimeKind.Utc)
                 && s.CreateById == userId
-                && s.Status == SlotStatus.Unbooked).ToListAsync();
+                && s.Status == SlotStatus.Unbooked);
 
             await _slotRepository.DeleteRangeAsync(slots);
         }
