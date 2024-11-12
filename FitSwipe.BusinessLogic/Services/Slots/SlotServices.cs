@@ -109,6 +109,14 @@ namespace FitSwipe.BusinessLogic.Services.Slots
                 {
                     throw new BadRequestException("Slot startime must smaller than endtime");
                 }
+                if ((slot.EndTime - slot.StartTime).TotalMinutes < 15)
+                {
+                    throw new BadRequestException("Minimum is 15 minutes");
+                }
+                if ((slot.EndTime - slot.StartTime).TotalHours > 2.0)
+                {
+                    throw new BadRequestException("Maximum is 2 hour");
+                }
                 // check slot time is dupplicate or not
                 if (!await ValidateSlotForCustomer(slot.StartTime, slot.EndTime, currentUserId))
                 {

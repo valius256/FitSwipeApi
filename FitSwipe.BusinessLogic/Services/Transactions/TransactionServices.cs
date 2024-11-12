@@ -32,7 +32,7 @@ namespace FitSwipe.BusinessLogic.Services.Transactions
                 UserFireBaseId = createTransactionDtos.UserFireBaseId,
                 Amount = createTransactionDtos.Amount,
                 Description = createTransactionDtos.Description ?? "",
-                CreatedDate = DateTime.UtcNow,
+                CreatedDate = DateTime.UtcNow.AddHours(7),
                 Type = createTransactionDtos.Type
             };
 

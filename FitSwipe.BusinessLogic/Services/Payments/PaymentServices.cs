@@ -242,7 +242,7 @@ namespace FitSwipe.BusinessLogic.Services.Payments
 
             var Content = "Nạp tiền vào tài khoản";
             var cancelUrl = string.Empty; // example   cancelUrl="https://localhost:3002"
-            var successUrl = "https://fitandswipeapi.somee.com/api/payment/payos-callback";
+            var successUrl = "https://localhost:7151/api/payment/payos-callback";
 
             PayOS payOs = new PayOS(_payOs.ClientID, _payOs.APIKey, _payOs.ChecksumKey);
             long paymentCode = GenerateUniqueOrderCode();
@@ -410,7 +410,10 @@ namespace FitSwipe.BusinessLogic.Services.Payments
             //}
 
             var transactionEntity = await _transactionServices.GetTransactionByOrderCodeAsync(orderCode);
-
+            if (transactionEntity.Status != TransactionStatus.Pending)
+            {
+                return "ALREADY_HANDLED";
+            }
             if (cancel)
             {
                 transactionEntity.Status = Shared.Enum.TransactionStatus.Failed;
