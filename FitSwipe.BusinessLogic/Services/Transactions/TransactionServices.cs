@@ -1,4 +1,5 @@
 ﻿using FitSwipe.BusinessLogic.Interfaces.Transactions;
+using FitSwipe.BusinessLogic.Interfaces.Users;
 using FitSwipe.DataAccess.Model.Entity;
 using FitSwipe.DataAccess.Model.Paging;
 using FitSwipe.DataAccess.Repository.Intefaces;
@@ -13,10 +14,12 @@ namespace FitSwipe.BusinessLogic.Services.Transactions
     public class TransactionServices : ITransactionServices
     {
         private readonly ITransactionRepository _transactionRepository;
+        private readonly IUserServices _userServices;
 
-        public TransactionServices(ITransactionRepository transactionRepository)
+        public TransactionServices(ITransactionRepository transactionRepository, IUserServices userServices)
         {
             _transactionRepository = transactionRepository;
+            _userServices = userServices;
         }
 
         public async Task<GetSimpleTransactionDtos> CreateTransactionAsync(CreateTransactionDtos createTransactionDtos)
@@ -65,7 +68,9 @@ namespace FitSwipe.BusinessLogic.Services.Transactions
 
         public async Task<PagedResult<GetSimpleTransactionDtos>> GetTransactionsPageAsync(PagingModel<QueryTransactionDtos> pagedRequest, string userFirebaseId)
         {
-            var pagedResultTransactionEntity = await _transactionRepository.GetTransactionsPageAsync(pagedRequest, userFirebaseId);
+            var user = await _userServices.GetUserByIdRequiredAsync(userFirebaseId);
+
+            var pagedResultTransactionEntity = await _transactionRepository.GetTransactionsPageAsync(pagedRequest, user);
             return pagedResultTransactionEntity.Adapt<PagedResult<GetSimpleTransactionDtos>>();
         }
 

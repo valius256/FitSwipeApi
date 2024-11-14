@@ -88,7 +88,7 @@ namespace FitSwipe.DataAccess.Repository.Impl
         {
             var slots = await _context.Slots
                 .Where(s => s.StartTime > DateTime.SpecifyKind(DateTime.UtcNow.AddHours(7), DateTimeKind.Utc) && s.Training != null 
-                && s.Training.PTId == ptId && s.Status != Shared.Enum.SlotStatus.Pending)
+                && s.Training.PTId == ptId && s.Status != Shared.Enum.SlotStatus.Pending && s.Status != Shared.Enum.SlotStatus.Disabled)
                 .Include(s => s.Training)
                 .OrderBy(s => s.StartTime)
                 .Take(limit)
@@ -108,7 +108,10 @@ namespace FitSwipe.DataAccess.Repository.Impl
         public async Task<List<Slot>> GetAllDebtSlotsOfTrainee(string traineeId)
         {
             var slots = await _context.Slots
-                .Where(s => s.PaymentStatus != Shared.Enum.PaymentStatus.Paid && s.Training != null && s.Training.TraineeId == traineeId)
+                .Where(s => s.PaymentStatus != Shared.Enum.PaymentStatus.Paid 
+                 && s.Status != Shared.Enum.SlotStatus.Pending
+                 && s.Status != Shared.Enum.SlotStatus.Disabled
+                 && s.Training != null && s.Training.TraineeId == traineeId)
                 .Include(s => s.Training)
                 .ToListAsync();
 

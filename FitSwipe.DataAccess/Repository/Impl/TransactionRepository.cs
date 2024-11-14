@@ -15,9 +15,16 @@ namespace FitSwipe.DataAccess.Repository.Impl
             _dbContext = context;
         }
 
-        public async Task<PagedResult<Transaction>> GetTransactionsPageAsync(PagingModel<QueryTransactionDtos> pagingRequest, string userFirebaseId)
+        public async Task<PagedResult<Transaction>> GetTransactionsPageAsync(PagingModel<QueryTransactionDtos> pagingRequest, User user)
         {
-            var query = _dbContext.Transactions.Where(l => l.UserFireBaseId == userFirebaseId).AsQueryable();
+            
+            var query = _dbContext.Transactions.AsQueryable();
+
+            if (user.Role != Shared.Enum.Role.Operator)
+            {
+                query = query.Where(l => l.UserFireBaseId == user.FireBaseId);
+            }
+
             if (pagingRequest.Filter != null)
             {
                 query = GetTransactionQuery(query, pagingRequest.Filter);
@@ -51,10 +58,25 @@ namespace FitSwipe.DataAccess.Repository.Impl
                 query = query.Where(l => filter.Status.Contains(l.Status));
             }
 
-            if (filter.MinAmount != null && filter.MaxAmount != null)
+            if (filter.MinAmount.HasValue)
             {
-                query = query.Where(l => l.Amount >= filter.MinAmount && l.Amount <= filter.MaxAmount);
+                query = query.Where(l => l.Amount >= filter.MinAmount.Value);
             }
+
+            if (filter.MaxAmount.HasValue)
+            {
+                query = query.Where(l => l.Amount <= filter.MaxAmount.Value);
+            }
+
+            if (filter.From.HasValue)
+            {
+                query = query.Where(l => l.CreatedDate >= filter.From);
+            }
+            if (filter.To.HasValue)
+            {
+                query = query.Where(l => l.CreatedDate <= filter.To);
+            }
+
             //if (filter.CreateById != null)
             //{
             //    query = query.Where(l => l.UserFireBaseId == filter.CreateById);

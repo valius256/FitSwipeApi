@@ -10,7 +10,7 @@ namespace FitSwipe.Shared.Dtos.Transactions
         public List<TransactionStatus>? Status { get; set; }
         public int? MaxAmount { get; set; }
         public int? MinAmount { get; set; }
-        public string? CreateById {  get; set; }    
-
+        public DateTime? From { get; set; }
+        public DateTime? To { get; set; }
     }
 }

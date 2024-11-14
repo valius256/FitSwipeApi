@@ -6,6 +6,6 @@ namespace FitSwipe.DataAccess.Repository.Intefaces
 {
     public interface ITransactionRepository : IGenericRepository<Transaction>
     {
-        Task<PagedResult<Transaction>> GetTransactionsPageAsync(PagingModel<QueryTransactionDtos> pagedRequest, string userFirebaseId);
+        Task<PagedResult<Transaction>> GetTransactionsPageAsync(PagingModel<QueryTransactionDtos> pagedRequest, User user);
     }
 }
