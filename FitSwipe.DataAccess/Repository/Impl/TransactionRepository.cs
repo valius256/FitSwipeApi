@@ -4,6 +4,7 @@ using FitSwipe.DataAccess.Model.Entity;
 using FitSwipe.DataAccess.Model.Paging;
 using FitSwipe.DataAccess.Repository.Intefaces;
 using FitSwipe.Shared.Dtos.Transactions;
+using Microsoft.EntityFrameworkCore;
 
 namespace FitSwipe.DataAccess.Repository.Impl
 {
@@ -20,15 +21,21 @@ namespace FitSwipe.DataAccess.Repository.Impl
             
             var query = _dbContext.Transactions.AsQueryable();
 
-            if (user.Role != Shared.Enum.Role.Operator)
-            {
-                query = query.Where(l => l.UserFireBaseId == user.FireBaseId);
-            }
+           
 
             if (pagingRequest.Filter != null)
             {
                 query = GetTransactionQuery(query, pagingRequest.Filter);
             }
+            if (user.Role != Shared.Enum.Role.Operator)
+            {
+                query = query.Where(l => l.UserFireBaseId == user.FireBaseId);
+            }
+            else
+            {
+                query = query.Include(l => l.User);
+            }
+
             int limit = pagingRequest.Limit > 0 ? pagingRequest.Limit : 10;
             int page = pagingRequest.Page > 0 ? pagingRequest.Page : 1;
             return await query.OrderByDescending(t => t.CreatedDate).ToNewPagingAsync(page, limit);

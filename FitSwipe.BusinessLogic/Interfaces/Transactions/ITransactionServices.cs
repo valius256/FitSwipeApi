@@ -6,8 +6,8 @@ namespace FitSwipe.BusinessLogic.Interfaces.Transactions
 {
     public interface ITransactionServices
     {
-        Task<GetSimpleTransactionDtos> CreateTransactionAsync(CreateTransactionDtos createTransactionDtos);
-        Task<PagedResult<GetSimpleTransactionDtos>> GetTransactionsPageAsync(PagingModel<QueryTransactionDtos> pagedRequest, string userFirebaseId);
+        Task<GetTransactionWithUserDto> CreateTransactionAsync(CreateTransactionDtos createTransactionDtos);
+        Task<PagedResult<GetTransactionWithUserDto>> GetTransactionsPageAsync(PagingModel<QueryTransactionDtos> pagedRequest, string userFirebaseId);
         Task<Transaction> GetTransactionByOrderCodeAsync(long orderCode);
         Task<bool> UpdateTransactionStatus(long orderCode, Shared.Enum.TransactionStatus status);
 

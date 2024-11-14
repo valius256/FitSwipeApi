@@ -1,8 +1,9 @@
-﻿using FitSwipe.Shared.Enum;
+﻿using FitSwipe.Shared.Dtos.Users;
+using FitSwipe.Shared.Enum;
 
 namespace FitSwipe.Shared.Dtos.Transactions
 {
-    public class GetSimpleTransactionDtos
+    public class GetTransactionWithUserDto
     {
         public string TranscationCode { get; set; } = string.Empty;
         public string UserId { get; set; } = string.Empty ;
@@ -13,5 +14,6 @@ namespace FitSwipe.Shared.Dtos.Transactions
         public string Description { get; set; } = string.Empty;
         public List<Guid> TransactionSlot { get; set; } = new List<Guid>();
         public DateTime CreatedDate { get; set; } = DateTime.UtcNow.AddHours(7);
+        public GetSimpleUserDto? User { get; set; }
     }
 }

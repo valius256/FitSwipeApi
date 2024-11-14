@@ -22,7 +22,7 @@ namespace FitSwipe.BusinessLogic.Services.Transactions
             _userServices = userServices;
         }
 
-        public async Task<GetSimpleTransactionDtos> CreateTransactionAsync(CreateTransactionDtos createTransactionDtos)
+        public async Task<GetTransactionWithUserDto> CreateTransactionAsync(CreateTransactionDtos createTransactionDtos)
         {
 
             var convertTransactionToListString = createTransactionDtos.SlotIds.ConvertAll(x => x.ToString());
@@ -52,7 +52,7 @@ namespace FitSwipe.BusinessLogic.Services.Transactions
             }
 
             await _transactionRepository.AddAsync(transaction);
-            return transaction.Adapt<GetSimpleTransactionDtos>();
+            return transaction.Adapt<GetTransactionWithUserDto>();
         }
 
 
@@ -66,12 +66,12 @@ namespace FitSwipe.BusinessLogic.Services.Transactions
             return result;
         }
 
-        public async Task<PagedResult<GetSimpleTransactionDtos>> GetTransactionsPageAsync(PagingModel<QueryTransactionDtos> pagedRequest, string userFirebaseId)
+        public async Task<PagedResult<GetTransactionWithUserDto>> GetTransactionsPageAsync(PagingModel<QueryTransactionDtos> pagedRequest, string userFirebaseId)
         {
             var user = await _userServices.GetUserByIdRequiredAsync(userFirebaseId);
 
             var pagedResultTransactionEntity = await _transactionRepository.GetTransactionsPageAsync(pagedRequest, user);
-            return pagedResultTransactionEntity.Adapt<PagedResult<GetSimpleTransactionDtos>>();
+            return pagedResultTransactionEntity.Adapt<PagedResult<GetTransactionWithUserDto>>();
         }
 
         public async Task<bool> UpdateTransactionStatus(long orderCode, TransactionStatus status)

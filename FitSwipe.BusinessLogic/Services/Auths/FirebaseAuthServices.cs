@@ -137,7 +137,7 @@ namespace FitSwipe.BusinessLogic.Services.Auths
             return sessionCookie;
         }
 
-        public async Task<GetUserProfileDtos> RegisterUser(RegisterRequestDtos registerDtos)
+        public async Task<GetSimpleUserDto> RegisterUser(RegisterRequestDtos registerDtos)
         {
             var registerAuthModel = await RegisterUserWithFirebaseAsync(registerDtos);
 
@@ -166,7 +166,7 @@ namespace FitSwipe.BusinessLogic.Services.Auths
                 false);
 
 
-            var userResponseModel = new GetUserProfileDtos()
+            var userResponseModel = new GetSimpleUserDto()
             {
                 Email = registerDtos.Email,
                 Password = registerDtos.Password,
