@@ -9,5 +9,6 @@ namespace FitSwipe.Shared.Enum
         DirectPayment,
         AutoDeduction,
         DirectPaymentSubscription,
+        BalancePaymentSubscription,
     }
 }

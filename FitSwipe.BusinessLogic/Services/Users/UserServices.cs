@@ -5,6 +5,7 @@ using FitSwipe.DataAccess.Model.Entity;
 using FitSwipe.DataAccess.Model.Paging;
 using FitSwipe.DataAccess.Repository.Intefaces;
 using FitSwipe.Shared.Dtos.Tags;
+using FitSwipe.Shared.Dtos.Transactions;
 using FitSwipe.Shared.Dtos.UploadDowloads;
 using FitSwipe.Shared.Dtos.Users;
 using FitSwipe.Shared.Exceptions;
@@ -217,6 +218,16 @@ namespace FitSwipe.BusinessLogic.Services.Users
             }
             user.Balance += amount;
             await _userRepository.UpdateAsync(user);
+        }
+        public async Task UpdatePTsBalance(List<GetBenefitPTDto> receivers)
+        {
+            var users = await _userRepository.FindAsync(s => receivers.Select(u => u.PTId).ToList().Contains(s.FireBaseId));
+            foreach (var user in users)
+            {
+                var moneyInfo = receivers.FirstOrDefault(u => u.PTId == user.FireBaseId);
+                user.Balance += moneyInfo?.Money ?? 0;
+            }
+            await _userRepository.UpdateRangeAsync(users);
         }
         public async Task UpdatePTOverallRating(string userId)
         {

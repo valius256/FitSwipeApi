@@ -29,7 +29,14 @@ namespace FitSwipe.DataAccess.Repository.Impl
             }
             if (user.Role != Shared.Enum.Role.Operator)
             {
-                query = query.Where(l => l.UserFireBaseId == user.FireBaseId);
+                if (user.Role == Shared.Enum.Role.Trainee)
+                {
+                    query = query.Where(l => l.UserFireBaseId == user.FireBaseId);
+                } else
+                {
+                    query = query.Include(l => l.TransactionSlots).ThenInclude(ts => ts.Slot).ThenInclude(s => s.Training)
+                        .Where(l => l.UserFireBaseId == user.FireBaseId || l.TransactionSlots.Any(ts => ts.Slot.Training != null && ts.Slot.Training.PTId == user.FireBaseId)); 
+                }
             }
             else
             {

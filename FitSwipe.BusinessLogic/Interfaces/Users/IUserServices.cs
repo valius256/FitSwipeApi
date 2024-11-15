@@ -1,5 +1,6 @@
 ﻿using FitSwipe.DataAccess.Model.Entity;
 using FitSwipe.DataAccess.Model.Paging;
+using FitSwipe.Shared.Dtos.Transactions;
 using FitSwipe.Shared.Dtos.UploadDowloads;
 using FitSwipe.Shared.Dtos.Users;
 
@@ -23,7 +24,7 @@ namespace FitSwipe.BusinessLogic.Interfaces.Users
         Task UpdatePTOverallRating(string userId);
         Task UpdateUserBalance(string userId, int amount);
         Task EnableUserSubscription(string userId, int level);
-
+        Task UpdatePTsBalance(List<GetBenefitPTDto> receivers);
         Task<List<GetUserSubscriptionDto>> GetAllUserSubcriptionsExpired();
         Task UpdateUserSubcription(GetUserSubscriptionDto getUserSubscriptionDto);
 

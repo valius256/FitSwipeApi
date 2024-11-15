@@ -1,4 +1,5 @@
 ﻿using FitSwipe.Shared.Dtos.Payment;
+using FitSwipe.Shared.Enum;
 using Microsoft.AspNetCore.Http;
 
 namespace FitSwipe.BusinessLogic.Interfaces.Payments
@@ -16,6 +17,5 @@ namespace FitSwipe.BusinessLogic.Interfaces.Payments
         Task HandleSubscriptionPaymentWithBalance(string userId, int level);
         Task CronForUAutoPurchaseByUserBalance();
         Task CronChangeSubscriptionStatusWhenOverdue();
-        Task CronJobUpdateSlotStatus();
     }
 }

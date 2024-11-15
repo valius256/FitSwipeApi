@@ -31,7 +31,7 @@ namespace FitSwipe.BusinessLogic.Services.Payments
         private readonly ITrainingService _trainingService;
         private readonly PayOsOption _payOs;
         private readonly IEmailServices _emailServices;
-
+        private readonly string PaymentUrl = "https://fitandswipeapi.somee.com/api";
         public PaymentServices(IUserServices userServices, ISlotRepository slotRepository, ISlotServices slotServices, IOptions<VnPay> vnPay, ITrainingService trainingService
             , ITransactionServices transactionServices, IOptions<PayOsOption> payOs,
             IEmailServices emailServices,
@@ -46,6 +46,7 @@ namespace FitSwipe.BusinessLogic.Services.Payments
             _payOs = payOs.Value;
             _slotTransactionServices = slotTransactionServices;
             _trainingService = trainingService;
+            _emailServices = emailServices;
         }
 
         public async Task<string> CreatePaymentForSlotAsync(PaySlotDtos model, HttpContext context, string currentUserFirebaseId)
@@ -121,7 +122,7 @@ namespace FitSwipe.BusinessLogic.Services.Payments
             pay.AddRequestData("vnp_Locale", _vnPay.Locale);
             pay.AddRequestData("vnp_OrderInfo", $"{isRechargePayment}|{description}|{currUid}|{returnPage}|{orderType.ToString()}|{slotIdString}");
             pay.AddRequestData("vnp_OrderType", "other");
-            pay.AddRequestData("vnp_ReturnUrl", "https://fitandswipeapi.somee.com/api/Payment/vnpay-execute");
+            pay.AddRequestData("vnp_ReturnUrl", $"{PaymentUrl}/vnpay-execute");
             pay.AddRequestData("vnp_TxnRef", tick);
             pay.AddRequestData("vnp_ExpireDate", timeNow.AddMinutes(20).ToString("yyyyMMddHHmmss"));
 
@@ -172,12 +173,37 @@ namespace FitSwipe.BusinessLogic.Services.Payments
         public async Task HandleSlotsPayment(List<Guid> slotIds)
         {
             await _slotServices.UpdateRangePayment(slotIds);
+            //Transfer to PT
+            var receivers = new List<GetBenefitPTDto>();
+            foreach (var slotId in slotIds)
+            {
+                var slot = await _slotServices.GetSlotByIdAsync(slotId);
+                if (slot != null)
+                {
+                    if (slot.Training == null || slot.Training.PricePerSlot == null)
+                    {
+                        throw new BadRequestException("One of the slot is not updated the price");
+                    };
+
+                    var pt = receivers.FirstOrDefault(p => p.PTId == slot.Training.PTId);
+                    if (pt != null)
+                    {
+                        pt.Money += slot.Training.PricePerSlot.Value;
+                    }
+                    else
+                    {
+                        receivers.Add(new GetBenefitPTDto { PTId = slot.Training.PTId, Money = slot.Training.PricePerSlot.Value });
+                    }
+                }
+            }
+            await _userServices.UpdatePTsBalance(receivers);
         }
 
         public async Task HandleSlotsPaymentWithBalance(List<Guid> slotIds, string userId)
         {
             var total = 0;
             var user = await _userServices.GetUserByIdRequiredAsync(userId);
+            var receivers = new List<GetBenefitPTDto>();
             foreach (var slotId in slotIds)
             {
                 var slot = await _slotServices.GetSlotByIdAsync(slotId);
@@ -188,13 +214,26 @@ namespace FitSwipe.BusinessLogic.Services.Payments
                         throw new BadRequestException("One of the slot is not updated the price");
                     };
                     total += slot.Training.PricePerSlot.Value;
+
+                    var pt = receivers.FirstOrDefault(p => p.PTId == slot.Training.PTId);
+                    if (pt != null)
+                    {
+                        pt.Money += slot.Training.PricePerSlot.Value;
+                    } else
+                    {
+                        receivers.Add(new GetBenefitPTDto { PTId = slot.Training.PTId, Money = slot.Training.PricePerSlot.Value });
+                    }
                 }
             }
             if (user.Balance < total)
             {
                 throw new BadRequestException("Insufficient Balance");
             }
+            //Defuct trainee
             await _userServices.UpdateUserBalance(userId, -total);
+            //Transfer to PT
+            await _userServices.UpdatePTsBalance(receivers);
+
             await _slotServices.UpdateRangePayment(slotIds);
             var code = GenerateUniqueOrderCode();
             await _transactionServices.CreateTransactionAsync(new CreateTransactionDtos
@@ -214,7 +253,7 @@ namespace FitSwipe.BusinessLogic.Services.Payments
             var amount = 0;
             if (level == 1)
             {
-                amount = 100000;
+                amount = 99000;
             }
             else
             {
@@ -230,7 +269,7 @@ namespace FitSwipe.BusinessLogic.Services.Payments
                 Amount = amount,
                 Method = TransactionMethod.Balance,
                 Description = "Trả tiền gói VIP bằng số dư",
-                Type = TransactionType.AutoDeduction,
+                Type = TransactionType.BalancePaymentSubscription,
                 SlotIds = [],
             });
             await _transactionServices.UpdateTransactionStatus(code, TransactionStatus.Successed);
@@ -242,7 +281,7 @@ namespace FitSwipe.BusinessLogic.Services.Payments
 
             var Content = "Nạp tiền vào tài khoản";
             var cancelUrl = string.Empty; // example   cancelUrl="https://localhost:3002"
-            var successUrl = "https://localhost:7151/api/payment/payos-callback";
+            var successUrl = $"{PaymentUrl}/payment/payos-callback";
 
             PayOS payOs = new PayOS(_payOs.ClientID, _payOs.APIKey, _payOs.ChecksumKey);
             long paymentCode = GenerateUniqueOrderCode();
@@ -284,7 +323,7 @@ namespace FitSwipe.BusinessLogic.Services.Payments
 
             var Content = "Thanh toán gói VIP " + level;
             var cancelUrl = string.Empty; // example   cancelUrl="https://localhost:3002"
-            var successUrl = "https://fitandswipeapi.somee.com/api/payment/payos-callback";
+            var successUrl = $"{PaymentUrl}/payment/payos-callback";
 
             PayOS payOs = new PayOS(_payOs.ClientID, _payOs.APIKey, _payOs.ChecksumKey);
             long paymentCode = GenerateUniqueOrderCode();
@@ -366,7 +405,7 @@ namespace FitSwipe.BusinessLogic.Services.Payments
             var tick = DateTime.UtcNow.Ticks;
 
             var cancelUrl = string.Empty; // example   cancelUrl="https://localhost:3002"
-            var successUrl = "https://fitandswipeapi.somee.com/api/payment/payos-callback"; // example   returnUrl="https://localhost:3002"
+            var successUrl = $"{PaymentUrl}/payment/payos-callback"; // example   returnUrl="https://localhost:3002"
 
 
             PayOS payOs = new PayOS(_payOs.ClientID, _payOs.APIKey, _payOs.ChecksumKey);
@@ -437,10 +476,10 @@ namespace FitSwipe.BusinessLogic.Services.Payments
                     var emailParams = new Dictionary<string, string>()
                     {
                         { "Name", $"{user.Email}" },
-                        {"Amount", $"{transactionEntity.Amount}"},
-                        {"PaymentDate", $"{DateTime.UtcNow.AddHours(7)}" }
+                        { "Amount", $"{transactionEntity.Amount}"},
+                        { "PaymentDate", $"{DateTime.UtcNow.AddHours(7)}" }
                     };
-                    var toAddress = new List<string>() { user.Email };
+                    var toAddress = new List<string>() { user.Email ?? "" };
                     await _emailServices.SendAsync(EmailType.Payment_Success, toAddress, new List<string>(), emailParams,
                         false);
 
@@ -508,50 +547,6 @@ namespace FitSwipe.BusinessLogic.Services.Payments
                 user.SubscriptionPaymentStatus = PaymentStatus.NotPaid;
                 await _userServices.UpdateUserSubcription(user);
             }
-        }
-
-        public async Task CronJobUpdateSlotStatus()
-        {
-            await HandleForSlotStatus();
-            //await HandleForTrainningStatus(listTrainingOfSlot);
-        }
-
-        private async Task HandleForSlotStatus()
-        {
-            var slotsToUpdate = (await _slotRepository.FindWithNoTrackingAsync(sl => sl.Status == SlotStatus.OnGoing || sl.Status == SlotStatus.NotStarted)).ToList();
-            var trainingToUpdate = new List<Training>();
-            var slotsWillUpdate = new List<Slot>();
-            foreach (var slot in slotsToUpdate)
-            {
-                if (slot.TrainingId != null)
-                {
-                    if (slot.StartTime <= DateTime.SpecifyKind(DateTime.UtcNow.AddHours(7), DateTimeKind.Utc) && slot.Status == SlotStatus.NotStarted)
-                    {
-                        slot.Status = SlotStatus.OnGoing;
-                        slotsWillUpdate.Add(slot);
-                        if (await _trainingService.IsFirstOrLastSlot(slot.Id, slot.TrainingId.Value, true))
-                        {
-                            await _trainingService.UpdateTrainingStatus(slot.TrainingId.Value, TrainingStatus.OnGoing, null);
-                        }
-                    }
-
-                    if (slot.EndTime <= DateTime.SpecifyKind(DateTime.UtcNow.AddHours(7), DateTimeKind.Utc) && slot.Status == SlotStatus.OnGoing)
-                    {
-                        slot.Status = SlotStatus.Finished;
-                        var trainingUserOfSlot = await _userServices.GetUserByIdRequiredAsync(slot.Training.TraineeId);
-                        if (trainingUserOfSlot.Balance >= slot.Training.PricePerSlot)
-                        {
-                            await HandleSlotsPaymentWithBalance(new List<Guid> { slot.Id }, trainingUserOfSlot.FireBaseId);
-                        }
-                        slotsWillUpdate.Add(slot);
-                        if (await _trainingService.IsFirstOrLastSlot(slot.Id, slot.TrainingId.Value, false))
-                        {
-                            await _trainingService.UpdateTrainingStatus(slot.TrainingId.Value, TrainingStatus.Finished, null);
-                        }
-                    }
-                }
-            }
-            await _slotRepository.UpdateRangeAsync(slotsWillUpdate);
         }
     }
 
