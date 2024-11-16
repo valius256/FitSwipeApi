@@ -225,7 +225,7 @@ namespace FitSwipe.BusinessLogic.Services.Users
             foreach (var user in users)
             {
                 var moneyInfo = receivers.FirstOrDefault(u => u.PTId == user.FireBaseId);
-                user.Balance += moneyInfo?.Money ?? 0;
+                user.Balance += (moneyInfo?.Money ?? 0) * 97 / 100; //3% comission rate
             }
             await _userRepository.UpdateRangeAsync(users);
         }
