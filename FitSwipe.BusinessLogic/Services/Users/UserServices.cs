@@ -4,6 +4,7 @@ using FitSwipe.BusinessLogic.Interfaces.Users;
 using FitSwipe.DataAccess.Model.Entity;
 using FitSwipe.DataAccess.Model.Paging;
 using FitSwipe.DataAccess.Repository.Intefaces;
+using FitSwipe.Shared.Dtos.Management;
 using FitSwipe.Shared.Dtos.Tags;
 using FitSwipe.Shared.Dtos.Transactions;
 using FitSwipe.Shared.Dtos.UploadDowloads;
@@ -268,6 +269,11 @@ namespace FitSwipe.BusinessLogic.Services.Users
         {
             await _userRepository.Where(l => l.FireBaseId == getUserSubscriptionDto.FireBaseId)
                 .ExecuteUpdateAsync(u => u.SetProperty(t => t.SubscriptionPaymentStatus, Shared.Enum.PaymentStatus.NotPaid));
+        }
+
+        public async Task<GetDashboardStatDto> GetUserStatistic()
+        {
+            return await _userRepository.GetUserStatistic();
         }
     }
 }

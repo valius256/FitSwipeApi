@@ -1,5 +1,6 @@
 ﻿using FitSwipe.DataAccess.Model.Entity;
 using FitSwipe.DataAccess.Model.Paging;
+using FitSwipe.Shared.Dtos.Management;
 using FitSwipe.Shared.Dtos.Users;
 
 namespace FitSwipe.DataAccess.Repository.Intefaces
@@ -13,5 +14,7 @@ namespace FitSwipe.DataAccess.Repository.Intefaces
         Task<PagedResult<User>> GetMatchedPTOrdered(GetUserWithTagDto user, int page, int limit);
         Task<User?> GetUserWithTagsById(string id);
         Task<double?> GetNewRatingOfPT(string userId);
+
+        Task<GetDashboardStatDto> GetUserStatistic();
     }
 }

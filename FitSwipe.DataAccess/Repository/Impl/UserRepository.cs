@@ -3,9 +3,11 @@ using FitSwipe.DataAccess.Model;
 using FitSwipe.DataAccess.Model.Entity;
 using FitSwipe.DataAccess.Model.Paging;
 using FitSwipe.DataAccess.Repository.Intefaces;
+using FitSwipe.Shared.Dtos.Management;
 using FitSwipe.Shared.Dtos.Tags;
 using FitSwipe.Shared.Dtos.Users;
 using FitSwipe.Shared.Enum;
+using Google.Api;
 using Microsoft.EntityFrameworkCore;
 
 namespace FitSwipe.DataAccess.Repository.Impl
@@ -224,7 +226,36 @@ namespace FitSwipe.DataAccess.Repository.Impl
         {
             return await _context.Trainings.Where(t => t.Rating != null && t.PTId == userId).AverageAsync(t => t.Rating);
         }
+        public async Task<GetDashboardStatDto> GetUserStatistic()
+        {
+            var currMonth = DateTime.UtcNow.AddHours(7).Month;
+            var lastMonth = currMonth == 1 ? 12 : currMonth - 1;
+            var currYear = DateTime.UtcNow.AddHours(7).Year;
+            var yearOfLastMonth = currMonth == 1 ? currYear : currYear - 1;
+
+            return new GetDashboardStatDto
+            {
+                TotalUsers = await _context.Users.Where(t => t.Role == Role.PT || t.Role == Role.Trainee).CountAsync(),
+                LastMonthTotalUsers = await _context.Users.Where(t => (t.Role == Role.PT || t.Role == Role.Trainee) && t.CreatedDate.Month == lastMonth).CountAsync(),
+                ThisMonthTotalUsers = await _context.Users.Where(t => (t.Role == Role.PT || t.Role == Role.Trainee) && t.CreatedDate.Month == currMonth).CountAsync(),
+                TotalUsersBalance = await _context.Users.Where(t => (t.Role == Role.PT || t.Role == Role.Trainee)).Select(t => (double)(t.Balance ?? 0)).SumAsync(),
+                NumberOfBelow18 = await _context.Users.Where(t => (t.Role == Role.PT || t.Role == Role.Trainee) && t.DateOfBirth != default && currYear - t.DateOfBirth.Year < 18).CountAsync(),
+                NumberOfAge18To24 = await _context.Users.Where(t => (t.Role == Role.PT || t.Role == Role.Trainee) && t.DateOfBirth != default && currYear - t.DateOfBirth.Year >= 18 && currYear - t.DateOfBirth.Year <= 24).CountAsync(),
+                NumberOfAge25To34 = await _context.Users.Where(t => (t.Role == Role.PT || t.Role == Role.Trainee) && t.DateOfBirth != default && currYear - t.DateOfBirth.Year >= 25 && currYear - t.DateOfBirth.Year <= 24).CountAsync(),
+                NumberOfAge35To44 = await _context.Users.Where(t => (t.Role == Role.PT || t.Role == Role.Trainee) && t.DateOfBirth != default && currYear - t.DateOfBirth.Year >= 35 && currYear - t.DateOfBirth.Year <= 44).CountAsync(),
+                NumberOfAge45To55 = await _context.Users.Where(t => (t.Role == Role.PT || t.Role == Role.Trainee) && t.DateOfBirth != default && currYear - t.DateOfBirth.Year >= 45 && currYear - t.DateOfBirth.Year <= 55).CountAsync(),
+                NumberOfAgeAbove55 = await _context.Users.Where(t => (t.Role == Role.PT || t.Role == Role.Trainee) && t.DateOfBirth != default && currYear - t.DateOfBirth.Year >= 56 && currYear - t.DateOfBirth.Year <= 100).CountAsync(),
+                NumberOfMale = await _context.Users.Where(t => (t.Role == Role.PT || t.Role == Role.Trainee) && t.Gender == Gender.Male).CountAsync(),
+                NumberOfFemale = await _context.Users.Where(t => (t.Role == Role.PT || t.Role == Role.Trainee) && t.Gender == Gender.Female).CountAsync(),
+                NumberOfOtherGender = await _context.Users.Where(t => (t.Role == Role.PT || t.Role == Role.Trainee) && t.Gender == Gender.Other).CountAsync(),
+                NumberOfPT = await _context.Users.Where(t => t.Role == Role.PT).CountAsync(),
+                NumberOfTrainee = await _context.Users.Where(t => t.Role == Role.Trainee).CountAsync(),
+                
+            };
+        }
     }
+
+    
     public class UserWithMatchScore
     {
         public User User { get; set; } = default!;

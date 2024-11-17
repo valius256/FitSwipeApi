@@ -1,6 +1,7 @@
 ﻿using FirebaseAdmin;
 using FitSwipe.BusinessLogic.Interfaces.Auth;
 using FitSwipe.BusinessLogic.Interfaces.Chats;
+using FitSwipe.BusinessLogic.Interfaces.Management;
 using FitSwipe.BusinessLogic.Interfaces.Payments;
 using FitSwipe.BusinessLogic.Interfaces.Sender;
 using FitSwipe.BusinessLogic.Interfaces.Slots;
@@ -11,6 +12,7 @@ using FitSwipe.BusinessLogic.Interfaces.UploadDowload;
 using FitSwipe.BusinessLogic.Interfaces.Users;
 using FitSwipe.BusinessLogic.Services.Auths;
 using FitSwipe.BusinessLogic.Services.Chats;
+using FitSwipe.BusinessLogic.Services.Management;
 using FitSwipe.BusinessLogic.Services.Payments;
 using FitSwipe.BusinessLogic.Services.Sender;
 using FitSwipe.BusinessLogic.Services.Slots;
@@ -81,6 +83,7 @@ namespace FitSwipe.API.Extensions
             services.AddScoped<ISlotTransactionServices, SlotTransactionServices>();
             services.AddScoped<IUserMediaService, UserMediaService>();
             services.AddScoped<IRequestWithdrawService, RequestWithdrawService>();
+            services.AddScoped<IAdminService, AdminService>();
 
             services.AddTransient<IEmailServices, EmailServices>();
             services.AddScoped<IJwtProviderServices, JwtProviderServices>();

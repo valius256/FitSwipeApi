@@ -1,5 +1,6 @@
 ﻿using FitSwipe.DataAccess.Model.Entity;
 using FitSwipe.DataAccess.Model.Paging;
+using FitSwipe.Shared.Dtos.Management;
 using FitSwipe.Shared.Dtos.Transactions;
 using FitSwipe.Shared.Dtos.UploadDowloads;
 using FitSwipe.Shared.Dtos.Users;
@@ -29,6 +30,8 @@ namespace FitSwipe.BusinessLogic.Interfaces.Users
         Task UpdateUserSubcription(GetUserSubscriptionDto getUserSubscriptionDto);
 
         Task<GetUserSubscriptionDto> GetUserSubscription(string userId);
+        Task<GetDashboardStatDto> GetUserStatistic();
+        
 
     }
 }

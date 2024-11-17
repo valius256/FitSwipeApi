@@ -3,6 +3,7 @@ using FitSwipe.BusinessLogic.Interfaces.Users;
 using FitSwipe.DataAccess.Model.Entity;
 using FitSwipe.DataAccess.Model.Paging;
 using FitSwipe.DataAccess.Repository.Intefaces;
+using FitSwipe.Shared.Dtos.Management;
 using FitSwipe.Shared.Dtos.Transactions;
 using FitSwipe.Shared.Enum;
 using FitSwipe.Shared.Exceptions;
@@ -73,7 +74,6 @@ namespace FitSwipe.BusinessLogic.Services.Transactions
             var pagedResultTransactionEntity = await _transactionRepository.GetTransactionsPageAsync(pagedRequest, user);
             return pagedResultTransactionEntity.Adapt<PagedResult<GetTransactionWithUserDto>>();
         }
-
         public async Task<bool> UpdateTransactionStatus(long orderCode, TransactionStatus status)
         {
             var effectedRecord = await _transactionRepository.Where(t => t.TranscationCode == orderCode.ToString()).ExecuteUpdateAsync(l => l.SetProperty(x => x.Status, status));
@@ -83,5 +83,11 @@ namespace FitSwipe.BusinessLogic.Services.Transactions
             }
             return true;
         }
+
+        public async Task<GetDashboardStatDto> GetGeneralStatistic()
+        {
+            return await _transactionRepository.GetTransactionStatistic();
+        }
+
     }
 }

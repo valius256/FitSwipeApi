@@ -1,5 +1,6 @@
 ﻿using FitSwipe.DataAccess.Model.Entity;
 using FitSwipe.DataAccess.Model.Paging;
+using FitSwipe.Shared.Dtos.Management;
 using FitSwipe.Shared.Dtos.Transactions;
 
 namespace FitSwipe.BusinessLogic.Interfaces.Transactions
@@ -10,6 +11,7 @@ namespace FitSwipe.BusinessLogic.Interfaces.Transactions
         Task<PagedResult<GetTransactionWithUserDto>> GetTransactionsPageAsync(PagingModel<QueryTransactionDtos> pagedRequest, string userFirebaseId);
         Task<Transaction> GetTransactionByOrderCodeAsync(long orderCode);
         Task<bool> UpdateTransactionStatus(long orderCode, Shared.Enum.TransactionStatus status);
+        Task<GetDashboardStatDto> GetGeneralStatistic();
 
     }
 }

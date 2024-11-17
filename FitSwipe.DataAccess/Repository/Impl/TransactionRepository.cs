@@ -3,7 +3,9 @@ using FitSwipe.DataAccess.Model;
 using FitSwipe.DataAccess.Model.Entity;
 using FitSwipe.DataAccess.Model.Paging;
 using FitSwipe.DataAccess.Repository.Intefaces;
+using FitSwipe.Shared.Dtos.Management;
 using FitSwipe.Shared.Dtos.Transactions;
+using FitSwipe.Shared.Enum;
 using Microsoft.EntityFrameworkCore;
 
 namespace FitSwipe.DataAccess.Repository.Impl
@@ -47,6 +49,31 @@ namespace FitSwipe.DataAccess.Repository.Impl
             int page = pagingRequest.Page > 0 ? pagingRequest.Page : 1;
             return await query.OrderByDescending(t => t.CreatedDate).ToNewPagingAsync(page, limit);
 
+        }
+
+        public async Task<GetDashboardStatDto> GetTransactionStatistic()
+        {
+            var currMonth = DateTime.UtcNow.AddHours(7).Month;
+            var lastMonth = currMonth == 1 ? 12 : currMonth - 1;
+            var currYear = DateTime.UtcNow.AddHours(7).Year;
+            var yearOfLastMonth = currMonth == 1 ? currYear : currYear - 1;
+
+            return new GetDashboardStatDto
+            {
+                LastMonthCommissionRevenue = await _dbContext.Transactions.Where(t => t.CreatedDate.Month == lastMonth && t.CreatedDate.Year == yearOfLastMonth && (t.Type == TransactionType.DirectPayment || t.Type == TransactionType.AutoDeduction)).Select(t => t.Amount).SumAsync() * 3/100,
+                ThisMonthCommissionRevenue = await _dbContext.Transactions.Where(t => t.CreatedDate.Month == currMonth && t.CreatedDate.Year == currYear && (t.Type == TransactionType.DirectPayment || t.Type == TransactionType.AutoDeduction)).Select(t => t.Amount).SumAsync() * 3/100,
+                TotalCommissionRevenue = await _dbContext.Transactions.Where(t => (t.Type == TransactionType.DirectPayment || t.Type == TransactionType.AutoDeduction)).Select(t => t.Amount).SumAsync() * 3 / 100,
+                LastMonthSubscriptionRevenue = await _dbContext.Transactions.Where(t => t.CreatedDate.Month == lastMonth && t.CreatedDate.Year == yearOfLastMonth && (t.Type == TransactionType.DirectPaymentSubscription || t.Type == TransactionType.BalancePaymentSubscription)).Select(t => t.Amount).SumAsync(),
+                ThisMonthSubscriptionRevenue = await _dbContext.Transactions.Where(t => t.CreatedDate.Month == currMonth && t.CreatedDate.Year == currYear && (t.Type == TransactionType.DirectPaymentSubscription || t.Type == TransactionType.BalancePaymentSubscription)).Select(t => t.Amount).SumAsync(),
+                TotalSubscriptionRevenue = await _dbContext.Transactions.Where(t => (t.Type == TransactionType.DirectPaymentSubscription || t.Type == TransactionType.BalancePaymentSubscription)).Select(t => t.Amount).SumAsync(),
+                
+                LastMonthTransactions = await _dbContext.Transactions.Where(t => t.CreatedDate.Month == lastMonth && t.CreatedDate.Year == yearOfLastMonth).CountAsync(),
+                ThisMonthTransactions = await _dbContext.Transactions.Where(t => t.CreatedDate.Month == currMonth && t.CreatedDate.Year == currYear).CountAsync(),
+                TotalTransactions = await _dbContext.Transactions.CountAsync(),
+                TotalTransactionsValue = await _dbContext.Transactions.Select(t => t.Amount).SumAsync(),
+                LastMonthTransactionsValue = await _dbContext.Transactions.Where(t => t.CreatedDate.Month == lastMonth && t.CreatedDate.Year == yearOfLastMonth).Select(t => t.Amount).SumAsync(),
+                ThisMonthTransactionsValue = await _dbContext.Transactions.Where(t => t.CreatedDate.Month == currMonth && t.CreatedDate.Year == currYear).Select(t => t.Amount).SumAsync(),
+            };
         }
 
         private IQueryable<Transaction> GetTransactionQuery(IQueryable<Transaction> query, QueryTransactionDtos filter)
