@@ -42,7 +42,14 @@ namespace FitSwipe.BusinessLogic.Services.Users
         public async Task DeleteUserMediaAsync(Guid userMediaId, string userId)
         {
             var user = await _userServices.GetUserByIdRequiredAsync(userId);
+            
             var existedMedia = await GetUserMediaRequiredById(userMediaId);
+
+            if (existedMedia.UserId != userId && user.Role != Shared.Enum.Role.Operator)
+            {
+                throw new ForbiddenException("You do not have permission to do this function");
+            }
+
             await _userMediaRepository.DeleteAsync(userMediaId);
         }
 
@@ -50,6 +57,10 @@ namespace FitSwipe.BusinessLogic.Services.Users
         {
             var user = await _userServices.GetUserByIdRequiredAsync(userId);
             var existedMedia = await GetUserMediaRequiredById(userMediaDto.Id);
+            if (existedMedia.UserId != userId && user.Role != Shared.Enum.Role.Operator)
+            {
+                throw new ForbiddenException("You do not have permission to do this function");
+            }
             existedMedia.Description = userMediaDto.Description;
 
             await _userMediaRepository.UpdateAsync(existedMedia.Adapt<UserMedia>());

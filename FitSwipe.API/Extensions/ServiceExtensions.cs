@@ -3,6 +3,7 @@ using FitSwipe.BusinessLogic.Interfaces.Auth;
 using FitSwipe.BusinessLogic.Interfaces.Chats;
 using FitSwipe.BusinessLogic.Interfaces.Management;
 using FitSwipe.BusinessLogic.Interfaces.Payments;
+using FitSwipe.BusinessLogic.Interfaces.Reports;
 using FitSwipe.BusinessLogic.Interfaces.Sender;
 using FitSwipe.BusinessLogic.Interfaces.Slots;
 using FitSwipe.BusinessLogic.Interfaces.Tags;
@@ -14,6 +15,7 @@ using FitSwipe.BusinessLogic.Services.Auths;
 using FitSwipe.BusinessLogic.Services.Chats;
 using FitSwipe.BusinessLogic.Services.Management;
 using FitSwipe.BusinessLogic.Services.Payments;
+using FitSwipe.BusinessLogic.Services.Reports;
 using FitSwipe.BusinessLogic.Services.Sender;
 using FitSwipe.BusinessLogic.Services.Slots;
 using FitSwipe.BusinessLogic.Services.Tags;
@@ -59,6 +61,8 @@ namespace FitSwipe.API.Extensions
             services.AddScoped<ISlotTransactionRepository, SlotTransactionRepository>();
             services.AddScoped<IUserMediaRepository, UserMediaRepository>();
             services.AddScoped<IRequestWithdrawRepository, RequestWithdrawRepository>();
+            services.AddScoped<IReportRepository, ReportRepository>();
+            services.AddScoped<IReportImageRepository, ReportImageRepository>();
             services.AddProblemDetails();
             services.AddLogging();
 
@@ -84,6 +88,8 @@ namespace FitSwipe.API.Extensions
             services.AddScoped<IUserMediaService, UserMediaService>();
             services.AddScoped<IRequestWithdrawService, RequestWithdrawService>();
             services.AddScoped<IAdminService, AdminService>();
+            services.AddScoped<IReportService, ReportService>();
+            services.AddScoped<IReportImageService, ReportImageService>();
 
             services.AddTransient<IEmailServices, EmailServices>();
             services.AddScoped<IJwtProviderServices, JwtProviderServices>();
@@ -198,6 +204,7 @@ namespace FitSwipe.API.Extensions
             {
                 options.AddPolicy("RequireTraineeRole", policy => policy.RequireRole(Role.Trainee.ToString()));
                 options.AddPolicy("RequirePTRole", policy => policy.RequireRole(Role.PT.ToString()));
+                options.AddPolicy("RequiredPTOrTraineeRole", policy => policy.RequireRole(Role.PT.ToString(), Role.Trainee.ToString()));
                 options.AddPolicy("RequireOperatorRole", policy => policy.RequireRole(Role.Operator.ToString()));
             });
 

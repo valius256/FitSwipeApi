@@ -21,7 +21,7 @@ namespace FitSwipe.API.Controllers
             _userTagService = userTagService;
         }
 
-        [HttpGet]
+        [HttpGet("all")]
         [Authorize(Policy = "RequireOperatorRole")]
         public async Task<PagedResult<GetUserDto>> GetUsers([FromQuery] PagingModel<QueryUserDto> queryUserDto)
         {
