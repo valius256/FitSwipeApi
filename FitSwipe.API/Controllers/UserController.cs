@@ -21,11 +21,12 @@ namespace FitSwipe.API.Controllers
             _userTagService = userTagService;
         }
 
-        //[HttpGet]
-        //public async Task<PagedResult<GetUserDto>> GetUsers([FromQuery] PagingModel<QueryUserDto> queryUserDto)
-        //{
-        //    return await _userServices.GetUserPagedAsync(queryUserDto);
-        //}
+        [HttpGet]
+        [Authorize(Policy = "RequireOperatorRole")]
+        public async Task<PagedResult<GetUserDto>> GetUsers([FromQuery] PagingModel<QueryUserDto> queryUserDto)
+        {
+            return await _userServices.GetUserPagedAsync(queryUserDto);
+        }
 
         [HttpGet]
         public async Task<PagedResult<GetUserWithTagDto>> GetUserPagedWithTags([FromQuery] PagingModel<QueryUserDto> queryUserDto)

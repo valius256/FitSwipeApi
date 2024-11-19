@@ -56,7 +56,7 @@ namespace FitSwipe.DataAccess.Repository.Impl
             var currMonth = DateTime.UtcNow.AddHours(7).Month;
             var lastMonth = currMonth == 1 ? 12 : currMonth - 1;
             var currYear = DateTime.UtcNow.AddHours(7).Year;
-            var yearOfLastMonth = currMonth == 1 ? currYear : currYear - 1;
+            var yearOfLastMonth = currMonth == 1 ? currYear - 1  : currYear;
 
             return new GetDashboardStatDto
             {
