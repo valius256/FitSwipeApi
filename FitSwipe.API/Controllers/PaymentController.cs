@@ -141,7 +141,7 @@ namespace FitSwipe.API.Controllers
         {
             return await _requestWithdrawService.CreateRequestWithdraw(createRequestWithdrawDto, CurrentUserFirebaseId);
         }
-        [Authorize]
+        [Authorize(Policy = "RequireOperatorRole")]
         [HttpPatch("withdraw")]
         public async Task<ActionResult<GetRequestWithdrawDto>> UpdateWithdrawRequest([FromBody] UpdateRequestWithdrawDto updateRequestWithdrawDto)
         {

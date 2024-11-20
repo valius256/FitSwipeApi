@@ -67,7 +67,7 @@ namespace FitSwipe.DataAccess.Repository.Impl
             int page = pagingModel.Page > 0 ? pagingModel.Page : 1;
 
             return await query.Include(t => t.PT)
-                .Include(t => t.Trainee).ToNewPagingAsync(page, limit);
+                .Include(t => t.Trainee).OrderByDescending(t => t.CreatedDate).ToNewPagingAsync(page, limit);
 
         }
         public async Task<GetTrainingOverviewDto?> GetTrainingOverview(Guid id)
