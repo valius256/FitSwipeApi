@@ -56,7 +56,6 @@ namespace FitSwipe.BusinessLogic.Services.Transactions
             return transaction.Adapt<GetTransactionWithUserDto>();
         }
 
-
         public async Task<Transaction> GetTransactionByOrderCodeAsync(long orderCode)
         {
             var result = await _transactionRepository.FindOneWithNoTrackingAsync(t => t.TranscationCode == orderCode.ToString());

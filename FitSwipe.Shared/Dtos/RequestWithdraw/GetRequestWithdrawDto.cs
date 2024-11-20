@@ -17,5 +17,6 @@ namespace FitSwipe.Shared.Dtos.RequestWithdraw
         public DateTime CreatedDate { get; set; } = DateTime.UtcNow;
         public DateTime? UpdatedDate { get; set; }
         public RequestStatus Status { get; set; }
+        public string? TransactionCode { get; set; }
     }
 }

@@ -38,7 +38,7 @@ namespace FitSwipe.BusinessLogic.Services.Payments
             requestWithdraw.UserId = userId;
 
             await _userServices.UpdateUserBalance(userId, -requestWithdraw.Amount);
-            await _transactionServices.CreateTransactionAsync(new Shared.Dtos.Transactions.CreateTransactionDtos
+            var createdTransaction = await _transactionServices.CreateTransactionAsync(new Shared.Dtos.Transactions.CreateTransactionDtos
             {
                 TranscationCode = DateTime.UtcNow.Ticks.ToString(),
                 UserFireBaseId = userId,
@@ -47,7 +47,7 @@ namespace FitSwipe.BusinessLogic.Services.Payments
                 Method = Shared.Enum.TransactionMethod.Balance,
                 Type = Shared.Enum.TransactionType.Withdrawal
             });
-
+            requestWithdraw.TransactionCode = createdTransaction.TranscationCode;
             var addedRequest = await _requestWithdrawRepository.AddAsync(requestWithdraw);
             return addedRequest.Adapt<GetRequestWithdrawDto>();
         }
@@ -61,6 +61,10 @@ namespace FitSwipe.BusinessLogic.Services.Payments
                 throw new BadRequestException("You do not have permission to do this function");
             }
             await _requestWithdrawRepository.DeleteAsync(id);
+            if (existedRequest.TransactionCode != null)
+            {
+                await _transactionServices.UpdateTransactionStatus(long.Parse(existedRequest.TransactionCode), Shared.Enum.TransactionStatus.Canceled);
+            }
         }
 
         public async Task<PagedResult<GetRequestWithdrawDto>> GetAllRequestWithdraw(int limit, int page)
@@ -122,6 +126,16 @@ namespace FitSwipe.BusinessLogic.Services.Payments
                     Method = Shared.Enum.TransactionMethod.Balance,
                     Type = Shared.Enum.TransactionType.Deposit
                 });
+                if (requestWithdraw.TransactionCode != null)
+                {
+                    await _transactionServices.UpdateTransactionStatus(long.Parse(requestWithdraw.TransactionCode), Shared.Enum.TransactionStatus.Failed);
+                }
+            } else
+            {
+                if (requestWithdraw.TransactionCode != null)
+                {
+                    await _transactionServices.UpdateTransactionStatus(long.Parse(requestWithdraw.TransactionCode), Shared.Enum.TransactionStatus.Successed);
+                }
             }
 
             await _requestWithdrawRepository.UpdateAsync(requestWithdraw.Adapt<RequestWithdraw>());

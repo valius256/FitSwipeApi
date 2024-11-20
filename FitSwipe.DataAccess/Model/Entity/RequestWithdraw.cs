@@ -14,6 +14,7 @@ namespace FitSwipe.DataAccess.Model.Entity
         public string BankName { get; set; } = string.Empty;
         public string? OperatorMessage { get; set; }
         public RequestStatus Status { get; set; }
+        public string? TransactionCode { get; set; }
         public virtual User User { get; set; } = default!;
         public virtual User? Handler { get; set; }
     }
