@@ -60,19 +60,19 @@ namespace FitSwipe.DataAccess.Repository.Impl
 
             return new GetDashboardStatDto
             {
-                LastMonthCommissionRevenue = await _dbContext.Transactions.Where(t => t.CreatedDate.Month == lastMonth && t.CreatedDate.Year == yearOfLastMonth && (t.Type == TransactionType.DirectPayment || t.Type == TransactionType.AutoDeduction)).Select(t => t.Amount).SumAsync() * 3/100,
-                ThisMonthCommissionRevenue = await _dbContext.Transactions.Where(t => t.CreatedDate.Month == currMonth && t.CreatedDate.Year == currYear && (t.Type == TransactionType.DirectPayment || t.Type == TransactionType.AutoDeduction)).Select(t => t.Amount).SumAsync() * 3/100,
-                TotalCommissionRevenue = await _dbContext.Transactions.Where(t => (t.Type == TransactionType.DirectPayment || t.Type == TransactionType.AutoDeduction)).Select(t => t.Amount).SumAsync() * 3 / 100,
-                LastMonthSubscriptionRevenue = await _dbContext.Transactions.Where(t => t.CreatedDate.Month == lastMonth && t.CreatedDate.Year == yearOfLastMonth && (t.Type == TransactionType.DirectPaymentSubscription || t.Type == TransactionType.BalancePaymentSubscription)).Select(t => t.Amount).SumAsync(),
-                ThisMonthSubscriptionRevenue = await _dbContext.Transactions.Where(t => t.CreatedDate.Month == currMonth && t.CreatedDate.Year == currYear && (t.Type == TransactionType.DirectPaymentSubscription || t.Type == TransactionType.BalancePaymentSubscription)).Select(t => t.Amount).SumAsync(),
-                TotalSubscriptionRevenue = await _dbContext.Transactions.Where(t => (t.Type == TransactionType.DirectPaymentSubscription || t.Type == TransactionType.BalancePaymentSubscription)).Select(t => t.Amount).SumAsync(),
+                LastMonthCommissionRevenue = await _dbContext.Transactions.Where(t => t.Status == TransactionStatus.Successed && t.CreatedDate.Month == lastMonth && t.CreatedDate.Year == yearOfLastMonth && (t.Type == TransactionType.DirectPayment || t.Type == TransactionType.AutoDeduction)).Select(t => t.Amount).SumAsync() * 3/100,
+                ThisMonthCommissionRevenue = await _dbContext.Transactions.Where(t => t.Status == TransactionStatus.Successed && t.CreatedDate.Month == currMonth && t.CreatedDate.Year == currYear && (t.Type == TransactionType.DirectPayment || t.Type == TransactionType.AutoDeduction)).Select(t => t.Amount).SumAsync() * 3/100,
+                TotalCommissionRevenue = await _dbContext.Transactions.Where(t => t.Status == TransactionStatus.Successed && (t.Type == TransactionType.DirectPayment || t.Type == TransactionType.AutoDeduction)).Select(t => t.Amount).SumAsync() * 3 / 100,
+                LastMonthSubscriptionRevenue = await _dbContext.Transactions.Where(t => t.Status == TransactionStatus.Successed && t.CreatedDate.Month == lastMonth && t.CreatedDate.Year == yearOfLastMonth && (t.Type == TransactionType.DirectPaymentSubscription || t.Type == TransactionType.BalancePaymentSubscription)).Select(t => t.Amount).SumAsync(),
+                ThisMonthSubscriptionRevenue = await _dbContext.Transactions.Where(t => t.Status == TransactionStatus.Successed && t.CreatedDate.Month == currMonth && t.CreatedDate.Year == currYear && (t.Type == TransactionType.DirectPaymentSubscription || t.Type == TransactionType.BalancePaymentSubscription)).Select(t => t.Amount).SumAsync(),
+                TotalSubscriptionRevenue = await _dbContext.Transactions.Where(t => t.Status == TransactionStatus.Successed && (t.Type == TransactionType.DirectPaymentSubscription || t.Type == TransactionType.BalancePaymentSubscription)).Select(t => t.Amount).SumAsync(),
                 
-                LastMonthTransactions = await _dbContext.Transactions.Where(t => t.CreatedDate.Month == lastMonth && t.CreatedDate.Year == yearOfLastMonth).CountAsync(),
-                ThisMonthTransactions = await _dbContext.Transactions.Where(t => t.CreatedDate.Month == currMonth && t.CreatedDate.Year == currYear).CountAsync(),
-                TotalTransactions = await _dbContext.Transactions.CountAsync(),
-                TotalTransactionsValue = await _dbContext.Transactions.Select(t => t.Amount).SumAsync(),
-                LastMonthTransactionsValue = await _dbContext.Transactions.Where(t => t.CreatedDate.Month == lastMonth && t.CreatedDate.Year == yearOfLastMonth).Select(t => t.Amount).SumAsync(),
-                ThisMonthTransactionsValue = await _dbContext.Transactions.Where(t => t.CreatedDate.Month == currMonth && t.CreatedDate.Year == currYear).Select(t => t.Amount).SumAsync(),
+                LastMonthTransactions = await _dbContext.Transactions.Where(t => t.Status == TransactionStatus.Successed && t.CreatedDate.Month == lastMonth && t.CreatedDate.Year == yearOfLastMonth).CountAsync(),
+                ThisMonthTransactions = await _dbContext.Transactions.Where(t => t.Status == TransactionStatus.Successed && t.CreatedDate.Month == currMonth && t.CreatedDate.Year == currYear).CountAsync(),
+                TotalTransactions = await _dbContext.Transactions.Where(t => t.Status == TransactionStatus.Successed).CountAsync(),
+                TotalTransactionsValue = await _dbContext.Transactions.Where(t => t.Status == TransactionStatus.Successed).Select(t => t.Amount).SumAsync(),
+                LastMonthTransactionsValue = await _dbContext.Transactions.Where(t => t.Status == TransactionStatus.Successed && t.CreatedDate.Month == lastMonth && t.CreatedDate.Year == yearOfLastMonth).Select(t => t.Amount).SumAsync(),
+                ThisMonthTransactionsValue = await _dbContext.Transactions.Where(t => t.Status == TransactionStatus.Successed && t.CreatedDate.Month == currMonth && t.CreatedDate.Year == currYear).Select(t => t.Amount).SumAsync(),
             };
         }
 

@@ -26,11 +26,15 @@ namespace FitSwipe.DataAccess.Repository.Impl
                 {
                     query = query.Where(rw => rw.UserId == pagingModel.Filter.UserId);
                 }
+                if (pagingModel.Filter.IsUpdated.HasValue)
+                {
+                    query = query.Where(rw => rw.Status != Shared.Enum.RequestStatus.Pending);
+                }
             }
 
             var limit = pagingModel.Limit > 0 ? pagingModel.Limit : 10;
             var page = pagingModel.Page > 0 ? pagingModel.Page : 1;
-            return await query.ToNewPagingAsync(page, limit);
+            return await query.OrderByDescending(r => r.CreatedDate).ToNewPagingAsync(page, limit);
         }
     }
 }

@@ -16,7 +16,6 @@ namespace FitSwipe.API.Controllers
     public class PaymentController : BaseController<PaymentController>
     {
         private readonly IPaymentServices _paymentServices;
-        private readonly ILogger<PaymentController> _logger;
         private readonly ITransactionServices _transactionServices;
         private readonly ISlotTransactionServices _slotTransactionServices;
         private readonly IRequestWithdrawService _requestWithdrawService;
@@ -29,7 +28,6 @@ namespace FitSwipe.API.Controllers
             _paymentServices = paymentServices;
             _slotTransactionServices = slotTransactionServices;
             _requestWithdrawService = requestWithdrawService;
-            _logger = logger;
         }
 
         [Authorize]
@@ -125,9 +123,9 @@ namespace FitSwipe.API.Controllers
         }
         [Authorize]//Role Operator
         [HttpGet("withdraw-all")]
-        public async Task<ActionResult<PagedResult<GetRequestWithdrawDto>>> GetAllWithdrawRequestPaged([FromQuery] int limit = 10, [FromQuery] int page = 1)
+        public async Task<ActionResult<PagedResult<GetRequestWithdrawDto>>> GetAllWithdrawRequestPaged([FromQuery] bool? isUpdated, [FromQuery] int limit = 10, [FromQuery] int page = 1)
         {
-            return await _requestWithdrawService.GetAllRequestWithdraw(limit, page);
+            return await _requestWithdrawService.GetAllRequestWithdraw(limit, page, isUpdated);
         }
         [Authorize]
         [HttpGet("withdraw-user")]

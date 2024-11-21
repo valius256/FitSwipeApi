@@ -67,12 +67,13 @@ namespace FitSwipe.BusinessLogic.Services.Payments
             }
         }
 
-        public async Task<PagedResult<GetRequestWithdrawDto>> GetAllRequestWithdraw(int limit, int page)
+        public async Task<PagedResult<GetRequestWithdrawDto>> GetAllRequestWithdraw(int limit, int page, bool? isUpdated )
         {
             var result = await _requestWithdrawRepository.GetRequestWithdrawPagedAsync(new PagingModel<QueryRequestWithdrawDto>
             {
                 Limit = limit,
-                Page = page
+                Page = page,
+                Filter = new QueryRequestWithdrawDto { IsUpdated = isUpdated }
             });
             return result.Adapt<PagedResult<GetRequestWithdrawDto>>();
         }

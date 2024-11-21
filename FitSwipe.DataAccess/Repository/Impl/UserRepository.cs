@@ -48,7 +48,7 @@ namespace FitSwipe.DataAccess.Repository.Impl
             query = GetFilterUserQuery(query, pagingModel.Filter);
             int limit = pagingModel.Limit > 0 ? pagingModel.Limit : 10;
             int page = pagingModel.Page > 0 ? pagingModel.Page : 1;
-            return await query.ToNewPagingAsync(page, limit);
+            return await query.OrderByDescending(u => u.CreatedDate).ToNewPagingAsync(page, limit);
         }
 
         public async Task<PagedResult<User>> GetUsersPagedWithTags(PagingModel<QueryUserDto> pagingModel)
@@ -151,6 +151,10 @@ namespace FitSwipe.DataAccess.Repository.Impl
                 {
                     query = query.Where(u => u.UserName.Contains(queryUserDto.Phone));
                 }
+                if (queryUserDto.City != null)
+                {
+                    query = query.Where(u => u.UserName.Contains(queryUserDto.City));
+                }
                 if (queryUserDto.Job != null)
                 {
                     query = query.Where(u => u.Job != null && u.Job.Contains(queryUserDto.Job));
@@ -194,11 +198,11 @@ namespace FitSwipe.DataAccess.Repository.Impl
                 }
                 if (queryUserDto.CreatedDateFrom.HasValue)
                 {
-                    query = query.Where(u => u.UpdatedDate >= queryUserDto.CreatedDateFrom);
+                    query = query.Where(u => u.CreatedDate >= queryUserDto.CreatedDateFrom);
                 }
                 if (queryUserDto.CreatedDateTo.HasValue)
                 {
-                    query = query.Where(u => u.UpdatedDate <= queryUserDto.CreatedDateTo);
+                    query = query.Where(u => u.CreatedDate <= queryUserDto.CreatedDateTo);
                 }
                 if (queryUserDto.Genders.Count > 0)
                 {
