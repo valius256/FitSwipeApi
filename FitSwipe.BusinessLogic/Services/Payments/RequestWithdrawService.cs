@@ -125,7 +125,8 @@ namespace FitSwipe.BusinessLogic.Services.Payments
                     Amount = requestWithdraw.Amount,
                     Description = "Hoàn tiền do thất bại",
                     Method = Shared.Enum.TransactionMethod.Balance,
-                    Type = Shared.Enum.TransactionType.Deposit
+                    Type = Shared.Enum.TransactionType.Deposit,
+                    
                 });
                 if (requestWithdraw.TransactionCode != null)
                 {

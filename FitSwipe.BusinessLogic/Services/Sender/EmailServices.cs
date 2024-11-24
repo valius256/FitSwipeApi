@@ -39,7 +39,10 @@ public class EmailServices : IEmailServices
         }
 
         var template = await _emailTemplateRepository.FindOneAsync(e => e.Name == name && e.Status == true);
-        await SendAsync(template, toAddress, ccAddresses, param);
+        if (template != null)
+        {
+            await SendAsync(template, toAddress, ccAddresses, param);
+        }
     }
 
 

@@ -28,7 +28,14 @@ namespace FitSwipe.DataAccess.Repository.Impl
                 }
                 if (pagingModel.Filter.IsUpdated.HasValue)
                 {
-                    query = query.Where(rw => rw.Status != Shared.Enum.RequestStatus.Pending);
+                    if (pagingModel.Filter.IsUpdated.Value)
+                    {
+                        query = query.Where(rw => rw.Status != Shared.Enum.RequestStatus.Pending);
+                    }
+                    else
+                    {
+                        query = query.Where(rw => rw.Status == Shared.Enum.RequestStatus.Pending);
+                    }
                 }
             }
 

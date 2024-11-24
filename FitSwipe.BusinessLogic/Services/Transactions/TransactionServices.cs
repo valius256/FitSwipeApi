@@ -73,14 +73,11 @@ namespace FitSwipe.BusinessLogic.Services.Transactions
             var pagedResultTransactionEntity = await _transactionRepository.GetTransactionsPageAsync(pagedRequest, user);
             return pagedResultTransactionEntity.Adapt<PagedResult<GetTransactionWithUserDto>>();
         }
-        public async Task<bool> UpdateTransactionStatus(long orderCode, TransactionStatus status)
+        public async Task UpdateTransactionStatus(long orderCode, TransactionStatus status)
         {
-            var effectedRecord = await _transactionRepository.Where(t => t.TranscationCode == orderCode.ToString()).ExecuteUpdateAsync(l => l.SetProperty(x => x.Status, status));
-            if (effectedRecord == 0)
-            {
-                return false;
-            }
-            return true;
+            var transaction = await GetTransactionByOrderCodeAsync(orderCode);
+            transaction.Status = status;
+            await _transactionRepository.UpdateAsync(transaction);
         }
 
         public async Task<GetDashboardStatDto> GetGeneralStatistic()
